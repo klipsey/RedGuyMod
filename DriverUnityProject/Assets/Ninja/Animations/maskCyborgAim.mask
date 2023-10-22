@@ -1,0 +1,127 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!319 &31900000
+AvatarMask:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: maskCyborgAim
+  m_Mask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+  m_Elements:
+  - m_Path: 
+    m_Weight: 1
+  - m_Path: Armature
+    m_Weight: 0
+  - m_Path: Armature/ROOT
+    m_Weight: 0
+  - m_Path: Armature/ROOT/base
+    m_Weight: 0
+  - m_Path: Armature/ROOT/base/pelvis
+    m_Weight: 0
+  - m_Path: Armature/ROOT/base/pelvis/thigh.l
+    m_Weight: 0
+  - m_Path: Armature/ROOT/base/pelvis/thigh.l/calf.l
+    m_Weight: 0
+  - m_Path: Armature/ROOT/base/pelvis/thigh.l/calf.l/foot.l
+    m_Weight: 0
+  - m_Path: Armature/ROOT/base/pelvis/thigh.l/calf.l/foot.l/toe.l
+    m_Weight: 0
+  - m_Path: Armature/ROOT/base/pelvis/thigh.r
+    m_Weight: 0
+  - m_Path: Armature/ROOT/base/pelvis/thigh.r/calf.r
+    m_Weight: 0
+  - m_Path: Armature/ROOT/base/pelvis/thigh.r/calf.r/foot.r
+    m_Weight: 0
+  - m_Path: Armature/ROOT/base/pelvis/thigh.r/calf.r/foot.r/toe.r
+    m_Weight: 0
+  - m_Path: Armature/ROOT/base/stomach
+    m_Weight: 0
+  - m_Path: Armature/ROOT/base/stomach/chest
+    m_Weight: 1
+  - m_Path: Armature/ROOT/base/stomach/chest/neck
+    m_Weight: 1
+  - m_Path: Armature/ROOT/base/stomach/chest/neck/head
+    m_Weight: 1
+  - m_Path: Armature/ROOT/base/stomach/chest/shoulder.l
+    m_Weight: 0
+  - m_Path: Armature/ROOT/base/stomach/chest/shoulder.l/upperarm.l
+    m_Weight: 0
+  - m_Path: Armature/ROOT/base/stomach/chest/shoulder.l/upperarm.l/lowerarm.l
+    m_Weight: 0
+  - m_Path: Armature/ROOT/base/stomach/chest/shoulder.l/upperarm.l/lowerarm.l/hand.l
+    m_Weight: 0
+  - m_Path: Armature/ROOT/base/stomach/chest/shoulder.l/upperarm.l/lowerarm.l/hand.l/finger.l.01
+    m_Weight: 0
+  - m_Path: Armature/ROOT/base/stomach/chest/shoulder.l/upperarm.l/lowerarm.l/hand.l/finger.l.01/finger.l.02
+    m_Weight: 0
+  - m_Path: Armature/ROOT/base/stomach/chest/shoulder.l/upperarm.l/lowerarm.l/hand.l/fingers.l.01
+    m_Weight: 0
+  - m_Path: Armature/ROOT/base/stomach/chest/shoulder.l/upperarm.l/lowerarm.l/hand.l/fingers.l.01/fingers.l.02
+    m_Weight: 0
+  - m_Path: Armature/ROOT/base/stomach/chest/shoulder.l/upperarm.l/lowerarm.l/hand.l/thumb.l.01
+    m_Weight: 0
+  - m_Path: Armature/ROOT/base/stomach/chest/shoulder.l/upperarm.l/lowerarm.l/hand.l/thumb.l.01/thumb.l.02
+    m_Weight: 0
+  - m_Path: Armature/ROOT/base/stomach/chest/shoulder.l/upperarm.l/lowerarm.l/hand.l/weapon.l
+    m_Weight: 0
+  - m_Path: Armature/ROOT/base/stomach/chest/shoulder.l/upperarm.l/lowerarm.l/hand.l/weapon.l/weapon.smear.l
+    m_Weight: 0
+  - m_Path: Armature/ROOT/base/stomach/chest/shoulder.r
+    m_Weight: 0
+  - m_Path: Armature/ROOT/base/stomach/chest/shoulder.r/upperarm.r
+    m_Weight: 0
+  - m_Path: Armature/ROOT/base/stomach/chest/shoulder.r/upperarm.r/lowerarm.r
+    m_Weight: 0
+  - m_Path: Armature/ROOT/base/stomach/chest/shoulder.r/upperarm.r/lowerarm.r/hand.r
+    m_Weight: 0
+  - m_Path: Armature/ROOT/base/stomach/chest/shoulder.r/upperarm.r/lowerarm.r/hand.r/finger.r.01
+    m_Weight: 0
+  - m_Path: Armature/ROOT/base/stomach/chest/shoulder.r/upperarm.r/lowerarm.r/hand.r/finger.r.01/finger.r.02
+    m_Weight: 0
+  - m_Path: Armature/ROOT/base/stomach/chest/shoulder.r/upperarm.r/lowerarm.r/hand.r/fingers.r.01
+    m_Weight: 0
+  - m_Path: Armature/ROOT/base/stomach/chest/shoulder.r/upperarm.r/lowerarm.r/hand.r/fingers.r.01/fingers.r.02
+    m_Weight: 0
+  - m_Path: Armature/ROOT/base/stomach/chest/shoulder.r/upperarm.r/lowerarm.r/hand.r/thumb.r.01
+    m_Weight: 0
+  - m_Path: Armature/ROOT/base/stomach/chest/shoulder.r/upperarm.r/lowerarm.r/hand.r/thumb.r.01/thumb.r.02
+    m_Weight: 0
+  - m_Path: Armature/ROOT/base/stomach/chest/shoulder.r/upperarm.r/lowerarm.r/hand.r/weapon.r
+    m_Weight: 0
+  - m_Path: Armature/ROOT/base/stomach/chest/shoulder.r/upperarm.r/lowerarm.r/hand.r/weapon.r/weapon.smear.r
+    m_Weight: 0
+  - m_Path: Armature/ROOT/ik.elbow.l
+    m_Weight: 0
+  - m_Path: Armature/ROOT/ik.elbow.r
+    m_Weight: 0
+  - m_Path: Armature/ROOT/ik.foot.l
+    m_Weight: 0
+  - m_Path: Armature/ROOT/ik.foot.r
+    m_Weight: 0
+  - m_Path: Armature/ROOT/ik.hand.l
+    m_Weight: 0
+  - m_Path: Armature/ROOT/ik.hand.r
+    m_Weight: 0
+  - m_Path: Armature/ROOT/ik.knee.l
+    m_Weight: 0
+  - m_Path: Armature/ROOT/ik.knee.r
+    m_Weight: 0
+  - m_Path: meshBody
+    m_Weight: 0
+  - m_Path: meshBodyOverlay
+    m_Weight: 0
+  - m_Path: meshCyborg
+    m_Weight: 0
+  - m_Path: meshCyborgBody
+    m_Weight: 0
+  - m_Path: meshCyborgFeet
+    m_Weight: 0
+  - m_Path: meshCyborgOverlay
+    m_Weight: 0
+  - m_Path: meshCyborgSword
+    m_Weight: 0
+  - m_Path: meshCyborgSwordSheathed
+    m_Weight: 0
+  - m_Path: Sun
+    m_Weight: 0

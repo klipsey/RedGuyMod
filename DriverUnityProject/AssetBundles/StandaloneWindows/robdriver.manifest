@@ -1,0 +1,64 @@
+ManifestFileVersion: 0
+CRC: 2505645405
+Hashes:
+  AssetFileHash:
+    serializedVersion: 2
+    Hash: 6821828bce9dc2f70a5207e7f32299b7
+  TypeTreeHash:
+    serializedVersion: 2
+    Hash: 5a85d195ab7ff2d92a37a9c84be68718
+HashAppended: 0
+ClassTypes:
+- Class: 1
+  Script: {instanceID: 0}
+- Class: 4
+  Script: {instanceID: 0}
+- Class: 21
+  Script: {instanceID: 0}
+- Class: 28
+  Script: {instanceID: 0}
+- Class: 43
+  Script: {instanceID: 0}
+- Class: 48
+  Script: {instanceID: 0}
+- Class: 74
+  Script: {instanceID: 0}
+- Class: 90
+  Script: {instanceID: 0}
+- Class: 91
+  Script: {instanceID: 0}
+- Class: 95
+  Script: {instanceID: 0}
+- Class: 114
+  Script: {fileID: 11500000, guid: 67079b849227b734694872d8810229b8, type: 3}
+- Class: 115
+  Script: {instanceID: 0}
+- Class: 136
+  Script: {instanceID: 0}
+- Class: 137
+  Script: {instanceID: 0}
+- Class: 319
+  Script: {instanceID: 0}
+Assets:
+- Assets/Driver/Animations/animDriverCSS.controller
+- Assets/Driver/Animations/CSSIdle.anim
+- Assets/Driver/Textures/texDriver.png
+- Assets/Driver/Animations/Idle.anim
+- Assets/Driver/Animations/AimYaw.anim
+- Assets/Driver/Animations/AimPitch.anim
+- Assets/Driver/Animations/animDriver.controller
+- Assets/Driver/Materials/matPistol.mat
+- Assets/Driver/DriverDisplay.prefab
+- Assets/Driver/Animations/Descend.anim
+- Assets/Driver/Textures/texJacket.png
+- Assets/Driver/Animations/Sprint.anim
+- Assets/Driver/Animations/Ascend.anim
+- Assets/Driver/mdlDriver.prefab
+- Assets/Driver/Textures/texPistol.png
+- Assets/Driver/Textures/texDriverEmission.png
+- Assets/Driver/Animations/maskDriverGesture.mask
+- Assets/Driver/Animations/DefaultPose.anim
+- Assets/Driver/FBX/animDriver.fbx
+- Assets/Driver/Materials/matDriver.mat
+- Assets/Driver/Animations/maskDriverAim.mask
+Dependencies: []
