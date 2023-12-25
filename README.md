@@ -1,10 +1,9 @@
-# Driver
-- Adds the Driver, an original character based on the Driver from the film Drive (2011)
-- Fully functional base kit with several weapon pickups that give him new attacks
-- Has item displays, an unlockable mastery skin and is fully multiplayer compatible
-- Configurable stats and a few other things to mess around with
+# Ravager
+- Adds the Ravager, an original new character
+- Fully functional base kit
+- Has item displays
 - Full Risk of Options support for all configuration options
-- Many more weapons planned!!!!
+- May not work in multiplayer, recommend playing him only as host for now
 
 [![](https://raw.githubusercontent.com/ArcPh1r3/DriverMod/main/Release/FuckShit/screen1.png)]()
 
@@ -14,7 +13,7 @@
 
 [![](https://raw.githubusercontent.com/ArcPh1r3/DriverMod/main/DriverUnityProject/Assets/Driver/Icons/texDriverIcon.png)]()
 
-To share feedback, report bugs, or offer suggestions feel free to DM @braindead_ape on Discord
+To share feedback, report bugs, or offer suggestions feel free to create an issue on the GitHub repo
 
 ___
 

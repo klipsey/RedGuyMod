@@ -1,0 +1,1071 @@
+<?xml version="1.0" encoding="utf-8"?>
+<WwiseDocument Type="WorkUnit" ID="{FE3FA7C5-9E89-40FE-8C7C-97CE0994E519}" SchemaVersion="97">
+	<AudioObjects>
+		<WorkUnit Name="Default Work Unit" ID="{FE3FA7C5-9E89-40FE-8C7C-97CE0994E519}" PersistMode="Standalone">
+			<ChildrenList>
+				<ActorMixer Name="SFX" ID="{8FFB0018-B86F-441D-8E4C-DE0ABDB44B34}" ShortID="682859335">
+					<PropertyList>
+						<Property Name="3DSpatialization" Type="int16" Value="1"/>
+						<Property Name="Pitch" Type="int32">
+							<ModifierList>
+								<ModifierInfo>
+									<Modifier Name="" ID="{353CAD39-727C-4647-9B76-8CBA0ED7D6EA}"/>
+								</ModifierInfo>
+							</ModifierList>
+						</Property>
+						<Property Name="Volume" Type="Real64">
+							<ValueList>
+								<Value>1</Value>
+							</ValueList>
+							<RTPCList>
+								<RTPC Name="" ID="{2CCF60F9-1C14-450B-A829-781B191F45B3}" ShortID="940786589">
+									<ReferenceList>
+										<Reference Name="ControlInput">
+											<ObjectRef Name="Volume_SFX" ID="{4FF50BF4-04DE-43F4-BCE1-1243931798A7}" WorkUnitID="{86A48E9A-08D2-42C8-A690-503176424BE7}"/>
+										</Reference>
+									</ReferenceList>
+									<Curve Name="" ID="{612E1B93-527F-4793-AEDF-3189E4B84C69}">
+										<PropertyList>
+											<Property Name="Flags" Type="int32" Value="3"/>
+										</PropertyList>
+										<PointList>
+											<Point>
+												<XPos>0</XPos>
+												<YPos>-200</YPos>
+												<Flags>5</Flags>
+											</Point>
+											<Point>
+												<XPos>100</XPos>
+												<YPos>0</YPos>
+												<Flags>37</Flags>
+											</Point>
+										</PointList>
+									</Curve>
+								</RTPC>
+							</RTPCList>
+						</Property>
+					</PropertyList>
+					<ReferenceList>
+						<Reference Name="Attenuation">
+							<ObjectRef Name="Default Attenuation" ID="{1C16C885-97A9-48B9-99CA-62239B098C14}" WorkUnitID="{E9A01ADD-D16C-4AEF-92DB-DCF89FC42AD2}"/>
+						</Reference>
+						<Reference Name="Conversion">
+							<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{140D52C2-62AC-4006-AE21-98F493D2358C}"/>
+						</Reference>
+						<Reference Name="OutputBus">
+							<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{92A1A0F3-7047-4165-95AE-D5CFCC30AE61}"/>
+						</Reference>
+					</ReferenceList>
+					<ChildrenList>
+						<ActorMixer Name="RandomPitch" ID="{C31AD483-1BC0-479D-A832-3A1F151C35B9}" ShortID="109788207">
+							<PropertyList>
+								<Property Name="3DSpatialization" Type="int16" Value="1"/>
+								<Property Name="OverridePositioning" Type="bool" Value="True"/>
+								<Property Name="Pitch" Type="int32">
+									<ModifierList>
+										<ModifierInfo>
+											<Modifier Name="" ID="{CD587375-F973-4D3B-B153-ECD23A50B4D8}">
+												<PropertyList>
+													<Property Name="Enabled" Type="bool" Value="True"/>
+													<Property Name="Max" Type="Real64" Value="177"/>
+													<Property Name="Min" Type="Real64" Value="-152"/>
+												</PropertyList>
+											</Modifier>
+										</ModifierInfo>
+									</ModifierList>
+								</Property>
+							</PropertyList>
+							<ReferenceList>
+								<Reference Name="Attenuation">
+									<ObjectRef Name="Default Attenuation" ID="{1C16C885-97A9-48B9-99CA-62239B098C14}" WorkUnitID="{E9A01ADD-D16C-4AEF-92DB-DCF89FC42AD2}"/>
+								</Reference>
+								<Reference Name="Conversion">
+									<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{140D52C2-62AC-4006-AE21-98F493D2358C}"/>
+								</Reference>
+								<Reference Name="OutputBus">
+									<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{92A1A0F3-7047-4165-95AE-D5CFCC30AE61}"/>
+								</Reference>
+							</ReferenceList>
+							<ChildrenList>
+								<Sound Name="sfx_ravager_ambience_loop" ID="{86C64E3E-DDE2-44F4-8730-CF84AFEC9081}" ShortID="1014426298">
+									<PropertyList>
+										<Property Name="IsLoopingEnabled" Type="bool" Value="True"/>
+										<Property Name="Volume" Type="Real64">
+											<ValueList>
+												<Value>-24</Value>
+											</ValueList>
+										</Property>
+									</PropertyList>
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{140D52C2-62AC-4006-AE21-98F493D2358C}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{92A1A0F3-7047-4165-95AE-D5CFCC30AE61}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<AudioFileSource Name="sfx_ravager_ambience_loop" ID="{56BF4204-C984-4087-8DF8-A36814E8CA8C}">
+											<Language>SFX</Language>
+											<AudioFile>sfx_ravager_ambience_loop.wav</AudioFile>
+											<MediaIDList>
+												<MediaID ID="506676467"/>
+											</MediaIDList>
+										</AudioFileSource>
+									</ChildrenList>
+									<ActiveSourceList>
+										<ActiveSource Name="sfx_ravager_ambience_loop" ID="{56BF4204-C984-4087-8DF8-A36814E8CA8C}" Platform="Linked"/>
+									</ActiveSourceList>
+								</Sound>
+								<Sound Name="sfx_ravager_consume" ID="{840D2C37-68BF-42AC-BF38-746B2C788C32}" ShortID="968653816">
+									<PropertyList>
+										<Property Name="Volume" Type="Real64">
+											<ValueList>
+												<Value>-3</Value>
+											</ValueList>
+										</Property>
+									</PropertyList>
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{140D52C2-62AC-4006-AE21-98F493D2358C}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{92A1A0F3-7047-4165-95AE-D5CFCC30AE61}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<AudioFileSource Name="sfx_ravager_consume" ID="{CAFA2950-8266-4FFB-9C6E-22C9E172A5D7}">
+											<Language>SFX</Language>
+											<AudioFile>sfx_ravager_consume.wav</AudioFile>
+											<MediaIDList>
+												<MediaID ID="126231638"/>
+											</MediaIDList>
+										</AudioFileSource>
+									</ChildrenList>
+									<ActiveSourceList>
+										<ActiveSource Name="sfx_ravager_consume" ID="{CAFA2950-8266-4FFB-9C6E-22C9E172A5D7}" Platform="Linked"/>
+									</ActiveSourceList>
+								</Sound>
+								<Sound Name="sfx_ravager_explosion" ID="{2E7CB5AB-CB0D-4715-AB85-8DF73386AA13}" ShortID="876464011">
+									<PropertyList>
+										<Property Name="Volume" Type="Real64">
+											<ValueList>
+												<Value>4</Value>
+											</ValueList>
+										</Property>
+									</PropertyList>
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{140D52C2-62AC-4006-AE21-98F493D2358C}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{92A1A0F3-7047-4165-95AE-D5CFCC30AE61}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<AudioFileSource Name="sfx_ravager_explosion" ID="{E9A23D0A-2FAA-448D-941C-CA7D9CBBAD92}">
+											<Language>SFX</Language>
+											<AudioFile>sfx_ravager_explosion.wav</AudioFile>
+											<MediaIDList>
+												<MediaID ID="186677293"/>
+											</MediaIDList>
+										</AudioFileSource>
+									</ChildrenList>
+									<ActiveSourceList>
+										<ActiveSource Name="sfx_ravager_explosion" ID="{E9A23D0A-2FAA-448D-941C-CA7D9CBBAD92}" Platform="Linked"/>
+									</ActiveSourceList>
+								</Sound>
+								<Sound Name="sfx_ravager_foley_01" ID="{E129DFFD-8BBF-4C60-8818-765DB543A254}" ShortID="425919608">
+									<PropertyList>
+										<Property Name="Volume" Type="Real64">
+											<ValueList>
+												<Value>-5</Value>
+											</ValueList>
+										</Property>
+									</PropertyList>
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{140D52C2-62AC-4006-AE21-98F493D2358C}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{92A1A0F3-7047-4165-95AE-D5CFCC30AE61}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<AudioFileSource Name="sfx_ravager_foley_01" ID="{A0810833-FAC3-4FCE-AB39-7BDA031734E5}">
+											<Language>SFX</Language>
+											<AudioFile>sfx_ravager_foley_01.wav</AudioFile>
+											<MediaIDList>
+												<MediaID ID="247499516"/>
+											</MediaIDList>
+										</AudioFileSource>
+									</ChildrenList>
+									<ActiveSourceList>
+										<ActiveSource Name="sfx_ravager_foley_01" ID="{A0810833-FAC3-4FCE-AB39-7BDA031734E5}" Platform="Linked"/>
+									</ActiveSourceList>
+								</Sound>
+								<Sound Name="sfx_ravager_grab" ID="{21A0945C-0BCD-4123-B60A-22971C5C7C12}" ShortID="776053076">
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{140D52C2-62AC-4006-AE21-98F493D2358C}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{92A1A0F3-7047-4165-95AE-D5CFCC30AE61}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<AudioFileSource Name="sfx_ravager_grab" ID="{81953560-DD77-490D-9B5A-92B04CE11D1B}">
+											<Language>SFX</Language>
+											<AudioFile>sfx_ravager_grab.wav</AudioFile>
+											<MediaIDList>
+												<MediaID ID="948287922"/>
+											</MediaIDList>
+										</AudioFileSource>
+									</ChildrenList>
+									<ActiveSourceList>
+										<ActiveSource Name="sfx_ravager_grab" ID="{81953560-DD77-490D-9B5A-92B04CE11D1B}" Platform="Linked"/>
+									</ActiveSourceList>
+								</Sound>
+								<Sound Name="sfx_ravager_kick" ID="{598B00E4-AE12-40EA-97AB-33E61CE2AA51}" ShortID="1072321587">
+									<PropertyList>
+										<Property Name="Volume" Type="Real64">
+											<ValueList>
+												<Value>-5</Value>
+											</ValueList>
+										</Property>
+									</PropertyList>
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{140D52C2-62AC-4006-AE21-98F493D2358C}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{92A1A0F3-7047-4165-95AE-D5CFCC30AE61}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<AudioFileSource Name="sfx_ravager_kick" ID="{D6D80F9F-C4FA-491C-AB98-466878D66019}">
+											<Language>SFX</Language>
+											<AudioFile>sfx_ravager_kick.wav</AudioFile>
+											<MediaIDList>
+												<MediaID ID="691956607"/>
+											</MediaIDList>
+										</AudioFileSource>
+									</ChildrenList>
+									<ActiveSourceList>
+										<ActiveSource Name="sfx_ravager_kick" ID="{D6D80F9F-C4FA-491C-AB98-466878D66019}" Platform="Linked"/>
+									</ActiveSourceList>
+								</Sound>
+								<Sound Name="sfx_ravager_lunge" ID="{6582AA61-093C-4E26-BE31-D61614342F1A}" ShortID="213399660">
+									<PropertyList>
+										<Property Name="Volume" Type="Real64">
+											<ValueList>
+												<Value>-9</Value>
+											</ValueList>
+										</Property>
+									</PropertyList>
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{140D52C2-62AC-4006-AE21-98F493D2358C}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{92A1A0F3-7047-4165-95AE-D5CFCC30AE61}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<AudioFileSource Name="sfx_ravager_lunge" ID="{0FF68319-9A1E-4682-BD87-BAC8DDD0E054}">
+											<Language>SFX</Language>
+											<AudioFile>sfx_ravager_lunge.wav</AudioFile>
+											<MediaIDList>
+												<MediaID ID="905598915"/>
+											</MediaIDList>
+										</AudioFileSource>
+									</ChildrenList>
+									<ActiveSourceList>
+										<ActiveSource Name="sfx_ravager_lunge" ID="{0FF68319-9A1E-4682-BD87-BAC8DDD0E054}" Platform="Linked"/>
+									</ActiveSourceList>
+								</Sound>
+								<Sound Name="sfx_ravager_shine" ID="{E2E16704-3166-4558-B94C-2DA6B3098B8D}" ShortID="253019897">
+									<PropertyList>
+										<Property Name="Volume" Type="Real64">
+											<ValueList>
+												<Value>-2</Value>
+											</ValueList>
+										</Property>
+									</PropertyList>
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{140D52C2-62AC-4006-AE21-98F493D2358C}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{92A1A0F3-7047-4165-95AE-D5CFCC30AE61}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<AudioFileSource Name="sfx_ravager_shine" ID="{71D5DDFA-66CA-4C68-AA9D-8AEFCC54AF47}">
+											<Language>SFX</Language>
+											<AudioFile>sfx_ravager_shine.wav</AudioFile>
+											<MediaIDList>
+												<MediaID ID="834393261"/>
+											</MediaIDList>
+										</AudioFileSource>
+									</ChildrenList>
+									<ActiveSourceList>
+										<ActiveSource Name="sfx_ravager_shine" ID="{71D5DDFA-66CA-4C68-AA9D-8AEFCC54AF47}" Platform="Linked"/>
+									</ActiveSourceList>
+								</Sound>
+								<Sound Name="sfx_ravager_sonido" ID="{9A242395-3414-489D-BB4F-8B0B5CA7B092}" ShortID="665224444">
+									<PropertyList>
+										<Property Name="Volume" Type="Real64">
+											<ValueList>
+												<Value>-7</Value>
+											</ValueList>
+										</Property>
+									</PropertyList>
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{140D52C2-62AC-4006-AE21-98F493D2358C}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{92A1A0F3-7047-4165-95AE-D5CFCC30AE61}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<AudioFileSource Name="sfx_ravager_sonido" ID="{64848514-432B-4FDA-B8AE-321DBFE11306}">
+											<Language>SFX</Language>
+											<AudioFile>sfx_ravager_sonido.wav</AudioFile>
+											<MediaIDList>
+												<MediaID ID="50443885"/>
+											</MediaIDList>
+										</AudioFileSource>
+									</ChildrenList>
+									<ActiveSourceList>
+										<ActiveSource Name="sfx_ravager_sonido" ID="{64848514-432B-4FDA-B8AE-321DBFE11306}" Platform="Linked"/>
+									</ActiveSourceList>
+								</Sound>
+								<RandomSequenceContainer Name="sfx_ravager_leap" ID="{F9100D18-4985-49EE-9B3C-FDAF85F04430}" ShortID="1022585235">
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{140D52C2-62AC-4006-AE21-98F493D2358C}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{92A1A0F3-7047-4165-95AE-D5CFCC30AE61}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<Sound Name="sfx_ravager_leap_02" ID="{D10DBA96-E9BB-4821-BF32-6A588E15530E}" ShortID="675617659">
+											<PropertyList>
+												<Property Name="3DSpatialization" Type="int16" Value="1"/>
+											</PropertyList>
+											<ReferenceList>
+												<Reference Name="Attenuation">
+													<ObjectRef Name="Default Attenuation" ID="{1C16C885-97A9-48B9-99CA-62239B098C14}" WorkUnitID="{E9A01ADD-D16C-4AEF-92DB-DCF89FC42AD2}"/>
+												</Reference>
+												<Reference Name="Conversion">
+													<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{140D52C2-62AC-4006-AE21-98F493D2358C}"/>
+												</Reference>
+												<Reference Name="OutputBus">
+													<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{92A1A0F3-7047-4165-95AE-D5CFCC30AE61}"/>
+												</Reference>
+											</ReferenceList>
+											<ChildrenList>
+												<AudioFileSource Name="sfx_ravager_leap_02" ID="{17AFDCFE-14A5-4990-81C7-CDB0CF2C27F4}">
+													<Language>SFX</Language>
+													<AudioFile>sfx_ravager_leap_02.wav</AudioFile>
+													<MediaIDList>
+														<MediaID ID="463198932"/>
+													</MediaIDList>
+												</AudioFileSource>
+											</ChildrenList>
+											<ActiveSourceList>
+												<ActiveSource Name="sfx_ravager_leap_02" ID="{17AFDCFE-14A5-4990-81C7-CDB0CF2C27F4}" Platform="Linked"/>
+											</ActiveSourceList>
+										</Sound>
+										<Sound Name="sfx_ravager_leap_01" ID="{480EDF51-9827-428D-AD56-802D86B3E0D6}" ShortID="618521925">
+											<PropertyList>
+												<Property Name="3DSpatialization" Type="int16" Value="1"/>
+											</PropertyList>
+											<ReferenceList>
+												<Reference Name="Attenuation">
+													<ObjectRef Name="Default Attenuation" ID="{1C16C885-97A9-48B9-99CA-62239B098C14}" WorkUnitID="{E9A01ADD-D16C-4AEF-92DB-DCF89FC42AD2}"/>
+												</Reference>
+												<Reference Name="Conversion">
+													<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{140D52C2-62AC-4006-AE21-98F493D2358C}"/>
+												</Reference>
+												<Reference Name="OutputBus">
+													<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{92A1A0F3-7047-4165-95AE-D5CFCC30AE61}"/>
+												</Reference>
+											</ReferenceList>
+											<ChildrenList>
+												<AudioFileSource Name="sfx_ravager_leap_01" ID="{73476526-AEDB-46EF-948C-9FAD49045818}">
+													<Language>SFX</Language>
+													<AudioFile>sfx_ravager_leap_01.wav</AudioFile>
+													<MediaIDList>
+														<MediaID ID="87319194"/>
+													</MediaIDList>
+												</AudioFileSource>
+											</ChildrenList>
+											<ActiveSourceList>
+												<ActiveSource Name="sfx_ravager_leap_01" ID="{73476526-AEDB-46EF-948C-9FAD49045818}" Platform="Linked"/>
+											</ActiveSourceList>
+										</Sound>
+									</ChildrenList>
+								</RandomSequenceContainer>
+								<RandomSequenceContainer Name="sfx_ravager_impact_ground" ID="{BF5E8364-7B89-4658-A5C3-BA184BD9BBC0}" ShortID="282328552">
+									<PropertyList>
+										<Property Name="Volume" Type="Real64">
+											<ValueList>
+												<Value>4</Value>
+											</ValueList>
+										</Property>
+									</PropertyList>
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{140D52C2-62AC-4006-AE21-98F493D2358C}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{92A1A0F3-7047-4165-95AE-D5CFCC30AE61}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<Sound Name="sfx_ravager_impact_ground_03" ID="{F0384EDB-A6A0-41FA-913A-86FECC4F3BB9}" ShortID="499073894">
+											<PropertyList>
+												<Property Name="3DSpatialization" Type="int16" Value="1"/>
+											</PropertyList>
+											<ReferenceList>
+												<Reference Name="Attenuation">
+													<ObjectRef Name="Default Attenuation" ID="{1C16C885-97A9-48B9-99CA-62239B098C14}" WorkUnitID="{E9A01ADD-D16C-4AEF-92DB-DCF89FC42AD2}"/>
+												</Reference>
+												<Reference Name="Conversion">
+													<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{140D52C2-62AC-4006-AE21-98F493D2358C}"/>
+												</Reference>
+												<Reference Name="OutputBus">
+													<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{92A1A0F3-7047-4165-95AE-D5CFCC30AE61}"/>
+												</Reference>
+											</ReferenceList>
+											<ChildrenList>
+												<AudioFileSource Name="sfx_ravager_impact_ground_03" ID="{DFD8FE20-099C-44AB-81E4-7A5F43A863E8}">
+													<Language>SFX</Language>
+													<AudioFile>sfx_ravager_impact_ground_03.wav</AudioFile>
+													<MediaIDList>
+														<MediaID ID="173916613"/>
+													</MediaIDList>
+												</AudioFileSource>
+											</ChildrenList>
+											<ActiveSourceList>
+												<ActiveSource Name="sfx_ravager_impact_ground_03" ID="{DFD8FE20-099C-44AB-81E4-7A5F43A863E8}" Platform="Linked"/>
+											</ActiveSourceList>
+										</Sound>
+										<Sound Name="sfx_ravager_impact_ground_02" ID="{55272CA2-0C4B-4FC2-8371-6D09CEB999E6}" ShortID="375550202">
+											<PropertyList>
+												<Property Name="3DSpatialization" Type="int16" Value="1"/>
+											</PropertyList>
+											<ReferenceList>
+												<Reference Name="Attenuation">
+													<ObjectRef Name="Default Attenuation" ID="{1C16C885-97A9-48B9-99CA-62239B098C14}" WorkUnitID="{E9A01ADD-D16C-4AEF-92DB-DCF89FC42AD2}"/>
+												</Reference>
+												<Reference Name="Conversion">
+													<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{140D52C2-62AC-4006-AE21-98F493D2358C}"/>
+												</Reference>
+												<Reference Name="OutputBus">
+													<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{92A1A0F3-7047-4165-95AE-D5CFCC30AE61}"/>
+												</Reference>
+											</ReferenceList>
+											<ChildrenList>
+												<AudioFileSource Name="sfx_ravager_impact_ground_02" ID="{0DEA1AED-1ECC-409D-9836-FBB0CE3D1213}">
+													<Language>SFX</Language>
+													<AudioFile>sfx_ravager_impact_ground_02.wav</AudioFile>
+													<MediaIDList>
+														<MediaID ID="632279550"/>
+													</MediaIDList>
+												</AudioFileSource>
+											</ChildrenList>
+											<ActiveSourceList>
+												<ActiveSource Name="sfx_ravager_impact_ground_02" ID="{0DEA1AED-1ECC-409D-9836-FBB0CE3D1213}" Platform="Linked"/>
+											</ActiveSourceList>
+										</Sound>
+										<Sound Name="sfx_ravager_impact_ground_01" ID="{EE6ECCAA-A905-43F0-AEB6-730363CD0AC6}" ShortID="1032116345">
+											<PropertyList>
+												<Property Name="3DSpatialization" Type="int16" Value="1"/>
+											</PropertyList>
+											<ReferenceList>
+												<Reference Name="Attenuation">
+													<ObjectRef Name="Default Attenuation" ID="{1C16C885-97A9-48B9-99CA-62239B098C14}" WorkUnitID="{E9A01ADD-D16C-4AEF-92DB-DCF89FC42AD2}"/>
+												</Reference>
+												<Reference Name="Conversion">
+													<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{140D52C2-62AC-4006-AE21-98F493D2358C}"/>
+												</Reference>
+												<Reference Name="OutputBus">
+													<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{92A1A0F3-7047-4165-95AE-D5CFCC30AE61}"/>
+												</Reference>
+											</ReferenceList>
+											<ChildrenList>
+												<AudioFileSource Name="sfx_ravager_impact_ground_01" ID="{77C1129D-6093-440A-8C09-A6405938F1EC}">
+													<Language>SFX</Language>
+													<AudioFile>sfx_ravager_impact_ground_01.wav</AudioFile>
+													<MediaIDList>
+														<MediaID ID="630813973"/>
+													</MediaIDList>
+												</AudioFileSource>
+											</ChildrenList>
+											<ActiveSourceList>
+												<ActiveSource Name="sfx_ravager_impact_ground_01" ID="{77C1129D-6093-440A-8C09-A6405938F1EC}" Platform="Linked"/>
+											</ActiveSourceList>
+										</Sound>
+									</ChildrenList>
+								</RandomSequenceContainer>
+								<RandomSequenceContainer Name="sfx_ravager_slash" ID="{17CE1B79-C298-45CB-B512-940A52CBE9CF}" ShortID="516442680">
+									<PropertyList>
+										<Property Name="Volume" Type="Real64">
+											<ValueList>
+												<Value>-4</Value>
+											</ValueList>
+										</Property>
+									</PropertyList>
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{140D52C2-62AC-4006-AE21-98F493D2358C}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{92A1A0F3-7047-4165-95AE-D5CFCC30AE61}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<Sound Name="sfx_ravager_slash_01" ID="{1071C738-8CE7-4128-A946-567D699B9677}" ShortID="361624459">
+											<PropertyList>
+												<Property Name="3DSpatialization" Type="int16" Value="1"/>
+											</PropertyList>
+											<ReferenceList>
+												<Reference Name="Attenuation">
+													<ObjectRef Name="Default Attenuation" ID="{1C16C885-97A9-48B9-99CA-62239B098C14}" WorkUnitID="{E9A01ADD-D16C-4AEF-92DB-DCF89FC42AD2}"/>
+												</Reference>
+												<Reference Name="Conversion">
+													<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{140D52C2-62AC-4006-AE21-98F493D2358C}"/>
+												</Reference>
+												<Reference Name="OutputBus">
+													<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{92A1A0F3-7047-4165-95AE-D5CFCC30AE61}"/>
+												</Reference>
+											</ReferenceList>
+											<ChildrenList>
+												<AudioFileSource Name="sfx_ravager_slash_01" ID="{F8510B49-B352-4D8D-98AD-1FC3CDF15E0C}">
+													<Language>SFX</Language>
+													<AudioFile>sfx_ravager_slash_01.wav</AudioFile>
+													<MediaIDList>
+														<MediaID ID="424053783"/>
+													</MediaIDList>
+												</AudioFileSource>
+											</ChildrenList>
+											<ActiveSourceList>
+												<ActiveSource Name="sfx_ravager_slash_01" ID="{F8510B49-B352-4D8D-98AD-1FC3CDF15E0C}" Platform="Linked"/>
+											</ActiveSourceList>
+										</Sound>
+										<Sound Name="sfx_ravager_slash_03" ID="{1A370B5A-0200-4528-ADEA-D706B2CF0776}" ShortID="1056794748">
+											<PropertyList>
+												<Property Name="3DSpatialization" Type="int16" Value="1"/>
+											</PropertyList>
+											<ReferenceList>
+												<Reference Name="Attenuation">
+													<ObjectRef Name="Default Attenuation" ID="{1C16C885-97A9-48B9-99CA-62239B098C14}" WorkUnitID="{E9A01ADD-D16C-4AEF-92DB-DCF89FC42AD2}"/>
+												</Reference>
+												<Reference Name="Conversion">
+													<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{140D52C2-62AC-4006-AE21-98F493D2358C}"/>
+												</Reference>
+												<Reference Name="OutputBus">
+													<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{92A1A0F3-7047-4165-95AE-D5CFCC30AE61}"/>
+												</Reference>
+											</ReferenceList>
+											<ChildrenList>
+												<AudioFileSource Name="sfx_ravager_slash_03" ID="{C776439C-940D-49EA-A14E-CEE6B637323E}">
+													<Language>SFX</Language>
+													<AudioFile>sfx_ravager_slash_03.wav</AudioFile>
+													<MediaIDList>
+														<MediaID ID="456234464"/>
+													</MediaIDList>
+												</AudioFileSource>
+											</ChildrenList>
+											<ActiveSourceList>
+												<ActiveSource Name="sfx_ravager_slash_03" ID="{C776439C-940D-49EA-A14E-CEE6B637323E}" Platform="Linked"/>
+											</ActiveSourceList>
+										</Sound>
+										<Sound Name="sfx_ravager_slash_02" ID="{3A7F2707-CC1D-475B-AC91-0B41C9383169}" ShortID="798213937">
+											<PropertyList>
+												<Property Name="3DSpatialization" Type="int16" Value="1"/>
+											</PropertyList>
+											<ReferenceList>
+												<Reference Name="Attenuation">
+													<ObjectRef Name="Default Attenuation" ID="{1C16C885-97A9-48B9-99CA-62239B098C14}" WorkUnitID="{E9A01ADD-D16C-4AEF-92DB-DCF89FC42AD2}"/>
+												</Reference>
+												<Reference Name="Conversion">
+													<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{140D52C2-62AC-4006-AE21-98F493D2358C}"/>
+												</Reference>
+												<Reference Name="OutputBus">
+													<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{92A1A0F3-7047-4165-95AE-D5CFCC30AE61}"/>
+												</Reference>
+											</ReferenceList>
+											<ChildrenList>
+												<AudioFileSource Name="sfx_ravager_slash_02" ID="{CC83528A-541C-4476-9B61-67C9BE211CCB}">
+													<Language>SFX</Language>
+													<AudioFile>sfx_ravager_slash_02.wav</AudioFile>
+													<MediaIDList>
+														<MediaID ID="647250894"/>
+													</MediaIDList>
+												</AudioFileSource>
+											</ChildrenList>
+											<ActiveSourceList>
+												<ActiveSource Name="sfx_ravager_slash_02" ID="{CC83528A-541C-4476-9B61-67C9BE211CCB}" Platform="Linked"/>
+											</ActiveSourceList>
+										</Sound>
+									</ChildrenList>
+								</RandomSequenceContainer>
+								<RandomSequenceContainer Name="sfx_ravager_swing" ID="{5D3C1BB6-3D85-4FE7-B685-0CAC96DC1976}" ShortID="1065654050">
+									<PropertyList>
+										<Property Name="Volume" Type="Real64">
+											<ValueList>
+												<Value>-5</Value>
+											</ValueList>
+										</Property>
+									</PropertyList>
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{140D52C2-62AC-4006-AE21-98F493D2358C}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{92A1A0F3-7047-4165-95AE-D5CFCC30AE61}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<Sound Name="sfx_ravager_swing_01" ID="{CF5684CC-000E-45B2-9E11-FAF097B36909}" ShortID="140987244">
+											<PropertyList>
+												<Property Name="3DSpatialization" Type="int16" Value="1"/>
+											</PropertyList>
+											<ReferenceList>
+												<Reference Name="Attenuation">
+													<ObjectRef Name="Default Attenuation" ID="{1C16C885-97A9-48B9-99CA-62239B098C14}" WorkUnitID="{E9A01ADD-D16C-4AEF-92DB-DCF89FC42AD2}"/>
+												</Reference>
+												<Reference Name="Conversion">
+													<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{140D52C2-62AC-4006-AE21-98F493D2358C}"/>
+												</Reference>
+												<Reference Name="OutputBus">
+													<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{92A1A0F3-7047-4165-95AE-D5CFCC30AE61}"/>
+												</Reference>
+											</ReferenceList>
+											<ChildrenList>
+												<AudioFileSource Name="sfx_ravager_swing_01" ID="{D50ED4BB-0A26-4491-BD48-A5C760527C3F}">
+													<Language>SFX</Language>
+													<AudioFile>sfx_ravager_swing_01.wav</AudioFile>
+													<MediaIDList>
+														<MediaID ID="714230282"/>
+													</MediaIDList>
+												</AudioFileSource>
+											</ChildrenList>
+											<ActiveSourceList>
+												<ActiveSource Name="sfx_ravager_swing_01" ID="{D50ED4BB-0A26-4491-BD48-A5C760527C3F}" Platform="Linked"/>
+											</ActiveSourceList>
+										</Sound>
+										<Sound Name="sfx_ravager_swing_02" ID="{D9B714A8-B395-427A-932E-A6A06867A3CE}" ShortID="539861421">
+											<PropertyList>
+												<Property Name="3DSpatialization" Type="int16" Value="1"/>
+											</PropertyList>
+											<ReferenceList>
+												<Reference Name="Attenuation">
+													<ObjectRef Name="Default Attenuation" ID="{1C16C885-97A9-48B9-99CA-62239B098C14}" WorkUnitID="{E9A01ADD-D16C-4AEF-92DB-DCF89FC42AD2}"/>
+												</Reference>
+												<Reference Name="Conversion">
+													<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{140D52C2-62AC-4006-AE21-98F493D2358C}"/>
+												</Reference>
+												<Reference Name="OutputBus">
+													<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{92A1A0F3-7047-4165-95AE-D5CFCC30AE61}"/>
+												</Reference>
+											</ReferenceList>
+											<ChildrenList>
+												<AudioFileSource Name="sfx_ravager_swing_02" ID="{CC9D5FC3-5189-4F76-AE31-E9013A5FB137}">
+													<Language>SFX</Language>
+													<AudioFile>sfx_ravager_swing_02.wav</AudioFile>
+													<MediaIDList>
+														<MediaID ID="950552356"/>
+													</MediaIDList>
+												</AudioFileSource>
+											</ChildrenList>
+											<ActiveSourceList>
+												<ActiveSource Name="sfx_ravager_swing_02" ID="{CC9D5FC3-5189-4F76-AE31-E9013A5FB137}" Platform="Linked"/>
+											</ActiveSourceList>
+										</Sound>
+										<Sound Name="sfx_ravager_swing_03" ID="{C68591DF-749F-41C2-A0ED-718517F30676}" ShortID="420270026">
+											<PropertyList>
+												<Property Name="3DSpatialization" Type="int16" Value="1"/>
+											</PropertyList>
+											<ReferenceList>
+												<Reference Name="Attenuation">
+													<ObjectRef Name="Default Attenuation" ID="{1C16C885-97A9-48B9-99CA-62239B098C14}" WorkUnitID="{E9A01ADD-D16C-4AEF-92DB-DCF89FC42AD2}"/>
+												</Reference>
+												<Reference Name="Conversion">
+													<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{140D52C2-62AC-4006-AE21-98F493D2358C}"/>
+												</Reference>
+												<Reference Name="OutputBus">
+													<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{92A1A0F3-7047-4165-95AE-D5CFCC30AE61}"/>
+												</Reference>
+											</ReferenceList>
+											<ChildrenList>
+												<AudioFileSource Name="sfx_ravager_swing_03" ID="{D8C2D903-65D0-4FA6-8A3F-F7FE21CDB166}">
+													<Language>SFX</Language>
+													<AudioFile>sfx_ravager_swing_03.wav</AudioFile>
+													<MediaIDList>
+														<MediaID ID="886370722"/>
+													</MediaIDList>
+												</AudioFileSource>
+											</ChildrenList>
+											<ActiveSourceList>
+												<ActiveSource Name="sfx_ravager_swing_03" ID="{D8C2D903-65D0-4FA6-8A3F-F7FE21CDB166}" Platform="Linked"/>
+											</ActiveSourceList>
+										</Sound>
+									</ChildrenList>
+								</RandomSequenceContainer>
+								<Sound Name="sfx_ravager_bloodrush" ID="{335E755F-3AAD-4884-A6BB-E575290AC7B3}" ShortID="457402602">
+									<PropertyList>
+										<Property Name="Volume" Type="Real64">
+											<ValueList>
+												<Value>-2</Value>
+											</ValueList>
+										</Property>
+									</PropertyList>
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{140D52C2-62AC-4006-AE21-98F493D2358C}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{92A1A0F3-7047-4165-95AE-D5CFCC30AE61}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<AudioFileSource Name="sfx_ravager_bloodrush" ID="{6AD96124-471F-4964-9F41-3970E6EE1836}">
+											<Language>SFX</Language>
+											<AudioFile>sfx_ravager_bloodrush.wav</AudioFile>
+											<MediaIDList>
+												<MediaID ID="243111470"/>
+											</MediaIDList>
+										</AudioFileSource>
+									</ChildrenList>
+									<ActiveSourceList>
+										<ActiveSource Name="sfx_ravager_bloodrush" ID="{6AD96124-471F-4964-9F41-3970E6EE1836}" Platform="Linked"/>
+									</ActiveSourceList>
+								</Sound>
+								<Sound Name="sfx_ravager_steam" ID="{BB0538CF-1EDD-48BF-9BA4-E1A3931BD534}" ShortID="198195242">
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{140D52C2-62AC-4006-AE21-98F493D2358C}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{92A1A0F3-7047-4165-95AE-D5CFCC30AE61}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<AudioFileSource Name="sfx_ravager_steam" ID="{1323ADB2-57FD-4BA9-B828-F1F3E059F0F4}">
+											<Language>SFX</Language>
+											<AudioFile>sfx_ravager_steam.wav</AudioFile>
+											<MediaIDList>
+												<MediaID ID="286884354"/>
+											</MediaIDList>
+										</AudioFileSource>
+									</ChildrenList>
+									<ActiveSourceList>
+										<ActiveSource Name="sfx_ravager_steam" ID="{1323ADB2-57FD-4BA9-B828-F1F3E059F0F4}" Platform="Linked"/>
+									</ActiveSourceList>
+								</Sound>
+								<Sound Name="sfx_ravager_steam_loop" ID="{34FDA0E0-D780-463E-9B31-5EC39E8EFC58}" ShortID="887246459">
+									<PropertyList>
+										<Property Name="IsLoopingEnabled" Type="bool" Value="True"/>
+										<Property Name="Volume" Type="Real64">
+											<ValueList>
+												<Value>-3</Value>
+											</ValueList>
+										</Property>
+									</PropertyList>
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{140D52C2-62AC-4006-AE21-98F493D2358C}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{92A1A0F3-7047-4165-95AE-D5CFCC30AE61}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<AudioFileSource Name="sfx_ravager_steam_loop" ID="{A558FB99-7F6C-431F-97BD-B9567C26F374}">
+											<Language>SFX</Language>
+											<AudioFile>sfx_ravager_steam_loop.wav</AudioFile>
+											<MediaIDList>
+												<MediaID ID="625369455"/>
+											</MediaIDList>
+										</AudioFileSource>
+									</ChildrenList>
+									<ActiveSourceList>
+										<ActiveSource Name="sfx_ravager_steam_loop" ID="{A558FB99-7F6C-431F-97BD-B9567C26F374}" Platform="Linked"/>
+									</ActiveSourceList>
+								</Sound>
+								<RandomSequenceContainer Name="sfx_ravager_gore" ID="{536F5CC6-28A8-489B-BCD9-CC81A52472B4}" ShortID="676191336">
+									<PropertyList>
+										<Property Name="Volume" Type="Real64">
+											<ValueList>
+												<Value>8</Value>
+											</ValueList>
+											<ModifierList>
+												<ModifierInfo>
+													<Modifier Name="" ID="{5F62FA93-55F9-4F81-AE0C-7963FE340169}">
+														<PropertyList>
+															<Property Name="Enabled" Type="bool" Value="True"/>
+															<Property Name="Max" Type="Real64" Value="2"/>
+															<Property Name="Min" Type="Real64" Value="-2"/>
+														</PropertyList>
+													</Modifier>
+												</ModifierInfo>
+											</ModifierList>
+										</Property>
+									</PropertyList>
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{140D52C2-62AC-4006-AE21-98F493D2358C}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{92A1A0F3-7047-4165-95AE-D5CFCC30AE61}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<Sound Name="sfx_ravager_gore_02" ID="{480A062A-7CD7-44AF-B177-74364DE277DD}" ShortID="209486925">
+											<PropertyList>
+												<Property Name="3DSpatialization" Type="int16" Value="1"/>
+											</PropertyList>
+											<ReferenceList>
+												<Reference Name="Attenuation">
+													<ObjectRef Name="Default Attenuation" ID="{1C16C885-97A9-48B9-99CA-62239B098C14}" WorkUnitID="{E9A01ADD-D16C-4AEF-92DB-DCF89FC42AD2}"/>
+												</Reference>
+												<Reference Name="Conversion">
+													<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{140D52C2-62AC-4006-AE21-98F493D2358C}"/>
+												</Reference>
+												<Reference Name="OutputBus">
+													<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{92A1A0F3-7047-4165-95AE-D5CFCC30AE61}"/>
+												</Reference>
+											</ReferenceList>
+											<ChildrenList>
+												<AudioFileSource Name="sfx_ravager_gore_02" ID="{C3EEFE3B-EFA1-4B2E-AD11-EF55965064F2}">
+													<Language>SFX</Language>
+													<AudioFile>sfx_ravager_gore_02.wav</AudioFile>
+													<MediaIDList>
+														<MediaID ID="371255006"/>
+													</MediaIDList>
+												</AudioFileSource>
+											</ChildrenList>
+											<ActiveSourceList>
+												<ActiveSource Name="sfx_ravager_gore_02" ID="{C3EEFE3B-EFA1-4B2E-AD11-EF55965064F2}" Platform="Linked"/>
+											</ActiveSourceList>
+										</Sound>
+										<Sound Name="sfx_ravager_gore_03" ID="{181EE804-4256-4512-B3DD-2E5F34B93461}" ShortID="1030480364">
+											<PropertyList>
+												<Property Name="3DSpatialization" Type="int16" Value="1"/>
+											</PropertyList>
+											<ReferenceList>
+												<Reference Name="Attenuation">
+													<ObjectRef Name="Default Attenuation" ID="{1C16C885-97A9-48B9-99CA-62239B098C14}" WorkUnitID="{E9A01ADD-D16C-4AEF-92DB-DCF89FC42AD2}"/>
+												</Reference>
+												<Reference Name="Conversion">
+													<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{140D52C2-62AC-4006-AE21-98F493D2358C}"/>
+												</Reference>
+												<Reference Name="OutputBus">
+													<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{92A1A0F3-7047-4165-95AE-D5CFCC30AE61}"/>
+												</Reference>
+											</ReferenceList>
+											<ChildrenList>
+												<AudioFileSource Name="sfx_ravager_gore_03" ID="{2894B9ED-B534-4DA7-BE64-96106FCA03F3}">
+													<Language>SFX</Language>
+													<AudioFile>sfx_ravager_gore_03.wav</AudioFile>
+													<MediaIDList>
+														<MediaID ID="613388185"/>
+													</MediaIDList>
+												</AudioFileSource>
+											</ChildrenList>
+											<ActiveSourceList>
+												<ActiveSource Name="sfx_ravager_gore_03" ID="{2894B9ED-B534-4DA7-BE64-96106FCA03F3}" Platform="Linked"/>
+											</ActiveSourceList>
+										</Sound>
+										<Sound Name="sfx_ravager_gore_01" ID="{41D26AF2-0B64-4BA9-8F76-D8F0E42EAD2A}" ShortID="438002971">
+											<PropertyList>
+												<Property Name="3DSpatialization" Type="int16" Value="1"/>
+											</PropertyList>
+											<ReferenceList>
+												<Reference Name="Attenuation">
+													<ObjectRef Name="Default Attenuation" ID="{1C16C885-97A9-48B9-99CA-62239B098C14}" WorkUnitID="{E9A01ADD-D16C-4AEF-92DB-DCF89FC42AD2}"/>
+												</Reference>
+												<Reference Name="Conversion">
+													<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{140D52C2-62AC-4006-AE21-98F493D2358C}"/>
+												</Reference>
+												<Reference Name="OutputBus">
+													<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{92A1A0F3-7047-4165-95AE-D5CFCC30AE61}"/>
+												</Reference>
+											</ReferenceList>
+											<ChildrenList>
+												<AudioFileSource Name="sfx_ravager_gore_01" ID="{D0D12BBC-6D36-4EB4-A630-98964CEF32CF}">
+													<Language>SFX</Language>
+													<AudioFile>sfx_ravager_gore_01.wav</AudioFile>
+													<MediaIDList>
+														<MediaID ID="296397116"/>
+													</MediaIDList>
+												</AudioFileSource>
+											</ChildrenList>
+											<ActiveSourceList>
+												<ActiveSource Name="sfx_ravager_gore_01" ID="{D0D12BBC-6D36-4EB4-A630-98964CEF32CF}" Platform="Linked"/>
+											</ActiveSourceList>
+										</Sound>
+									</ChildrenList>
+								</RandomSequenceContainer>
+								<Sound Name="sfx_ravager_beam_consume" ID="{B9317FE1-0808-4415-AF58-927BFE45B48B}" ShortID="367398942">
+									<PropertyList>
+										<Property Name="Volume" Type="Real64">
+											<ValueList>
+												<Value>-5</Value>
+											</ValueList>
+										</Property>
+									</PropertyList>
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{140D52C2-62AC-4006-AE21-98F493D2358C}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{92A1A0F3-7047-4165-95AE-D5CFCC30AE61}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<AudioFileSource Name="sfx_ravager_beam_consume" ID="{6CAC8363-7A7F-49A0-9282-ED7BF956A9F1}">
+											<Language>SFX</Language>
+											<AudioFile>sfx_ravager_beam_consume.wav</AudioFile>
+											<MediaIDList>
+												<MediaID ID="907000367"/>
+											</MediaIDList>
+										</AudioFileSource>
+									</ChildrenList>
+									<ActiveSourceList>
+										<ActiveSource Name="sfx_ravager_beam_consume" ID="{6CAC8363-7A7F-49A0-9282-ED7BF956A9F1}" Platform="Linked"/>
+									</ActiveSourceList>
+								</Sound>
+								<Sound Name="sfx_ravager_charge_beam" ID="{28188167-9C06-481F-B0E9-760B26AF81FF}" ShortID="691344532">
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{140D52C2-62AC-4006-AE21-98F493D2358C}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{92A1A0F3-7047-4165-95AE-D5CFCC30AE61}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<AudioFileSource Name="sfx_ravager_charge_beam" ID="{86EC8280-B46B-48DC-94EF-4E9A0149A92B}">
+											<Language>SFX</Language>
+											<AudioFile>sfx_ravager_charge_beam.wav</AudioFile>
+											<MediaIDList>
+												<MediaID ID="555321502"/>
+											</MediaIDList>
+										</AudioFileSource>
+									</ChildrenList>
+									<ActiveSourceList>
+										<ActiveSource Name="sfx_ravager_charge_beam" ID="{86EC8280-B46B-48DC-94EF-4E9A0149A92B}" Platform="Linked"/>
+									</ActiveSourceList>
+								</Sound>
+							</ChildrenList>
+						</ActorMixer>
+						<Sound Name="sfx_ravager_beam_fire" ID="{4B5DF66C-FFCF-466B-9F12-1B21E2E91C08}" ShortID="931972021">
+							<PropertyList>
+								<Property Name="3DSpatialization" Type="int16" Value="1"/>
+								<Property Name="Volume" Type="Real64">
+									<ValueList>
+										<Value>2</Value>
+									</ValueList>
+								</Property>
+							</PropertyList>
+							<ReferenceList>
+								<Reference Name="Attenuation">
+									<ObjectRef Name="Default Attenuation" ID="{1C16C885-97A9-48B9-99CA-62239B098C14}" WorkUnitID="{E9A01ADD-D16C-4AEF-92DB-DCF89FC42AD2}"/>
+								</Reference>
+								<Reference Name="Conversion">
+									<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{140D52C2-62AC-4006-AE21-98F493D2358C}"/>
+								</Reference>
+								<Reference Name="OutputBus">
+									<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{92A1A0F3-7047-4165-95AE-D5CFCC30AE61}"/>
+								</Reference>
+							</ReferenceList>
+							<ChildrenList>
+								<AudioFileSource Name="sfx_ravager_beam_fire" ID="{A0457203-36FC-4C55-92F4-6C89CCDA44A0}">
+									<Language>SFX</Language>
+									<AudioFile>sfx_ravager_beam_fire.wav</AudioFile>
+									<MediaIDList>
+										<MediaID ID="790470441"/>
+									</MediaIDList>
+								</AudioFileSource>
+							</ChildrenList>
+							<ActiveSourceList>
+								<ActiveSource Name="sfx_ravager_beam_fire" ID="{A0457203-36FC-4C55-92F4-6C89CCDA44A0}" Platform="Linked"/>
+							</ActiveSourceList>
+						</Sound>
+						<Sound Name="sfx_ravager_charge_beam_loop" ID="{AAE8524C-9FF8-4CBA-879B-211585577E17}" ShortID="75259717">
+							<PropertyList>
+								<Property Name="3DSpatialization" Type="int16" Value="1"/>
+								<Property Name="IsLoopingEnabled" Type="bool" Value="True"/>
+								<Property Name="Volume" Type="Real64">
+									<ValueList>
+										<Value>3</Value>
+									</ValueList>
+								</Property>
+							</PropertyList>
+							<ReferenceList>
+								<Reference Name="Attenuation">
+									<ObjectRef Name="Default Attenuation" ID="{1C16C885-97A9-48B9-99CA-62239B098C14}" WorkUnitID="{E9A01ADD-D16C-4AEF-92DB-DCF89FC42AD2}"/>
+								</Reference>
+								<Reference Name="Conversion">
+									<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{140D52C2-62AC-4006-AE21-98F493D2358C}"/>
+								</Reference>
+								<Reference Name="OutputBus">
+									<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{92A1A0F3-7047-4165-95AE-D5CFCC30AE61}"/>
+								</Reference>
+							</ReferenceList>
+							<ChildrenList>
+								<AudioFileSource Name="sfx_ravager_charge_beam_loop" ID="{BD455B22-EF61-4535-8E7C-CD971D18BE6F}">
+									<Language>SFX</Language>
+									<AudioFile>sfx_ravager_charge_beam_loop.wav</AudioFile>
+									<MediaIDList>
+										<MediaID ID="628929168"/>
+									</MediaIDList>
+								</AudioFileSource>
+							</ChildrenList>
+							<ActiveSourceList>
+								<ActiveSource Name="sfx_ravager_charge_beam_loop" ID="{BD455B22-EF61-4535-8E7C-CD971D18BE6F}" Platform="Linked"/>
+							</ActiveSourceList>
+						</Sound>
+						<Sound Name="sfx_ravager_beam_startcharge" ID="{7CC11AA0-4FB3-4DB4-9A46-39BFC1C264A6}" ShortID="197050647">
+							<PropertyList>
+								<Property Name="Volume" Type="Real64">
+									<ValueList>
+										<Value>4</Value>
+									</ValueList>
+								</Property>
+							</PropertyList>
+							<ReferenceList>
+								<Reference Name="Conversion">
+									<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{140D52C2-62AC-4006-AE21-98F493D2358C}"/>
+								</Reference>
+								<Reference Name="OutputBus">
+									<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{92A1A0F3-7047-4165-95AE-D5CFCC30AE61}"/>
+								</Reference>
+							</ReferenceList>
+							<ChildrenList>
+								<AudioFileSource Name="sfx_ravager_beam_startcharge" ID="{7BA9D89E-7DAD-4402-A47C-0B8D69162271}">
+									<Language>SFX</Language>
+									<AudioFile>sfx_ravager_beam_startcharge.wav</AudioFile>
+									<MediaIDList>
+										<MediaID ID="44076310"/>
+									</MediaIDList>
+								</AudioFileSource>
+							</ChildrenList>
+							<ActiveSourceList>
+								<ActiveSource Name="sfx_ravager_beam_startcharge" ID="{7BA9D89E-7DAD-4402-A47C-0B8D69162271}" Platform="Linked"/>
+							</ActiveSourceList>
+						</Sound>
+					</ChildrenList>
+				</ActorMixer>
+			</ChildrenList>
+		</WorkUnit>
+	</AudioObjects>
+</WwiseDocument>
