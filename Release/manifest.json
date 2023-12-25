@@ -2,7 +2,7 @@
     "name": "Ravager",
     "version_number": "1.0.0",
     "website_url": "https://github.com/ArcPh1r3/RedGuyMod",
-    "description": "Adds the Ravager, a mobile melee bruiser focused on healing through overwhelming violence.",
+    "description": "Adds the Ravager, a mobile melee bruiser focused on healing through overwhelming violence. Merry Christmas!",
     "dependencies": [
         "bbepis-BepInExPack-5.4.1905",
         "tristanmcpherson-R2API-5.0.5"
