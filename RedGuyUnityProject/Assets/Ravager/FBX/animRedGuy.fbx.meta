@@ -86,6 +86,12 @@ ModelImporter:
     100160: tentacle.03
     100162: meshSword.001
     100164: Cube
+    100166: headtail.01
+    100168: headtail.02
+    100170: headtail.03
+    100172: headtail.04
+    100174: meshDivineWheel
+    100176: halo
     400000: //RootNode
     400002: Armature
     400004: base
@@ -169,11 +175,18 @@ ModelImporter:
     400160: tentacle.03
     400162: meshSword.001
     400164: Cube
+    400166: headtail.01
+    400168: headtail.02
+    400170: headtail.03
+    400172: headtail.04
+    400174: meshDivineWheel
+    400176: halo
     2100000: Material.001
     2100002: matImpBoss
     2100004: Material.002
     2100006: Material.003
     2100008: Material.004
+    2100010: Material.005
     2300000: meshBodyAlt
     2300002: meshGunB
     2300004: meshSwordB
@@ -190,6 +203,7 @@ ModelImporter:
     4300014: meshSword
     4300016: meshSword.001
     4300018: Cube
+    4300020: meshDivineWheel
     7400000: Armature|AimPitch
     7400002: Armature|AimYaw
     7400004: Armature|aPose
@@ -240,6 +254,30 @@ ModelImporter:
     7400094: Armature|RestIdleIn
     7400096: Armature|DashGrabEndThrow
     7400098: Armature|SpinSlashGround
+    7400100: Armature|SpinSlashGround2
+    7400102: Armature|DashGrabDown
+    7400104: Armature|DashGrabUp
+    7400106: Armature|SpinSlashAir2
+    7400108: Armature|SpinSlashAir3
+    7400110: Armature|MenuIdleIn
+    7400112: Armature|CylinderAction
+    7400114: Armature|CylinderAction.001
+    7400116: Armature|SphereAction
+    7400118: Armature|SphereAction.001
+    7400120: Armature|SphereAction.002
+    7400122: Armature|SphereAction.003
+    7400124: Armature|SphereAction.004
+    7400126: Armature|SphereAction.005
+    7400128: Armature|SphereAction.006
+    7400130: Armature|SphereAction.007
+    7400132: Armature|SphereAction.008
+    7400134: Armature|SphereAction.009
+    7400136: Armature|Coagulate
+    7400138: Armature|CoagulateBlast
+    7400140: Armature|CoagulateLow
+    7400142: Armature|Spawn
+    7400144: Armature|SprintSlow
+    7400146: Armature|WheelSpin
     9500000: //RootNode
     10800000: Sun
     10800002: Sun.001
@@ -250,6 +288,9 @@ ModelImporter:
     13700008: meshSwordAlt
     13700010: meshSword.001
     13700012: Cube
+    13700014: meshBodyAlt
+    13700016: meshDivineWheel
+    2186277476908879412: ImportLogs
   externalObjects: {}
   materials:
     importMaterials: 1
@@ -262,7 +303,8 @@ ModelImporter:
     resampleCurves: 1
     optimizeGameObjects: 0
     motionNodeName: 
-    rigImportErrors: 
+    rigImportErrors: "Avatar creation failed:\n\tCannot find root motion transform
+      'ROOT'.\n"
     rigImportWarnings: 
     animationImportErrors: 
     animationImportWarnings: 

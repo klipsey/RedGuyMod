@@ -40,6 +40,9 @@ namespace RedGuyMod.Content.Survivors
         internal static ItemDisplayRuleSet itemDisplayRuleSet;
         internal static List<ItemDisplayRuleSet.KeyAssetRuleGroup> itemDisplayRules;
 
+        // buff
+        internal static BuffDef grabbedBuff;
+
         internal static UnlockableDef characterUnlockableDef;
         internal static UnlockableDef masteryUnlockableDef;
         internal static UnlockableDef grandMasteryUnlockableDef;
@@ -60,7 +63,7 @@ namespace RedGuyMod.Content.Survivors
             {
                 forceUnlock = Modules.Config.ForceUnlockConfig("Ravager");
 
-                //masteryUnlockableDef = R2API.UnlockableAPI.AddUnlockable<Achievements.MasteryAchievement>();
+                masteryUnlockableDef = R2API.UnlockableAPI.AddUnlockable<RedGuyMod.Modules.Achievements.MasteryAchievement>();
                 //grandMasteryUnlockableDef = R2API.UnlockableAPI.AddUnlockable<Achievements.GrandMasteryAchievement>();
                 //suitUnlockableDef = R2API.UnlockableAPI.AddUnlockable<Achievements.SuitAchievement>();
 
@@ -72,10 +75,14 @@ namespace RedGuyMod.Content.Survivors
 
                 displayPrefab = Modules.Prefabs.CreateDisplayPrefab("RavagerDisplay", characterPrefab);
 
+                displayPrefab.GetComponentInChildren<ChildLocator>().FindChild("SwordElectricity").gameObject.GetComponent<ParticleSystemRenderer>().trailMaterial = Addressables.LoadAssetAsync<Material>("RoR2/DLC1/Railgunner/matRailgunImpact.mat").WaitForCompletion();
+
                 if (forceUnlock.Value) Modules.Prefabs.RegisterNewSurvivor(characterPrefab, displayPrefab, "RAVAGER");
                 else Modules.Prefabs.RegisterNewSurvivor(characterPrefab, displayPrefab, "RAVAGER", characterUnlockableDef);
 
                 umbraMaster = CreateMaster(characterPrefab, "RobRavagerMonsterMaster");
+
+                grabbedBuff = Modules.Buffs.AddNewBuff("RavagerGrabbed", null, Color.white, false, false, true);
             }
 
             Hook();
@@ -96,12 +103,12 @@ namespace RedGuyMod.Content.Survivors
                 characterPortrait = Modules.Assets.LoadCharacterIcon("Ravager"),
                 crosshair = Modules.Assets.LoadCrosshair("SimpleDot"),
                 damage = 12f,
-                healthGrowth = 4.8f,
+                healthGrowth = 48f,
                 healthRegen = 2.5f,
                 jumpCount = 1,
                 maxHealth = 160f,
                 subtitleNameToken = MainPlugin.developerPrefix + "_RAVAGER_BODY_SUBTITLE",
-                podPrefab = RoR2.LegacyResourcesAPI.Load<GameObject>("Prefabs/NetworkedObjects/SurvivorPod"),
+                podPrefab = null,//RoR2.LegacyResourcesAPI.Load<GameObject>("Prefabs/NetworkedObjects/SurvivorPod"),
                 moveSpeed = 7f,
                 acceleration = 60f,
                 jumpPower = 15f,
@@ -116,8 +123,8 @@ namespace RedGuyMod.Content.Survivors
 
             childLocator.gameObject.AddComponent<Content.Components.GenericAnimationEvents>();
 
-            //CharacterBody body = newPrefab.GetComponent<CharacterBody>();
-            //body.preferredInitialStateType = new EntityStates.SerializableEntityStateType(typeof(SpawnState));
+            CharacterBody body = newPrefab.GetComponent<CharacterBody>();
+            body.preferredInitialStateType = new EntityStates.SerializableEntityStateType(typeof(RedGuyMod.SkillStates.Ravager.SpawnState));
             //body.bodyFlags = CharacterBody.BodyFlags.IgnoreFallDamage;
             //body.bodyFlags |= CharacterBody.BodyFlags.SprintAnyDirection;
             //body.sprintingSpeedMultiplier = 1.75f;
@@ -167,12 +174,13 @@ namespace RedGuyMod.Content.Survivors
 
             newPrefab.AddComponent<Content.Components.RedGuyController>();
 
-            Material elecMat = Addressables.LoadAssetAsync<Material>("RoR2/DLC1/Railgunner/matRailgunImpact.mat").WaitForCompletion();
+            //Material elecMat = Addressables.LoadAssetAsync<Material>("RoR2/DLC1/Railgunner/matRailgunImpact.mat").WaitForCompletion();
+            childLocator.FindChild("Steam").gameObject.GetComponent<ParticleSystemRenderer>().material = Addressables.LoadAssetAsync<Material>("RoR2/Base/Common/VFX/matOpaqueDustSpeckledLarge.mat").WaitForCompletion();
+            /*childLocator.FindChild("BlackElectricity").gameObject.GetComponent<ParticleSystemRenderer>().material = Addressables.LoadAssetAsync<Material>("RoR2/Base/Common/VFX/matTracerBright.mat").WaitForCompletion();
             childLocator.FindChild("SwordElectricity").gameObject.GetComponent<ParticleSystemRenderer>().trailMaterial = elecMat;
             childLocator.FindChild("FootChargeL").gameObject.GetComponent<ParticleSystemRenderer>().trailMaterial = elecMat;
             childLocator.FindChild("FootChargeR").gameObject.GetComponent<ParticleSystemRenderer>().trailMaterial = elecMat;
-            childLocator.FindChild("ArmCharge").gameObject.GetComponent<ParticleSystemRenderer>().trailMaterial = elecMat;
-            childLocator.FindChild("Steam").gameObject.GetComponent<ParticleSystemRenderer>().material = Addressables.LoadAssetAsync<Material>("RoR2/Base/Common/VFX/matOpaqueDustSpeckledLarge.mat").WaitForCompletion();
+            childLocator.FindChild("ArmCharge").gameObject.GetComponent<ParticleSystemRenderer>().trailMaterial = elecMat;*/
 
 
             FlickerLight light1 = childLocator.FindChild("SwordLight").gameObject.AddComponent<FlickerLight>();
@@ -395,7 +403,8 @@ namespace RedGuyMod.Content.Survivors
                 skillName = prefix + "_RAVAGER_BODY_CONFIRM_NAME",
                 skillNameToken = prefix + "_RAVAGER_BODY_CONFIRM_NAME",
                 skillDescriptionToken = prefix + "_RAVAGER_BODY_CONFIRM_DESCRIPTION",
-                skillIcon = Modules.Assets.mainAssetBundle.LoadAsset<Sprite>("texConfirmIcon"),
+                baseIcon = Modules.Assets.mainAssetBundle.LoadAsset<Sprite>("texConfirmIcon"),
+                empoweredIcon = Modules.Assets.mainAssetBundle.LoadAsset<Sprite>("texConfirmIcon"),
                 activationState = new EntityStates.SerializableEntityStateType(typeof(EntityStates.Idle)),
                 activationStateMachineName = "fuck",
                 baseMaxStock = 1,
@@ -419,7 +428,8 @@ namespace RedGuyMod.Content.Survivors
                 skillName = prefix + "_RAVAGER_BODY_CANCEL_NAME",
                 skillNameToken = prefix + "_RAVAGER_BODY_CANCEL_NAME",
                 skillDescriptionToken = prefix + "_RAVAGER_BODY_CANCEL_DESCRIPTION",
-                skillIcon = Modules.Assets.mainAssetBundle.LoadAsset<Sprite>("texCancelIcon"),
+                baseIcon = Modules.Assets.mainAssetBundle.LoadAsset<Sprite>("texCancelIcon"),
+                empoweredIcon = Modules.Assets.mainAssetBundle.LoadAsset<Sprite>("texCancelIcon"),
                 activationState = new EntityStates.SerializableEntityStateType(typeof(EntityStates.Idle)),
                 activationStateMachineName = "fuck",
                 baseMaxStock = 1,
@@ -439,29 +449,29 @@ namespace RedGuyMod.Content.Survivors
             });
 
             #region Primary
-            SkillDef primary = Modules.Skills.CreatePrimarySkillDef(new EntityStates.SerializableEntityStateType(typeof(SkillStates.Ravager.Slash)),
+            RavagerSkillDef primary = Modules.Skills.CreatePrimarySkillDef(new EntityStates.SerializableEntityStateType(typeof(SkillStates.Ravager.Slash)),
                 "Weapon",
                 prefix + "_RAVAGER_BODY_PRIMARY_SLASH_NAME",
                 prefix + "_RAVAGER_BODY_PRIMARY_SLASH_DESCRIPTION",
-                Modules.Assets.mainAssetBundle.LoadAsset<Sprite>("texSlashIcon"), true);
+                Modules.Assets.mainAssetBundle.LoadAsset<Sprite>("texSlashIcon"), Modules.Assets.mainAssetBundle.LoadAsset<Sprite>("texSlashIcon2"), true);
 
             primary.keywordTokens = new string[]
             {
-                "KEYWORD_AGILE", "KEYWORD_REDGUY_M1"
+                "KEYWORD_AGILE", "KEYWORD_REDGUY_M1", "KEYWORD_REDGUY_M12"
             };
 
             Modules.Skills.AddPrimarySkills(prefab,
-                primary);//,
-                                                                                                                                                                                                                                                                                                                           //Modules.Skills.CreatePrimarySkillDef(new EntityStates.SerializableEntityStateType(typeof(SkillStates.Driver.Revolver.Shoot)), "Weapon", prefix + "_DRIVER_BODY_PRIMARY_PISTOL_NAME", prefix + "_DRIVER_BODY_PRIMARY_PISTOL_DESCRIPTION", Modules.Assets.mainAssetBundle.LoadAsset<Sprite>("texPistolIcon"), false));
+                primary);                                                                                                                                                                                                                                                                      //Modules.Skills.CreatePrimarySkillDef(new EntityStates.SerializableEntityStateType(typeof(SkillStates.Driver.Revolver.Shoot)), "Weapon", prefix + "_DRIVER_BODY_PRIMARY_PISTOL_NAME", prefix + "_DRIVER_BODY_PRIMARY_PISTOL_DESCRIPTION", Modules.Assets.mainAssetBundle.LoadAsset<Sprite>("texPistolIcon"), false));
             #endregion
 
             #region Secondary
-            SkillDef spinSlashSkillDef = Modules.Skills.CreateSkillDef(new SkillDefInfo
+            RavagerSkillDef spinSlashSkillDef = Modules.Skills.CreateSkillDef(new SkillDefInfo
             {
                 skillName = prefix + "_RAVAGER_BODY_SECONDARY_SPINSLASH_NAME",
                 skillNameToken = prefix + "_RAVAGER_BODY_SECONDARY_SPINSLASH_NAME",
                 skillDescriptionToken = prefix + "_RAVAGER_BODY_SECONDARY_SPINSLASH_DESCRIPTION",
-                skillIcon = Modules.Assets.mainAssetBundle.LoadAsset<Sprite>("texSpinSlashIcon"),
+                baseIcon = Modules.Assets.mainAssetBundle.LoadAsset<Sprite>("texSpinSlashIcon"),
+                empoweredIcon = Modules.Assets.mainAssetBundle.LoadAsset<Sprite>("texSpinSlashIcon2"),
                 activationState = new EntityStates.SerializableEntityStateType(typeof(SkillStates.Ravager.SpinSlash)),
                 activationStateMachineName = "Weapon",
                 baseMaxStock = 1,
@@ -488,12 +498,13 @@ namespace RedGuyMod.Content.Survivors
             #endregion
 
             #region Utility
-            SkillDef healSkillDef = Modules.Skills.CreateSkillDef(new SkillDefInfo
+            RavagerSkillDef healSkillDef = Modules.Skills.CreateSkillDef(new SkillDefInfo
             {
                 skillName = prefix + "_RAVAGER_BODY_UTILITY_HEAL_NAME",
                 skillNameToken = prefix + "_RAVAGER_BODY_UTILITY_HEAL_NAME",
                 skillDescriptionToken = prefix + "_RAVAGER_BODY_UTILITY_HEAL_DESCRIPTION",
-                skillIcon = Modules.Assets.mainAssetBundle.LoadAsset<Sprite>("texHealIcon"),
+                baseIcon = Modules.Assets.mainAssetBundle.LoadAsset<Sprite>("texHealIcon"),
+                empoweredIcon = Modules.Assets.mainAssetBundle.LoadAsset<Sprite>("texHealIcon2"),
                 activationState = new EntityStates.SerializableEntityStateType(typeof(SkillStates.Ravager.Heal)),
                 activationStateMachineName = "Slide",
                 baseMaxStock = 1,
@@ -516,16 +527,17 @@ namespace RedGuyMod.Content.Survivors
                 }
             });
 
-            SkillDef beamSkillDef = Modules.Skills.CreateSkillDef(new SkillDefInfo
+            RavagerSkillDef beamSkillDef = Modules.Skills.CreateSkillDef(new SkillDefInfo
             {
                 skillName = prefix + "_RAVAGER_BODY_UTILITY_BEAM_NAME",
                 skillNameToken = prefix + "_RAVAGER_BODY_UTILITY_BEAM_NAME",
                 skillDescriptionToken = prefix + "_RAVAGER_BODY_UTILITY_BEAM_DESCRIPTION",
-                skillIcon = Modules.Assets.mainAssetBundle.LoadAsset<Sprite>("texGrappleIcon"),
+                baseIcon = Modules.Assets.mainAssetBundle.LoadAsset<Sprite>("texGrappleIcon"),
+                empoweredIcon = Modules.Assets.mainAssetBundle.LoadAsset<Sprite>("texGrappleIcon2"),
                 activationState = new EntityStates.SerializableEntityStateType(typeof(SkillStates.Ravager.ChargeBeam)),
                 activationStateMachineName = "Weapon",
                 baseMaxStock = 1,
-                baseRechargeInterval = 6f,
+                baseRechargeInterval = 12f,
                 beginSkillCooldownOnSkillEnd = true,
                 canceledFromSprinting = false,
                 forceSprintDuringState = false,
@@ -537,19 +549,24 @@ namespace RedGuyMod.Content.Survivors
                 cancelSprintingOnActivation = true,
                 rechargeStock = 1,
                 requiredStock = 1,
-                stockToConsume = 1
+                stockToConsume = 1,
+                keywordTokens = new string[]
+                {
+                    "KEYWORD_REDGUY_BEAM"
+                }
             });
 
-            Modules.Skills.AddUtilitySkills(prefab, /*beamSkillDef,*/ healSkillDef);
+            Modules.Skills.AddUtilitySkills(prefab, /*beamSkillDef,*/ healSkillDef, beamSkillDef);
             #endregion
 
             #region Special
-            SkillDef grabSkillDef = Modules.Skills.CreateSkillDef(new SkillDefInfo
+            RavagerSkillDef grabSkillDef = Modules.Skills.CreateSkillDef(new SkillDefInfo
             {
                 skillName = prefix + "_RAVAGER_BODY_SPECIAL_GRAB_NAME",
                 skillNameToken = prefix + "_RAVAGER_BODY_SPECIAL_GRAB_NAME",
                 skillDescriptionToken = prefix + "_RAVAGER_BODY_SPECIAL_GRAB_DESCRIPTION",
-                skillIcon = Modules.Assets.mainAssetBundle.LoadAsset<Sprite>("texGrabIcon"),
+                baseIcon = Modules.Assets.mainAssetBundle.LoadAsset<Sprite>("texGrabIcon"),
+                empoweredIcon = Modules.Assets.mainAssetBundle.LoadAsset<Sprite>("texGrabIcon2"),
                 activationState = new EntityStates.SerializableEntityStateType(typeof(SkillStates.Ravager.DashGrab)),
                 activationStateMachineName = "Weapon",
                 baseMaxStock = 1,
@@ -600,7 +617,80 @@ namespace RedGuyMod.Content.Survivors
             skins.Add(defaultSkin);
             #endregion
 
+            #region MasterySkin
+            SkinDef masterySkin = Modules.Skins.CreateSkinDef(MainPlugin.developerPrefix + "_RAVAGER_BODY_MONSOON_SKIN_NAME",
+    Modules.Assets.mainAssetBundle.LoadAsset<Sprite>("texMonsoonSkin"),
+                SkinRendererInfos(defaultRenderers, new Material[]
+                {
+                    Modules.Assets.CreateMaterial("matBodyAlt", 1f, Color.white),
+                    Modules.Assets.CreateMaterial("matSwordAlt"),
+                    Modules.Assets.CreateMaterial("matBodyAlt", 1f, Color.white)
+                }),
+    mainRenderer,
+    model,
+    masteryUnlockableDef);
+
+            masterySkin.meshReplacements = new SkinDef.MeshReplacement[]
+            {
+                new SkinDef.MeshReplacement
+                {
+                    mesh = Modules.Assets.mainAssetBundle.LoadAsset<Mesh>("meshBodyAlt"),
+                    renderer = mainRenderer
+                },
+                new SkinDef.MeshReplacement
+                {
+                    mesh = Modules.Assets.mainAssetBundle.LoadAsset<Mesh>("meshSwordAlt"),
+                    renderer = childLocator.FindChild("SwordModel").GetComponent<SkinnedMeshRenderer>()
+                },
+                new SkinDef.MeshReplacement
+                {
+                    mesh = Modules.Assets.mainAssetBundle.LoadAsset<Mesh>("meshDivineWheel"),
+                    renderer = childLocator.FindChild("ImpWrapModel").GetComponent<SkinnedMeshRenderer>()
+                }
+            };
+
+            skins.Add(masterySkin);
+            #endregion
+
             skinController.skins = skins.ToArray();
+
+
+
+            RavagerSkinDef defaultSkinDef = ScriptableObject.CreateInstance<RavagerSkinDef>();
+            defaultSkinDef.name = "rsdDefault";
+            defaultSkinDef.nameToken = defaultSkin.nameToken;
+            defaultSkinDef.basicSwingEffectPrefab = Modules.Assets.swingEffect;
+            defaultSkinDef.bigSwingEffectPrefab = Modules.Assets.bigSwingEffect;
+            defaultSkinDef.leapEffectPrefab = Modules.Assets.leapEffect;
+            defaultSkinDef.slashEffectPrefab = Modules.Assets.slashImpactEffect;
+            defaultSkinDef.bloodOrbEffectPrefab = Modules.Assets.consumeOrb;
+            defaultSkinDef.bloodBombEffectPrefab = Modules.Assets.bloodBombEffect;
+            defaultSkinDef.bloodRushActivationEffectPrefab = Addressables.LoadAssetAsync<GameObject>("RoR2/Base/ImpBoss/ImpBossBlink.prefab").WaitForCompletion();
+            defaultSkinDef.bloodOrbOverlayMaterial = Addressables.LoadAssetAsync<Material>("RoR2/Base/Imp/matImpDissolve.mat").WaitForCompletion();
+            defaultSkinDef.consumeSoundString = "sfx_ravager_consume";
+            defaultSkinDef.healSoundString = "sfx_ravager_steam";
+            defaultSkinDef.electricityMat = Addressables.LoadAssetAsync<Material>("RoR2/DLC1/Railgunner/matRailgunImpact.mat").WaitForCompletion();
+            defaultSkinDef.swordElectricityMat = Addressables.LoadAssetAsync<Material>("RoR2/DLC1/ChainLightningVoid/matLightningVoid.mat").WaitForCompletion();
+            defaultSkinDef.glowColor = Color.red;
+            RavagerSkinCatalog.AddSkin(defaultSkinDef);
+
+            RavagerSkinDef masterySkinDef = ScriptableObject.CreateInstance<RavagerSkinDef>();
+            masterySkinDef.name = "rsdMastery";
+            masterySkinDef.nameToken = masterySkin.nameToken;
+            masterySkinDef.basicSwingEffectPrefab = Modules.Assets.swingEffectMastery;
+            masterySkinDef.bigSwingEffectPrefab = Modules.Assets.bigSwingEffectMastery;
+            masterySkinDef.leapEffectPrefab = Modules.Assets.leapEffectMastery;
+            masterySkinDef.slashEffectPrefab = Modules.Assets.slashImpactEffectMastery;
+            masterySkinDef.bloodOrbEffectPrefab = Modules.Assets.consumeOrbMastery;
+            masterySkinDef.bloodBombEffectPrefab = Addressables.LoadAssetAsync<GameObject>("RoR2/DLC1/MajorAndMinorConstruct/OmniExplosionVFXMajorConstruct.prefab").WaitForCompletion();
+            masterySkinDef.bloodRushActivationEffectPrefab = Addressables.LoadAssetAsync<GameObject>("RoR2/Base/LunarGolem/MuzzleflashLunarGolemTwinShot.prefab").WaitForCompletion();
+            masterySkinDef.bloodOrbOverlayMaterial = Addressables.LoadAssetAsync<Material>("RoR2/Base/Huntress/matHuntressFlashExpanded.mat").WaitForCompletion();
+            masterySkinDef.consumeSoundString = "sfx_ravager_consume_alt";
+            masterySkinDef.healSoundString = "sfx_ravager_wheel";
+            masterySkinDef.electricityMat = Addressables.LoadAssetAsync<Material>("RoR2/Junk/GrandParent/matGrandparentTeleportFlash.mat").WaitForCompletion();
+            masterySkinDef.swordElectricityMat = Addressables.LoadAssetAsync<Material>("RoR2/Base/Loader/matLightningLongYellow.mat").WaitForCompletion();
+            masterySkinDef.glowColor = Color.white;
+            RavagerSkinCatalog.AddSkin(masterySkinDef);
         }
 
         private static void InitializeItemDisplays(GameObject prefab)
@@ -845,6 +935,8 @@ localScale = new Vector3(0.13457F, 0.19557F, 0.19557F)
             defaultRenderers.CopyTo(newRendererInfos, 0);
 
             newRendererInfos[0].defaultMaterial = materials[0];
+            newRendererInfos[1].defaultMaterial = materials[1];
+            newRendererInfos[2].defaultMaterial = materials[2];
 
             return newRendererInfos;
         }
@@ -854,15 +946,46 @@ localScale = new Vector3(0.13457F, 0.19557F, 0.19557F)
             RoR2.UI.HUD.onHudTargetChangedGlobal += HUDSetup;
 
             RoR2.GlobalEventManager.onCharacterDeathGlobal += GlobalEventManager_onCharacterDeathGlobal;
+            On.RoR2.HealthComponent.TakeDamage += HealthComponent_TakeDamage;
+            On.RoR2.HealthComponent.UpdateLastHitTime += HealthComponent_UpdateLastHitTime;
+        }
+
+        private static void HealthComponent_UpdateLastHitTime(On.RoR2.HealthComponent.orig_UpdateLastHitTime orig, HealthComponent self, float damageValue, Vector3 damagePosition, bool damageIsSilent, GameObject attacker)
+        {
+            orig(self, damageValue, damagePosition, damageIsSilent, attacker);
+
+            if (self && self.body && self.body.HasBuff(RedGuy.grabbedBuff))
+            {
+                if (self.health <= 0f) self.health = 1f;
+            }
+        }
+
+        private static void HealthComponent_TakeDamage(On.RoR2.HealthComponent.orig_TakeDamage orig, HealthComponent self, DamageInfo damageInfo)
+        {
+            orig(self, damageInfo);
+
+            if (self && self.body && self.body.HasBuff(RedGuy.grabbedBuff))
+            {
+                if (self.health <= 0f) self.health = 1f;
+            }
         }
 
         private static void GlobalEventManager_onCharacterDeathGlobal(DamageReport damageReport)
         {
+            if (damageReport.victimBody && damageReport.victimBody.HasBuff(RedGuy.grabbedBuff))
+            {
+                damageReport.victimBody = null;
+                damageReport.victim = null;
+                damageReport.attacker = null;
+                damageReport.attackerBody = null;
+                return;
+            }
+
             if (damageReport.attacker && damageReport.attackerBody)
             {
                 if (damageReport.attacker.name.Contains(RedGuy.bodyName))
                 {
-                    if (damageReport.victim)
+                    if (damageReport.victim && damageReport.victimBody)
                     {
                         GrabTracker tracker = damageReport.victim.gameObject.GetComponent<GrabTracker>();
                         if (tracker)
@@ -940,28 +1063,47 @@ localScale = new Vector3(0.13457F, 0.19557F, 0.19557F)
 
                 Transform healthbarContainer = hud.transform.Find("MainContainer").Find("MainUIArea").Find("SpringCanvas").Find("BottomLeftCluster").Find("BarRoots").Find("LevelDisplayCluster");
 
-                GameObject bloodGauge = GameObject.Instantiate(healthbarContainer.gameObject, hud.transform.Find("MainContainer").Find("MainUIArea").Find("SpringCanvas").Find("BottomLeftCluster"));
-                bloodGauge.name = "BloodGauge";
+                GameObject chargeRing = GameObject.Instantiate(Modules.Assets.mainAssetBundle.LoadAsset<GameObject>("ChargeRing"));
+                chargeRing.transform.SetParent(hud.transform.Find("MainContainer").Find("MainUIArea").Find("CrosshairCanvas").Find("CrosshairExtras"));
 
-                GameObject.DestroyImmediate(bloodGauge.transform.GetChild(0).gameObject);
-                MonoBehaviour.Destroy(bloodGauge.GetComponentInChildren<LevelText>());
-                MonoBehaviour.Destroy(bloodGauge.GetComponentInChildren<ExpBar>());
+                RectTransform rect = chargeRing.GetComponent<RectTransform>();
 
-                BloodGauge bloodGaugeComponent = bloodGauge.AddComponent<BloodGauge>();
-                bloodGaugeComponent.targetHUD = hud;
-                bloodGaugeComponent.fillRectTransform = bloodGauge.transform.Find("ExpBarRoot").GetChild(0).GetChild(0).GetComponent<RectTransform>();
+                rect.localScale = new Vector3(0.4f, 0.4f, 1f);
+                rect.anchorMin = new Vector2(0f, 0f);
+                rect.anchorMax = new Vector2(0f, 0f);
+                rect.pivot = new Vector2(0.5f, 0f);
+                rect.anchoredPosition = new Vector2(50f, 0f);
+                rect.localPosition = new Vector3(65f, -75f, 0f);
 
-                bloodGauge.transform.Find("LevelDisplayRoot").Find("ValueText").gameObject.SetActive(false);
-                bloodGauge.transform.Find("LevelDisplayRoot").Find("PrefixText").gameObject.GetComponent<LanguageTextMeshController>().token = "Blood Well";
+                var p = chargeRing.transform.GetChild(0).gameObject.AddComponent<Content.Components.BloodGauge2>();
+                p.targetHUD = hud;
+                p.fillBar = p.GetComponent<Image>();
 
-                bloodGauge.transform.Find("ExpBarRoot").GetChild(0).GetComponent<Image>().enabled = true;
+                // you'll be back someday
+                /*if (!hud.transform.Find("MainContainer").Find("MainUIArea").Find("SpringCanvas").Find("BottomLeftCluster").Find("BloodGauge"))
+                {
+                    GameObject bloodGauge = GameObject.Instantiate(healthbarContainer.gameObject, hud.transform.Find("MainContainer").Find("MainUIArea").Find("SpringCanvas").Find("BottomLeftCluster"));
+                    bloodGauge.name = "BloodGauge";
 
-                bloodGauge.transform.Find("LevelDisplayRoot").GetComponent<RectTransform>().anchoredPosition = new Vector2(-12f, 0f);
+                    GameObject.DestroyImmediate(bloodGauge.transform.GetChild(0).gameObject);
+                    MonoBehaviour.Destroy(bloodGauge.GetComponentInChildren<LevelText>());
+                    MonoBehaviour.Destroy(bloodGauge.GetComponentInChildren<ExpBar>());
 
-                RectTransform rect = bloodGauge.GetComponent<RectTransform>();
-                rect.anchorMax = new Vector2(1f, 1f);
-                rect.anchoredPosition = new Vector2(0f, -20f);
+                    BloodGauge bloodGaugeComponent = bloodGauge.AddComponent<BloodGauge>();
+                    bloodGaugeComponent.targetHUD = hud;
+                    bloodGaugeComponent.fillRectTransform = bloodGauge.transform.Find("ExpBarRoot").GetChild(0).GetChild(0).GetComponent<RectTransform>();
 
+                    bloodGauge.transform.Find("LevelDisplayRoot").Find("ValueText").gameObject.SetActive(false);
+                    bloodGauge.transform.Find("LevelDisplayRoot").Find("PrefixText").gameObject.GetComponent<LanguageTextMeshController>().token = "Blood Well";
+
+                    bloodGauge.transform.Find("ExpBarRoot").GetChild(0).GetComponent<Image>().enabled = true;
+
+                    bloodGauge.transform.Find("LevelDisplayRoot").GetComponent<RectTransform>().anchoredPosition = new Vector2(-12f, 0f);
+
+                    rect = bloodGauge.GetComponent<RectTransform>();
+                    rect.anchorMax = new Vector2(1f, 1f);
+                    rect.anchoredPosition = new Vector2(0f, -20f);
+                }*/
             }
         }
     }

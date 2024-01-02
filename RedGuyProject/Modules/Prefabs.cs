@@ -39,7 +39,7 @@ namespace RedGuyMod.Modules
             survivorDef.descriptionToken = fullDescString;
             survivorDef.outroFlavorToken = fullOutroString;
             survivorDef.mainEndingEscapeFailureFlavorToken = fullFailureString;
-            survivorDef.desiredSortPosition = 15.001f;
+            survivorDef.desiredSortPosition = 15.00001f;
             survivorDef.unlockableDef = unlockableDef;
             survivorDef.cachedName = fullNameString;
 
@@ -56,6 +56,8 @@ namespace RedGuyMod.Modules
             Transform modelBaseTransform = SetupModel(newPrefab, model.transform, defaultBodyInfo);
 
             model.AddComponent<CharacterModel>().baseRendererInfos = prefab.GetComponentInChildren<CharacterModel>().baseRendererInfos;
+
+            model.AddComponent<Content.Components.RedGuyCSS>();
 
             return model.gameObject;
         }

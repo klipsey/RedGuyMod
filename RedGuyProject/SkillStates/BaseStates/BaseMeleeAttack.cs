@@ -85,7 +85,10 @@ namespace RedGuyMod.SkillStates.BaseStates
             this.attack.impactSound = this.impactSound;
 
             //this.characterBody.isSprinting = false;
+        }
 
+        protected virtual void FireShuriken()
+        {
             PrimarySkillShurikenBehavior shurikenComponent = this.GetComponent<PrimarySkillShurikenBehavior>();
             if (shurikenComponent) shurikenComponent.OnSkillActivated(this.skillLocator.primary);
         }

@@ -4,9 +4,9 @@ using EntityStates;
 
 namespace RedGuyMod.SkillStates.Ravager
 {
-    public class ChargeJump : BaseState
+    public class ChargeJump : BaseRavagerState
     {
-        public float duration = 0.5f;
+        public float duration = 0.65f;
 
         private bool success;
         private Vector3 origin;
@@ -16,12 +16,14 @@ namespace RedGuyMod.SkillStates.Ravager
         private bool hasJumped;
         private Vector3 jumpDir;
         private float jumpForce;
+        private bool isSliding;
 
         public override void OnEnter()
         {
             base.OnEnter();
             this.origin = this.transform.position;
             base.PlayAnimation("Body", "JumpCharge", "Jump.playbackRate", this.duration);
+            base.PlayAnimation("FullBody, Override Soft", "BufferEmpty");
 
             this.x1 = this.FindModelChild("FootChargeL").gameObject.GetComponent<ParticleSystem>();
             this.x2 = this.FindModelChild("FootChargeR").gameObject.GetComponent<ParticleSystem>();
@@ -57,11 +59,17 @@ namespace RedGuyMod.SkillStates.Ravager
                 }
                 else this.characterMotor.velocity = this.jumpDir * this.jumpForce;
 
+                if (this.isGrounded && !this.isSliding)
+                {
+                    base.PlayAnimation("Body", "Sprint");
+                    base.PlayAnimation("FullBody, Override Soft", "Slide");
+                    this.isSliding = true;
+                }
+
+                this.characterDirection.moveVector = this.jumpDir;
+
                 return;
             }
-
-            if (!this.x1.isPlaying) this.x1.Play();
-            if (!this.x2.isPlaying) this.x2.Play();
 
             this.characterMotor.Motor.SetPosition(this.origin);
             this.characterMotor.velocity = Vector3.zero;
@@ -75,6 +83,9 @@ namespace RedGuyMod.SkillStates.Ravager
                 
                 if (base.fixedAge >= this.duration || !this.inputBank.jump.down || this.isGrounded)
                 {
+                    this.x1.Stop();
+                    this.x2.Stop();
+
                     if (base.fixedAge <= 0.2f)
                     {
                         this.success = true;
@@ -99,16 +110,16 @@ namespace RedGuyMod.SkillStates.Ravager
                         this.jumpForce = (Util.Remap(charge, 0f, 1f, 1.8f, 4.5f) * this.characterBody.jumpPower);
                         this.characterMotor.velocity = this.jumpDir * this.jumpForce;
                         this.hasJumped = true;
-                        this.jumpTime = 0.15f;
+                        this.jumpTime = 0.25f;
 
                         EffectData effectData = new EffectData
                         {
-                            origin = this.characterBody.transform.position + (Vector3.up * 0.75f),
+                            origin = this.transform.position + (Vector3.up * 0.75f),
                             rotation = Util.QuaternionSafeLookRotation(this.GetAimRay().direction),
                             scale = 1f
                         };
 
-                        EffectManager.SpawnEffect(Modules.Assets.leapEffect, effectData, true);
+                        EffectManager.SpawnEffect(this.penis.skinDef.leapEffectPrefab, effectData, true);
                     }
                 }
             }

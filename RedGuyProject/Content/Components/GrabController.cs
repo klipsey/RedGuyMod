@@ -1,12 +1,15 @@
 ﻿using System;
 using RoR2;
 using UnityEngine;
+using UnityEngine.Networking;
 
 namespace RedGuyMod.Content.Components
 {
 	public class GrabController : MonoBehaviour
 	{
 		public CharacterBody attackerBody;
+
+		public bool empowered;
 
 		private GameObject extraCollider;
 		private GameObject extraCollider2;
@@ -31,17 +34,37 @@ namespace RedGuyMod.Content.Components
 			this.modelLocator = base.GetComponent<ModelLocator>();
 			if (this.modelLocator)
 			{
-				Transform transform = base.transform.Find("Model Base/mdlGreaterWisp/GreaterWispArmature/HurtBox");
+				// greater wisp
+				/*Transform transform = base.transform.Find("Model Base/mdlGreaterWisp/GreaterWispArmature/HurtBox");
 				if (transform)
 				{
 					this.extraLayer = transform.gameObject.layer;
 					transform.gameObject.layer = LayerIndex.noCollision.intVal;
-				}
-				transform = base.transform.Find("Model Base/mdlGreaterWisp/GreaterWispArmature/ROOT/Mask/StandableSurfacePosition/StandableSurface");
+				}*/
+				Transform transform = base.transform.Find("Model Base/mdlGreaterWisp/GreaterWispArmature/ROOT/Mask/StandableSurfacePosition/StandableSurface");
 				if (transform)
 				{
 					this.extraLayer2 = transform.gameObject.layer;
 					transform.gameObject.layer = LayerIndex.noCollision.intVal;
+				}
+
+				// archaic wisp
+				transform = base.transform.Find("Model Base/mdlArchWisp/ArchWispArmature/ROOT/StandableSurfacePosition/StandableSurface");
+				if (transform)
+				{
+					this.extraLayer2 = transform.gameObject.layer;
+					transform.gameObject.layer = LayerIndex.noCollision.intVal;
+				}
+
+				// lunar wisp
+				if (this.gameObject.name == "LunarWispBody(Clone)")
+                {
+					transform = this.GetComponent<ModelLocator>().modelTransform.Find("StandableSurface/StandableSurface");
+					if (transform)
+					{
+						this.extraLayer2 = transform.gameObject.layer;
+						transform.gameObject.layer = LayerIndex.noCollision.intVal;
+					}
 				}
 			}
 			base.gameObject.layer = LayerIndex.noCollision.intVal;
@@ -71,7 +94,9 @@ namespace RedGuyMod.Content.Components
 				this.grabTracker = this.gameObject.AddComponent<GrabTracker>();
 				this.grabTracker.attackerBody = this.attackerBody;
             }
-        }
+
+			if (NetworkServer.active && this.empowered) this.body.AddBuff(Content.Survivors.RedGuy.grabbedBuff);
+		}
 
 		private void FixedUpdate()
 		{
@@ -122,15 +147,32 @@ namespace RedGuyMod.Content.Components
 			{
 				if (this.modelLocator)
 				{
-					Transform transform = base.transform.Find("Model Base/mdlGreaterWisp/GreaterWispArmature/HurtBox");
+					/*Transform transform = base.transform.Find("Model Base/mdlGreaterWisp/GreaterWispArmature/HurtBox");
 					if (transform)
 					{
 						transform.gameObject.layer = this.extraLayer;
-					}
-					transform = base.transform.Find("Model Base/mdlGreaterWisp/GreaterWispArmature/ROOT/Mask/StandableSurfacePosition/StandableSurface");
+					}*/
+					Transform transform = base.transform.Find("Model Base/mdlGreaterWisp/GreaterWispArmature/ROOT/Mask/StandableSurfacePosition/StandableSurface");
 					if (transform)
 					{
 						transform.gameObject.layer = this.extraLayer2;
+					}
+
+					// archaic wisp
+					transform = base.transform.Find("Model Base/mdlArchWisp/ArchWispArmature/ROOT/StandableSurfacePosition/StandableSurface");
+					if (transform)
+					{
+						transform.gameObject.layer = this.extraLayer2;
+					}
+
+					// lunar wisp
+					if (this.gameObject.name == "LunarWispBody(Clone)")
+					{
+						transform = this.GetComponent<ModelLocator>().modelTransform.Find("StandableSurface/StandableSurface");
+						if (transform)
+						{
+							transform.gameObject.layer = this.extraLayer2;
+						}
 					}
 				}
 				base.gameObject.layer = LayerIndex.defaultLayer.intVal;
@@ -199,6 +241,16 @@ namespace RedGuyMod.Content.Components
 			}
 			base.gameObject.layer = LayerIndex.defaultLayer.intVal;
 			GameObject.Destroy(this);
+		}
+
+		private void OnDestroy()
+        {
+			this.KillBuff();
+		}
+
+		public void KillBuff()
+        {
+			if (NetworkServer.active && this.body && this.empowered) this.body.RemoveBuff(Content.Survivors.RedGuy.grabbedBuff);
 		}
 	}
 }

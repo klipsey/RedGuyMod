@@ -8,47 +8,69 @@ namespace RedGuyMod.SkillStates.Ravager
 {
     public class SpinSlash : BaseMeleeAttack
     {
-        public static float _damageCoefficient = 7.5f;
+        public static float _damageCoefficient = 6f;
 
         private bool hasHopped;
-        private bool airSlash;
+        private SlashType slashType;
+
+        private enum SlashType
+        {
+            Ground,
+            Air,
+            AirDown,
+            AirUp
+        }
 
         public override void OnEnter()
         {
             this.RefreshEmpoweredState();
 
-            this.airSlash = !this.isGrounded;
+            this.slashType = SlashType.Ground;
+            if (!this.isGrounded)
+            {
+                this.slashType = SlashType.Air;
+                if (this.inputBank.aimDirection.y >= -0.1f) this.slashType = SlashType.AirUp;
+                else if (this.inputBank.aimDirection.y <= -0.3f) this.slashType = SlashType.AirDown;
+            }
 
             this.hitboxName = "SwordBig";
 
             this.damageCoefficient = SpinSlash._damageCoefficient;
             this.pushForce = 200f;
-            this.baseDuration = 1.3f;
-            this.baseEarlyExitTime = 0.7f;
+            this.baseDuration = 1.4f;
+            this.baseEarlyExitTime = 0.6f;
             this.attackRecoil = 2f / this.attackSpeedStat;
             this.hitStopDuration = 0.1f;
 
             this.muzzleString = "SwingMuzzleLeap";
+            this.characterMotor.velocity *= 0.2f;
 
-            if (this.airSlash)
+            if (this.slashType == SlashType.AirUp)
             {
                 this.pushForce = 0f;
                 this.bonusForce = Vector3.up * 1000f;
-                this.characterMotor.velocity *= 0.2f;
                 this.muzzleString = "SwingMuzzleUp";
                 this.hitStopDuration = 0f;
             }
+            else if (this.slashType == SlashType.Air)
+            {
+                this.hitStopDuration = 0f;
+            }
+            else if (this.slashType == SlashType.AirDown)
+            {
+                this.muzzleString = "SwingMuzzleDown";
+            }
 
-            this.attackStartTime = 0.13f;
+            this.attackStartTime = 0.15f;
             this.attackEndTime = 0.4f;
 
             this.smoothHitstop = true;
 
-            this.swingSoundString = "sfx_ravager_swing";
-            this.swingEffectPrefab = Modules.Assets.swingEffect;
+            this.swingSoundString = "sfx_ravager_bigswing";
+            this.swingEffectPrefab = this.penis.skinDef.bigSwingEffectPrefab;
             this.hitSoundString = "";
-            this.hitEffectPrefab = Modules.Assets.slashImpactEffect;
-            this.impactSound = Modules.Assets.slashSoundEvent.index;
+            this.hitEffectPrefab = this.penis.skinDef.slashEffectPrefab;
+            this.impactSound = Modules.Assets.bigSlashSoundEvent.index;
             this.hitHopVelocity = 0f;
 
             this.damageType = DamageType.Stun1s;
@@ -63,7 +85,7 @@ namespace RedGuyMod.SkillStates.Ravager
         {
             base.FixedUpdate();
 
-            if (this.airSlash && this.characterMotor.velocity.y <= 0f && !this.hasHopped) this.characterMotor.velocity.y = 0f;
+            if ((this.slashType == SlashType.Air || this.slashType == SlashType.AirUp) && this.characterMotor.velocity.y <= 0f && !this.hasHopped) this.characterMotor.velocity.y = 0f;
         }
 
         protected override void OnHitEnemyAuthority(int amount)
@@ -80,10 +102,15 @@ namespace RedGuyMod.SkillStates.Ravager
                 direction.y = Mathf.Max(direction.y, direction.y * 0.5f);
                 this.FindModelChild("SwordPivot").rotation = Util.QuaternionSafeLookRotation(direction);
 
-                if (this.airSlash && !this.hasHopped)
+                if ((this.slashType == SlashType.Air || this.slashType == SlashType.AirUp) && !this.hasHopped)
                 {
                     this.hasHopped = true;
                     this.characterMotor.velocity = Vector3.up * 19f;
+                }
+                else if (this.slashType == SlashType.AirDown && !this.hasHopped)
+                {
+                    this.characterMotor.velocity = Vector3.up * 19f;
+                    this.hasHopped = true;
                 }
             }
 
@@ -104,31 +131,54 @@ namespace RedGuyMod.SkillStates.Ravager
                 }
             }
 
-            if (this.airSlash)
+            if (this.slashType == SlashType.Air)
             {
-                float force = 8f;
-                if (this.empowered) force = 16f;
+                float force = 18f;
+                if (this.empowered) force = 22f;
                 this.characterMotor.velocity += this.GetAimRay().direction * force;
             }
-            else
+            else if (this.slashType == SlashType.Ground)
             {
-                float force = 12f;
-                if (this.empowered) force = 24f;
+                float force = 40f;
+                if (this.empowered) force = 50f;
                 if (this.inputBank.moveVector != Vector3.zero) this.characterMotor.velocity += this.characterDirection.forward * force;
+            }
+            else if (this.slashType == SlashType.AirUp)
+            {
+                float force = 18f;
+                if (this.empowered) force = 22f;
+                this.characterMotor.velocity += this.GetAimRay().direction * force;
+            }
+            else if (this.slashType == SlashType.AirDown)
+            {
+                float force = 4;
+                if (this.empowered) force = 30f;
+                this.characterMotor.velocity += this.GetAimRay().direction * force;
             }
         }
 
         protected override void PlayAttackAnimation()
         {
-            if (this.airSlash)
+            if (this.slashType == SlashType.AirUp)
             {
                 base.PlayAnimation("FullBody, Override Soft", "BufferEmpty");
                 base.PlayCrossfade("FullBody, Override", "SpinSlashAir", "Slash.playbackRate", this.duration, 0.1f);
             }
-            else
+            else if (this.slashType == SlashType.Ground)
             {
                 base.PlayAnimation("FullBody, Override Soft", "BufferEmpty");
-                base.PlayCrossfade("Gesture, Override", "SpinSlash", "Slash.playbackRate", this.duration, 0.1f);
+                base.PlayCrossfade("Gesture, Override", "SpinSlash2", "Slash.playbackRate", this.duration, 0.1f);
+                base.PlayCrossfade("FullBody, Override", "SpinSlash", "Slash.playbackRate", this.duration, 0.1f);
+            }
+            else if (this.slashType == SlashType.Air)
+            {
+                base.PlayAnimation("FullBody, Override Soft", "BufferEmpty");
+                base.PlayCrossfade("FullBody, Override", "SpinSlashAir2", "Slash.playbackRate", this.duration, 0.1f);
+            }
+            else if (this.slashType == SlashType.AirDown)
+            {
+                base.PlayAnimation("FullBody, Override Soft", "BufferEmpty");
+                base.PlayCrossfade("FullBody, Override", "SpinSlashAir3", "Slash.playbackRate", this.duration, 0.1f);
             }
         }
 

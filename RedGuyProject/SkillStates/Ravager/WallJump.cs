@@ -15,6 +15,9 @@ namespace RedGuyMod.SkillStates.Ravager
         {
             base.FixedUpdate();
 
+			// heha
+			this.jumpAvailable = true;
+
 			if (this.isGrounded)
 			{
 				this.jumpAvailable = true;

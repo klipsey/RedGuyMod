@@ -35,7 +35,7 @@ namespace RedGuyMod
     {
         public const string MODUID = "com.rob.Ravager";
         public const string MODNAME = "Ravager";
-        public const string MODVERSION = "1.0.0";
+        public const string MODVERSION = "1.1.2";
 
         public const string developerPrefix = "ROB";
 
@@ -62,6 +62,8 @@ namespace RedGuyMod
             Modules.Tokens.AddTokens();
             Modules.ItemDisplays.PopulateDisplays();
             //Modules.NetMessages.RegisterNetworkMessages();
+
+            NetworkingAPI.RegisterMessageType<Content.SyncBloodWell>();
 
             new Content.Survivors.RedGuy().CreateCharacter();
 

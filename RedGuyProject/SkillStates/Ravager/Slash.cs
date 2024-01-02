@@ -9,7 +9,7 @@ namespace RedGuyMod.SkillStates.Ravager
 {
     public class Slash : BaseMeleeAttack
     {
-        public static float _damageCoefficient = 3.9f;
+        public static float _damageCoefficient = 3.2f;
 
         public override void OnEnter()
         {
@@ -30,9 +30,9 @@ namespace RedGuyMod.SkillStates.Ravager
             this.smoothHitstop = true;
 
             this.swingSoundString = "sfx_ravager_swing";
-            this.swingEffectPrefab = Modules.Assets.swingEffect;
+            this.swingEffectPrefab = this.penis.skinDef.basicSwingEffectPrefab;
             this.hitSoundString = "";
-            this.hitEffectPrefab = Modules.Assets.slashImpactEffect;
+            this.hitEffectPrefab = this.penis.skinDef.slashEffectPrefab;
             this.impactSound = Modules.Assets.slashSoundEvent.index;
 
             this.damageType = DamageType.Generic;
@@ -84,6 +84,8 @@ namespace RedGuyMod.SkillStates.Ravager
 
         protected override void SetNextState()
         {
+            this.FireShuriken();
+
             int index = this.swingIndex;
             if (index == 0) index = 1;
             else index = 0;

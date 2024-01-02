@@ -36,7 +36,7 @@ namespace RedGuyMod.SkillStates.Ravager
 		public static float turnSpeed = 20f;
 		public static float dragMaxSpeedCoefficient = 5f;
 
-		private float dragDamageCoefficient = 1.1f;
+		private float dragDamageCoefficient = 3f;
 		private float dragDamageInterval = 0.1f;
 		private float dragDamageStopwatch;
 		private float dragStopwatch;
@@ -51,7 +51,7 @@ namespace RedGuyMod.SkillStates.Ravager
 		protected GameObject hitEffectPrefab;
 		protected NetworkSoundEventIndex impactSound;
 		public static float groundSlamDamageCoefficient = 10f;
-		private float chargeDamageCoefficient = 7f;
+		private float chargeDamageCoefficient = 1f;
 		private float chargeImpactForce = 2000f;
 		private Vector3 bonusForce = Vector3.up * 2000f;
 		private Vector3 aimDirection;
@@ -138,6 +138,8 @@ namespace RedGuyMod.SkillStates.Ravager
 			this.subState = DashGrab.SubState.Windup;
 
 			this.penis.inGrab = true;
+
+			this.GetModelAnimator().SetFloat("leapDir", this.inputBank.aimDirection.y);
 		}
 
 		public override void FixedUpdate()
@@ -234,6 +236,16 @@ namespace RedGuyMod.SkillStates.Ravager
 
 								//Util.PlaySound("sfx_ravager_ground_impact", this.gameObject);
 
+								Vector3 attackPosition = this.FindModelChild("HandL").position;
+
+								if (this.grabController.Count > 0)
+                                {
+									foreach (GrabController i in this.grabController)
+                                    {
+										if (i && i.body && i.body.mainHurtBox) attackPosition = i.body.mainHurtBox.transform.position;
+                                    }
+                                }
+
 								BlastAttack.Result result = new BlastAttack
 								{
 									attacker = base.gameObject,
@@ -248,7 +260,7 @@ namespace RedGuyMod.SkillStates.Ravager
 									baseDamage = c * DashGrab.groundSlamDamageCoefficient * this.damageStat,
 									falloffModel = BlastAttack.FalloffModel.SweetSpot,
 									radius = this.groundSlamRadius,
-									position = base.FindModelChild("HandL").position,
+									position = attackPosition,
 									attackerFiltering = AttackerFiltering.NeverHitSelf,
 									teamIndex = base.GetTeam(),
 									inflictor = base.gameObject,
@@ -364,6 +376,8 @@ namespace RedGuyMod.SkillStates.Ravager
 
 							this.wasGrounded = this.isGrounded;
 
+							if (this.dragStopwatch >= this.dragDuration * 0.9f) this.KillBuffs();
+
 							if (this.dragStopwatch >= this.dragDuration || (base.inputBank.jump.justPressed))
 							{
 								/*
@@ -408,6 +422,17 @@ namespace RedGuyMod.SkillStates.Ravager
 			}
 		}
 
+		private void KillBuffs()
+        {
+			foreach (GrabController grabController in this.grabController)
+			{
+				if (grabController)
+				{
+					grabController.KillBuff();
+				}
+			}
+		}
+
 		private void DamageTargets()
 		{
 			foreach (GrabController grabController in this.grabController)
@@ -421,7 +446,7 @@ namespace RedGuyMod.SkillStates.Ravager
 						inflictor = base.gameObject,
 						damage = this.dragDamageCoefficient * this.damageStat,
 						damageColorIndex = DamageColorIndex.Default,
-						damageType = DamageType.Generic,
+						damageType = DamageType.Stun1s,
 						crit = base.RollCrit(),
 						force = Vector3.zero,
 						procChainMask = default(ProcChainMask),
@@ -456,15 +481,11 @@ namespace RedGuyMod.SkillStates.Ravager
 			AkSoundEngine.StopPlayingID(this.soundID);
 			base.modelLocator.normalizeToFloor = false;
 			this.animator.SetBool("dragGround", false);
-			if (base.cameraTargetParams)
-			{
-				base.cameraTargetParams.fovOverride = -1f;
-			}
+
 			if (this.grabController.Count > 0)
 			{
 				if (this.releaseEnemies)
 				{
-
 					foreach (GrabController grabController in this.grabController)
 					{
 						if (grabController)
@@ -482,6 +503,8 @@ namespace RedGuyMod.SkillStates.Ravager
 							grabController.Launch(base.characterMotor.moveDirection.normalized * DashGrab.launchForce + Vector3.up * DashGrab.upForce);
 						}
 					}
+
+					this.DamageTargets();
 				}
 			}
 
@@ -548,6 +571,7 @@ namespace RedGuyMod.SkillStates.Ravager
 							GrabController grabController = hurtBox.healthComponent.body.gameObject.AddComponent<GrabController>();
 							grabController.pivotTransform = base.FindModelChild("HandL");
 							grabController.attackerBody = this.characterBody;
+							grabController.empowered = this.empowered;
 
 							if (this.fireEffect) EntityState.Destroy(this.fireEffect);
 							this.grabController.Add(grabController);

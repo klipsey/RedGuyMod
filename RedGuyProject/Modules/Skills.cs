@@ -1,5 +1,6 @@
 ﻿using EntityStates;
 using R2API;
+using RedGuyMod.Content;
 using RoR2;
 using RoR2.Skills;
 using System;
@@ -11,7 +12,7 @@ namespace RedGuyMod.Modules
     internal static class Skills
     {
         internal static List<SkillFamily> skillFamilies = new List<SkillFamily>();
-        internal static List<SkillDef> skillDefs = new List<SkillDef>();
+        internal static List<RavagerSkillDef> skillDefs = new List<RavagerSkillDef>();
 
         #region genericskills
         public static void CreateSkillFamilies(GameObject targetPrefab, int families = 15, bool destroyExisting = true) {
@@ -105,13 +106,13 @@ namespace RedGuyMod.Modules
         #endregion
 
         #region skilldefs
-        public static SkillDef CreateSkillDef(SkillDefInfo skillDefInfo) {
+        public static RavagerSkillDef CreateSkillDef(SkillDefInfo skillDefInfo) {
 
-            return CreateSkillDef<SkillDef>(skillDefInfo);
+            return CreateSkillDef<RavagerSkillDef>(skillDefInfo);
         }
 
-        public static T CreateSkillDef<T>(SkillDefInfo skillDefInfo) where T : SkillDef {
-
+        public static T CreateSkillDef<T>(SkillDefInfo skillDefInfo) where T : RavagerSkillDef
+        {
             T skillDef = ScriptableObject.CreateInstance<T>();
 
             popuplateSKillDef(skillDefInfo, skillDef);
@@ -121,12 +122,14 @@ namespace RedGuyMod.Modules
             return skillDef;
         }
 
-        private static void popuplateSKillDef(SkillDefInfo skillDefInfo, SkillDef skillDef) {
+        private static void popuplateSKillDef(SkillDefInfo skillDefInfo, RavagerSkillDef skillDef) {
             skillDef.skillName = skillDefInfo.skillName;
             (skillDef as ScriptableObject).name = skillDefInfo.skillName;
             skillDef.skillNameToken = skillDefInfo.skillNameToken;
             skillDef.skillDescriptionToken = skillDefInfo.skillDescriptionToken;
-            skillDef.icon = skillDefInfo.skillIcon;
+            skillDef.icon = skillDefInfo.baseIcon;
+            skillDef.baseIcon = skillDefInfo.baseIcon;
+            skillDef.empoweredIcon = skillDefInfo.empoweredIcon;
 
             skillDef.activationState = skillDefInfo.activationState;
             skillDef.activationStateMachineName = skillDefInfo.activationStateMachineName;
@@ -148,9 +151,9 @@ namespace RedGuyMod.Modules
             skillDef.keywordTokens = skillDefInfo.keywordTokens;
         }
 
-        internal static SkillDef CreatePrimarySkillDef(SerializableEntityStateType state, string stateMachine, string skillNameToken, string skillDescriptionToken, Sprite skillIcon, bool agile) {
+        internal static RavagerSkillDef CreatePrimarySkillDef(SerializableEntityStateType state, string stateMachine, string skillNameToken, string skillDescriptionToken, Sprite skillIcon, Sprite skillIcon2, bool agile) {
 
-            SkillDefInfo info = new SkillDefInfo(skillNameToken, skillNameToken, skillDescriptionToken, skillIcon, state, stateMachine, agile);
+            SkillDefInfo info = new SkillDefInfo(skillNameToken, skillNameToken, skillDescriptionToken, skillIcon, skillIcon2, state, stateMachine, agile);
 
             return CreateSkillDef(info);
         }
@@ -168,7 +171,8 @@ internal class SkillDefInfo
         public string skillNameToken;
         public string skillDescriptionToken;
         public string[] keywordTokens = new string[0];
-        public Sprite skillIcon;
+        public Sprite baseIcon;
+        public Sprite empoweredIcon;
 
         public SerializableEntityStateType activationState;
         public InterruptPriority interruptPriority;
@@ -197,7 +201,7 @@ internal class SkillDefInfo
         public SkillDefInfo(string skillName,
                               string skillNameToken,
                               string skillDescriptionToken,
-                              Sprite skillIcon,
+                              Sprite skillIcon, Sprite skillIcon2,
 
                               SerializableEntityStateType activationState,
                               string activationStateMachineName,
@@ -208,7 +212,8 @@ internal class SkillDefInfo
             this.skillName = skillName;
             this.skillNameToken = skillNameToken;
             this.skillDescriptionToken = skillDescriptionToken;
-            this.skillIcon = skillIcon;
+            this.baseIcon = skillIcon;
+            this.empoweredIcon = skillIcon2;
             this.activationState = activationState;
             this.activationStateMachineName = activationStateMachineName;
             this.interruptPriority = interruptPriority;
@@ -222,7 +227,7 @@ internal class SkillDefInfo
         public SkillDefInfo(string skillName,
                               string skillNameToken,
                               string skillDescriptionToken,
-                              Sprite skillIcon,
+                              Sprite skillIcon, Sprite skillIcon2,
 
                               SerializableEntityStateType activationState,
                               string activationStateMachineName = "Weapon",
@@ -231,7 +236,8 @@ internal class SkillDefInfo
             this.skillName = skillName;
             this.skillNameToken = skillNameToken;
             this.skillDescriptionToken = skillDescriptionToken;
-            this.skillIcon = skillIcon;
+            this.baseIcon = skillIcon;
+            this.empoweredIcon = skillIcon2;
 
             this.activationState = activationState;
             this.activationStateMachineName = activationStateMachineName;

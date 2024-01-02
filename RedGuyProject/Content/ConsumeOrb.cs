@@ -21,15 +21,23 @@ namespace RedGuyMod.Content
 
             effectData.SetHurtBoxReference(this.target);
 
-            EffectManager.SpawnEffect(Modules.Assets.consumeOrb, effectData, true);
+            GameObject effectPrefab = Modules.Assets.consumeOrb;
+            if (this.target)
+            {
+                Components.RedGuyController penis = this.target.healthComponent.gameObject.GetComponent<Components.RedGuyController>();
+                if (penis)
+                {
+                    effectPrefab = penis.skinDef.bloodOrbEffectPrefab;
+                }
+            }
+
+            EffectManager.SpawnEffect(effectPrefab, effectData, true);
         }
 
         public override void OnArrival()
         {
             if (this.target)
             {
-                Util.PlaySound("sfx_ravager_consume", this.target.gameObject);
-
                 if (this.target.healthComponent)
                 {
                     if (this.healOverride != -1f)
@@ -38,16 +46,22 @@ namespace RedGuyMod.Content
                     }
                     else this.target.healthComponent.HealFraction(0.3f, default(ProcChainMask));
 
-                    Transform modelTransform = this.target.healthComponent.body.modelLocator.modelTransform;
-                    if (modelTransform && BlinkState.destealthMaterial)
+                    Components.RedGuyController penis = this.target.healthComponent.gameObject.GetComponent<Components.RedGuyController>();
+                    if (penis)
                     {
-                        TemporaryOverlay temporaryOverlay = modelTransform.gameObject.AddComponent<TemporaryOverlay>();
-                        temporaryOverlay.duration = 1f;
-                        temporaryOverlay.destroyComponentOnEnd = true;
-                        temporaryOverlay.originalMaterial = BlinkState.destealthMaterial;
-                        temporaryOverlay.inspectorCharacterModel = modelTransform.GetComponent<CharacterModel>();
-                        temporaryOverlay.alphaCurve = AnimationCurve.EaseInOut(0f, 1f, 1f, 0f);
-                        temporaryOverlay.animateShaderAlpha = true;
+                        Transform modelTransform = this.target.healthComponent.body.modelLocator.modelTransform;
+                        if (modelTransform && penis.skinDef)
+                        {
+                            TemporaryOverlay temporaryOverlay = modelTransform.gameObject.AddComponent<TemporaryOverlay>();
+                            temporaryOverlay.duration = 1f;
+                            temporaryOverlay.destroyComponentOnEnd = true;
+                            temporaryOverlay.originalMaterial = penis.skinDef.bloodOrbOverlayMaterial;
+                            temporaryOverlay.inspectorCharacterModel = modelTransform.GetComponent<CharacterModel>();
+                            temporaryOverlay.alphaCurve = AnimationCurve.EaseInOut(0f, 1f, 1f, 0f);
+                            temporaryOverlay.animateShaderAlpha = true;
+                        }
+
+                        Util.PlaySound(penis.skinDef.consumeSoundString, this.target.gameObject);
                     }
                 }
             }

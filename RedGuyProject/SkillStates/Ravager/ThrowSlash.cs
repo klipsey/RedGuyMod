@@ -10,6 +10,7 @@ namespace RedGuyMod.SkillStates.Ravager
     {
         public override void OnEnter()
         {
+            this.RefreshEmpoweredState();
             this.hitboxName = "Sword";
 
             this.damageCoefficient = Util.Remap(this.characterMotor.velocity.magnitude, 0f, 90f, Slash._damageCoefficient, Slash._damageCoefficient * 4f);
@@ -25,9 +26,9 @@ namespace RedGuyMod.SkillStates.Ravager
             this.smoothHitstop = true;
 
             this.swingSoundString = "sfx_ravager_swing";
-            this.swingEffectPrefab = Modules.Assets.swingEffect;
+            this.swingEffectPrefab = this.penis.skinDef.basicSwingEffectPrefab;
             this.hitSoundString = "";
-            this.hitEffectPrefab = Modules.Assets.slashImpactEffect;
+            this.hitEffectPrefab = this.penis.skinDef.slashEffectPrefab;
             this.impactSound = Modules.Assets.slashSoundEvent.index;
 
             this.damageType = DamageType.Generic;

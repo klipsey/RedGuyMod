@@ -31,14 +31,14 @@ namespace RedGuyMod.Modules
 
             #region Skins
             LanguageAPI.Add(prefix + "DEFAULT_SKIN_NAME", "Default");
-            LanguageAPI.Add(prefix + "MONSOON_SKIN_NAME", "");
+            LanguageAPI.Add(prefix + "MONSOON_SKIN_NAME", "Divine");
             LanguageAPI.Add(prefix + "TYPHOON_SKIN_NAME", "");
             LanguageAPI.Add(prefix + "MINECRAFT_SKIN_NAME", "Minecraft");
             #endregion
 
             #region Passive
             LanguageAPI.Add(prefix + "PASSIVE_NAME", "Physical Prowess");
-            LanguageAPI.Add(prefix + "PASSIVE_DESCRIPTION", $"The Ravager can <style=cIsUtility>jump off walls</style> once before landing. Jumping off <style=cIsHealth>enemies</style> ignores this limit.");
+            LanguageAPI.Add(prefix + "PASSIVE_DESCRIPTION", $"The Ravager can <style=cIsUtility>jump off walls</style> and <style=cIsHealth>enemies</style>. Wall jumps can be charged for a mighty leap.");
 
             LanguageAPI.Add(prefix + "CONFIRM_NAME", "Confirm");
             LanguageAPI.Add(prefix + "CONFIRM_DESCRIPTION", "Proceed with the current skill.");
@@ -74,19 +74,24 @@ namespace RedGuyMod.Modules
 
             LanguageAPI.Add(prefix + "SPECIAL_GRAB_SCEPTER_NAME", "Vicious Assault");
             //LanguageAPI.Add(prefix + "SPECIAL_GRAB_SCEPTER_DESCRIPTION", $"Throw a grenade that <style=cIsUtility>stuns</style> enemies for <style=cIsDamage>{100f * SkillStates.Driver.ThrowGrenade.damageCoefficient}% damage</style>. <style=cIsUtility>You can hold up to two.</style>" + Helpers.ScepterDescription("Throw a molotov that bursts into flames instead."));
+
+            LanguageAPI.Add(prefix + "SPECIAL_TRANSFIGURE_NAME", "Brutalize");
+            LanguageAPI.Add(prefix + "SPECIAL_GRAB_DESCRIPTION", $"Lunge and <style=cIsUtility>grab</style> nearby enemies, then slam down for <style=cIsDamage>{100f * SkillStates.Ravager.DashGrab.groundSlamDamageCoefficient}% damage</style>. If this kills, <style=cIsHealth>consume</style> them to restore <style=cIsHealing>30% max health</style>.");
+
             #endregion
 
             #region Keywords
+            LanguageAPI.Add("KEYWORD_REDGUY_M12", "<style=cKeywordName>Hold Stance</style><style=cSub>While charging a wall jump, enter a <style=cIsUtility>hold stance</style>. Release to swing for up to <style=cIsDamage>4x damage</style> based on velocity.");
             LanguageAPI.Add("KEYWORD_REDGUY_M1", "<style=cKeywordName>Empowered Effect</style><style=cSub>Swings faster.");
             LanguageAPI.Add("KEYWORD_REDGUY_M2", "<style=cKeywordName>Empowered Effect</style><style=cSub>Deals more damage to <style=cIsUtility>low health enemies</style>.");
-            LanguageAPI.Add("KEYWORD_REDGUY_HEAL", "<style=cKeywordName>Empowered Effect</style><style=cSub>Grants brief <style=cIsUtility>invulnerability</style> and heals more.");
+            LanguageAPI.Add("KEYWORD_REDGUY_HEAL", $"<style=cKeywordName>Empowered Effect</style><style=cSub>Explodes for up to <style=cIsDamage>{100f * SkillStates.Ravager.Heal.maxDamageCoefficient}% damage</style>.");
             LanguageAPI.Add("KEYWORD_REDGUY_GRAB", "<style=cKeywordName>Empowered Effect</style><style=cSub>Drags enemy along the ground, dealing damage over time.");
             #endregion
 
             #region Achievements
-            LanguageAPI.Add(prefix + "UNLOCKABLE_UNLOCKABLE_NAME", "A Real Hero");
-            LanguageAPI.Add(prefix + "UNLOCKABLE_ACHIEVEMENT_NAME", "A Real Hero");
-            LanguageAPI.Add(prefix + "UNLOCKABLE_ACHIEVEMENT_DESC", "Reach stage 3 in less than 15 minutes.");
+            LanguageAPI.Add(prefix + "UNLOCKABLE_UNLOCKABLE_NAME", "Paint It Red");
+            LanguageAPI.Add(prefix + "UNLOCKABLE_ACHIEVEMENT_NAME", "Paint It Red");
+            LanguageAPI.Add(prefix + "UNLOCKABLE_ACHIEVEMENT_DESC", "Apply 50 stacks of Bleed on one enemy.");
 
             LanguageAPI.Add(prefix + "MONSOONUNLOCKABLE_UNLOCKABLE_NAME", "Ravager: Mastery");
             LanguageAPI.Add(prefix + "MONSOONUNLOCKABLE_ACHIEVEMENT_NAME", "Ravager: Mastery");
@@ -95,14 +100,15 @@ namespace RedGuyMod.Modules
             LanguageAPI.Add(prefix + "TYPHOON_UNLOCKABLE_UNLOCKABLE_NAME", "Ravager: Grand Mastery");
             LanguageAPI.Add(prefix + "TYPHOON_UNLOCKABLE_ACHIEVEMENT_NAME", "Ravager: Grand Mastery");
             LanguageAPI.Add(prefix + "TYPHOON_UNLOCKABLE_ACHIEVEMENT_DESC", "As Ravager, beat the game or obliterate on Typhoon or Eclipse.\n<color=#8888>(Counts any difficulty Typhoon or higher)</color>");
+            //Ravager: Hungry
+            //As Ravager, consume 8 enemies with one grab.
+            LanguageAPI.Add(prefix + "BEAM_UNLOCKABLE_UNLOCKABLE_NAME", "Ravager: In a Trail of Fire");
+            LanguageAPI.Add(prefix + "BEAM_UNLOCKABLE_ACHIEVEMENT_NAME", "Ravager: In a Trail of Fire");
+            LanguageAPI.Add(prefix + "BEAM_UNLOCKABLE_ACHIEVEMENT_DESC", "As Ravager, slam an enemy into the ground 5+ times in one grab.");
 
-            LanguageAPI.Add(prefix + "SUPPLY_DROP_UNLOCKABLE_UNLOCKABLE_NAME", "Ravager: Locked and Loaded");
-            LanguageAPI.Add(prefix + "SUPPLY_DROP_UNLOCKABLE_ACHIEVEMENT_NAME", "Ravager: Locked and Loaded");
-            LanguageAPI.Add(prefix + "SUPPLY_DROP_UNLOCKABLE_ACHIEVEMENT_DESC", "As Ravager, complete a teleporter event without letting any briefcases despawn.");
-
-            LanguageAPI.Add(prefix + "SUIT_UNLOCKABLE_UNLOCKABLE_NAME", "Ravager: Dressed to Kill");
-            LanguageAPI.Add(prefix + "SUIT_UNLOCKABLE_ACHIEVEMENT_NAME", "Ravager: Dressed to Kill");
-            LanguageAPI.Add(prefix + "SUIT_UNLOCKABLE_ACHIEVEMENT_DESC", "As Ravager, land the killing blow on a boss with a Sniper Rifle.");
+            LanguageAPI.Add(prefix + "SUIT_UNLOCKABLE_UNLOCKABLE_NAME", "Ravager: All My Fellas");
+            LanguageAPI.Add(prefix + "SUIT_UNLOCKABLE_ACHIEVEMENT_NAME", "Ravager: All My Fellas");
+            LanguageAPI.Add(prefix + "SUIT_UNLOCKABLE_ACHIEVEMENT_DESC", "As Ravager, have 15 allies alive at once.");
             #endregion
         }
     }

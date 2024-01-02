@@ -63,6 +63,7 @@ namespace RedGuyMod.SkillStates.Ravager
         {
             base.FixedUpdate();
             this.stopwatch += Time.fixedDeltaTime;
+            if (this.empowered) this.stopwatch += 4f * Time.fixedDeltaTime;
             this.characterBody.outOfCombatStopwatch = 0f;
             this.StartAimMode(0.5f);
             this.characterBody.isSprinting = false;
@@ -109,7 +110,7 @@ namespace RedGuyMod.SkillStates.Ravager
                     {
                         Util.PlaySound("sfx_ravager_beam_consume", pc.gameObject);
                         projectileCount++;
-                        this.stopwatch += 3f;
+                        this.stopwatch += 2f;
                         Destroy(pc.gameObject);
 
                         Vector3 position = this.chargeEffectInstance.transform.position;
@@ -136,12 +137,15 @@ namespace RedGuyMod.SkillStates.Ravager
 
             base.AddRecoil(-0.4f * recoilAmplitude, -0.8f * recoilAmplitude, -0.3f * recoilAmplitude, 0.3f * recoilAmplitude);
             this.characterBody.AddSpreadBloom(4f);
-            EffectManager.SimpleMuzzleFlash(Addressables.LoadAssetAsync<GameObject>("RoR2/Base/Brother/MuzzleflashLunarShard.prefab").WaitForCompletion(), gameObject, "HandL", false);
+            EffectManager.SimpleMuzzleFlash(Addressables.LoadAssetAsync<GameObject>("RoR2/Base/Golem/MuzzleflashGolem.prefab").WaitForCompletion(), gameObject, "HandL", false);
 
             GameObject tracer = null;
             GameObject impact = null;
 
-            if (storedCharge < 0.33f)
+            tracer = Addressables.LoadAssetAsync<GameObject>("RoR2/DLC1/Railgunner/TracerRailgunSuper.prefab").WaitForCompletion();
+            impact = Addressables.LoadAssetAsync<GameObject>("RoR2/Base/Golem/ExplosionGolem.prefab").WaitForCompletion();
+
+            /*if (storedCharge < 0.33f)
             {
                 tracer = Addressables.LoadAssetAsync<GameObject>("RoR2/DLC1/Railgunner/TracerRailgun.prefab").WaitForCompletion();
                 impact = Addressables.LoadAssetAsync<GameObject>("RoR2/DLC1/Railgunner/ImpactRailgun.prefab").WaitForCompletion();
@@ -155,7 +159,7 @@ namespace RedGuyMod.SkillStates.Ravager
             {
                 tracer = Addressables.LoadAssetAsync<GameObject>("RoR2/Base/Golem/TracerGolem.prefab").WaitForCompletion();
                 impact = Addressables.LoadAssetAsync<GameObject>("RoR2/Base/Golem/ExplosionGolemDeath.prefab").WaitForCompletion();
-            }
+            }*/
 
             //fire_beam
             Util.PlaySound("sfx_ravager_explosion", this.gameObject);
@@ -175,7 +179,7 @@ namespace RedGuyMod.SkillStates.Ravager
                     damageType = DamageType.Stun1s,
                     falloffModel = BulletAttack.FalloffModel.None,
                     maxDistance = 2000f,
-                    force = 2500f,
+                    force = Util.Remap(storedCharge, 0f, 1f, 5f, 5000f),
                     hitMask = LayerIndex.CommonMasks.bullet,
                     isCrit = this.RollCrit(),
                     owner = this.gameObject,
@@ -192,7 +196,7 @@ namespace RedGuyMod.SkillStates.Ravager
                     spreadYawScale = 1f,
                     queryTriggerInteraction = QueryTriggerInteraction.UseGlobal,
                     hitEffectPrefab = impact,
-                    HitEffectNormal = false,
+                    HitEffectNormal = impact,
                     maxSpread = 0f,
                     minSpread = 0f,
                     bulletCount = 1

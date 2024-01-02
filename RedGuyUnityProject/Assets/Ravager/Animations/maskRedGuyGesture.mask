@@ -43,6 +43,16 @@ AvatarMask:
     m_Weight: 1
   - m_Path: Armature/ROOT/base/stomach/chest/head
     m_Weight: 1
+  - m_Path: Armature/ROOT/base/stomach/chest/head/halo
+    m_Weight: 1
+  - m_Path: Armature/ROOT/base/stomach/chest/head/headtail.01
+    m_Weight: 1
+  - m_Path: Armature/ROOT/base/stomach/chest/head/headtail.01/headtail.02
+    m_Weight: 1
+  - m_Path: Armature/ROOT/base/stomach/chest/head/headtail.01/headtail.02/headtail.03
+    m_Weight: 1
+  - m_Path: Armature/ROOT/base/stomach/chest/head/headtail.01/headtail.02/headtail.03/headtail.04
+    m_Weight: 1
   - m_Path: Armature/ROOT/base/stomach/chest/shoulder.l
     m_Weight: 1
   - m_Path: Armature/ROOT/base/stomach/chest/shoulder.l/spike.01.01
@@ -129,6 +139,12 @@ AvatarMask:
     m_Weight: 1
   - m_Path: Armature/ROOT/base/stomach/chest/shoulder.r/upperarm.r/lowerarm.r/hand.r/weapon.r/sword.tip
     m_Weight: 1
+  - m_Path: Armature/ROOT/base/stomach/chest/tentacle.01
+    m_Weight: 1
+  - m_Path: Armature/ROOT/base/stomach/tentacle.02
+    m_Weight: 1
+  - m_Path: Armature/ROOT/base/stomach/tentacle.03
+    m_Weight: 1
   - m_Path: Armature/ROOT/ik.elbow.l
     m_Weight: 0
   - m_Path: Armature/ROOT/ik.elbow.r
@@ -148,6 +164,8 @@ AvatarMask:
   - m_Path: meshBody
     m_Weight: 0
   - m_Path: meshBodyAlt
+    m_Weight: 0
+  - m_Path: meshDivineWheel
     m_Weight: 0
   - m_Path: meshGun
     m_Weight: 0

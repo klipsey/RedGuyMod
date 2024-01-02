@@ -1,12 +1,12 @@
 ManifestFileVersion: 0
-CRC: 3602569144
+CRC: 760226568
 Hashes:
   AssetFileHash:
     serializedVersion: 2
-    Hash: d4086a7ed24c315df90eeb188c4ab0c5
+    Hash: b9bec572c7b5276f88db0651f8a7bdaf
   TypeTreeHash:
     serializedVersion: 2
-    Hash: 59e51547d839c211e9ab608c4b228fa8
+    Hash: f486804d8030e363181b10babec2be60
 HashAppended: 0
 ClassTypes:
 - Class: 1
@@ -38,7 +38,11 @@ ClassTypes:
 - Class: 108
   Script: {instanceID: 0}
 - Class: 114
+  Script: {fileID: -765806418, guid: f70555f144d8491a825f0804e09c671c, type: 3}
+- Class: 114
   Script: {fileID: 11500000, guid: 67079b849227b734694872d8810229b8, type: 3}
+- Class: 114
+  Script: {fileID: 11500000, guid: 2334069450a65d042a95a873e5229b20, type: 3}
 - Class: 114
   Script: {fileID: 11500000, guid: db294d07add6b364f99a346939dd2a8a, type: 3}
 - Class: 115
@@ -55,29 +59,46 @@ ClassTypes:
   Script: {instanceID: 0}
 - Class: 213
   Script: {instanceID: 0}
+- Class: 222
+  Script: {instanceID: 0}
+- Class: 224
+  Script: {instanceID: 0}
 - Class: 319
   Script: {instanceID: 0}
 Assets:
 - Assets/Ravager/Textures/texBodyEmission.png
+- Assets/Ravager/FBX/meshImpWrap.mesh
+- Assets/Ravager/FBX/meshSwordAlt 1.mesh
 - Assets/Ravager/FBX/meshBody.mesh
+- Assets/Ravager/VFX/matBlackLightning.mat
 - Assets/Ravager/Animations/SprintF.anim
 - Assets/Ravager/Animations/maskRedGuySpike2.mask
 - Assets/Ravager/Animations/Spike2Idle.anim
+- Assets/Ravager/Materials/matBodyAlt.mat
+- Assets/Ravager/HUD/Textures/texBulletIndicator.png
 - Assets/Ravager/mdlRavager.prefab
 - Assets/Ravager/Icons/texGrabIcon.png
 - Assets/Ravager/Animations/Spike3Idle.anim
 - Assets/Ravager/Animations/AimPitch.anim
 - Assets/Ravager/Animations/DefaultPose.anim
+- Assets/Ravager/Textures/texBodyAlt.png
+- Assets/Ravager/Icons/texSpinSlashIcon2.png
+- Assets/Ravager/HUD/Textures/texWhite.png
 - Assets/Ravager/Materials/matPlaceholder.mat
 - Assets/Ravager/RavagerDisplay.prefab
+- Assets/Ravager/Textures/texSwordAlt.png
 - Assets/Ravager/Icons/texSpinSlashIcon.png
 - Assets/Ravager/Animations/LightImpact.anim
+- Assets/Ravager/Icons/texGrabIconScepter.png
+- Assets/Ravager/Icons/texSlashIcon2.png
 - Assets/Ravager/Textures/texSword.png
 - Assets/Ravager/Icons/texMonsoonSkin.png
+- Assets/Ravager/FBX/meshDivineWheel.mesh
 - Assets/Ravager/Icons/texConfirmIcon.png
 - Assets/Ravager/FBX/meshSwordAlt.mesh
 - Assets/Ravager/Icons/texMinecraftSkin.png
 - Assets/Ravager/Icons/texRavagerAchievement.png
+- Assets/Ravager/VFX/texBlackLightning.png
 - Assets/Ravager/Icons/texMainSkin.png
 - Assets/Ravager/Animations/Ascend.anim
 - Assets/Ravager/Animations/maskRedGuyGesture.mask
@@ -85,28 +106,38 @@ Assets:
 - Assets/Ravager/Animations/SprintDrag.anim
 - Assets/Ravager/Icons/texRavagerIcon.png
 - Assets/Ravager/Animations/animRedGuy.controller
+- Assets/Ravager/HUD/WeaponChargeBar.prefab
+- Assets/Ravager/Animations/RestIdle.anim
 - Assets/Ravager/Animations/animRedGuyCSS.controller
 - Assets/Ravager/Animations/Spike1Idle.anim
 - Assets/Ravager/FBX/meshBodyAlt.mesh
+- Assets/Ravager/Icons/texGrabIcon2.png
 - Assets/Ravager/Textures/texSwordEmission.png
-- Assets/Ravager/Animations/RestIdle.anim
 - Assets/Ravager/Animations/maskRedGuySpikes.mask
 - Assets/Ravager/Animations/maskRedGuyAim.mask
 - Assets/Ravager/Animations/AimYaw.anim
+- Assets/Ravager/Materials/matSwordAlt.mat
+- Assets/Ravager/HUD/ChargeRing.prefab
 - Assets/Ravager/Animations/Idle.anim
 - Assets/Ravager/FBX/meshSword.mesh
 - Assets/Ravager/Icons/texPassiveIcon.png
+- Assets/Ravager/HUD/Textures/texChargeRing.png
 - Assets/Ravager/Textures/texBody.png
+- Assets/Ravager/Icons/texGrabIconScepter2.png
 - Assets/Ravager/Animations/Descend.anim
+- Assets/Ravager/HUD/ChargeBar.prefab
 - Assets/Ravager/Animations/maskRedGuySpike3.mask
 - Assets/Ravager/Materials/matSword.mat
 - Assets/Ravager/Animations/SpikesActive.anim
 - Assets/Ravager/Materials/matBody.mat
 - Assets/Ravager/Animations/DescendFast.anim
 - Assets/Ravager/Icons/texCancelIcon.png
+- Assets/Ravager/Animations/SprintSlow.anim
 - Assets/Ravager/Icons/texSlashIcon.png
 - Assets/Ravager/Animations/RunF.anim
 - Assets/Ravager/Animations/maskRedGuySpike1.mask
 - Assets/Ravager/FBX/animRedGuy.fbx
+- Assets/Ravager/HUD/Textures/texSniperBulletIndicator.png
 - Assets/Ravager/Animations/MenuIdle.anim
+- Assets/Ravager/Icons/texHealIcon2.png
 Dependencies: []

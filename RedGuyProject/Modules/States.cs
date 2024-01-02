@@ -10,6 +10,7 @@ namespace RedGuyMod.Modules
         public static void RegisterStates()
         {
             entityStates.Add(typeof(RedGuyMod.SkillStates.FuckMyAss));
+            entityStates.Add(typeof(RedGuyMod.SkillStates.Ravager.SpawnState));
 
             entityStates.Add(typeof(RedGuyMod.SkillStates.BaseStates.BaseMeleeAttack));
 

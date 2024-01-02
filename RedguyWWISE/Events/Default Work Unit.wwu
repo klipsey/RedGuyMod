@@ -245,6 +245,50 @@
 						</Action>
 					</ChildrenList>
 				</Event>
+				<Event Name="sfx_ravager_bigswing" ID="{AB79A403-C1AB-4B6C-B2B9-6BBEDF3A9597}">
+					<ChildrenList>
+						<Action Name="" ID="{A0ED5C0B-826A-41F7-89C2-419EC9E99ECB}" ShortID="328424649">
+							<ReferenceList>
+								<Reference Name="Target">
+									<ObjectRef Name="sfx_ravager_bigswing" ID="{A1DEFA68-4826-452D-8EFD-6077A7717824}" WorkUnitID="{FE3FA7C5-9E89-40FE-8C7C-97CE0994E519}"/>
+								</Reference>
+							</ReferenceList>
+						</Action>
+					</ChildrenList>
+				</Event>
+				<Event Name="sfx_ravager_bigslash" ID="{57F3497C-E873-4EB1-BA6B-05153D3AA0E5}">
+					<ChildrenList>
+						<Action Name="" ID="{16ABC969-10C5-4A6C-A6BB-DE7C1AE518DA}" ShortID="530250499">
+							<ReferenceList>
+								<Reference Name="Target">
+									<ObjectRef Name="sfx_ravager_bigslash" ID="{C63CCC8C-F716-4ADE-8E33-BC84A5A38F63}" WorkUnitID="{FE3FA7C5-9E89-40FE-8C7C-97CE0994E519}"/>
+								</Reference>
+							</ReferenceList>
+						</Action>
+					</ChildrenList>
+				</Event>
+				<Event Name="sfx_ravager_consume_alt" ID="{5368BC90-E6F4-403B-BC44-3EA527B2D1BF}">
+					<ChildrenList>
+						<Action Name="" ID="{1C4E77A4-0030-4DB3-8D46-096BEAFD32FF}" ShortID="744699197">
+							<ReferenceList>
+								<Reference Name="Target">
+									<ObjectRef Name="sfx_ravager_heal_alt" ID="{B3A69413-39E0-4377-90DA-424215E86679}" WorkUnitID="{FE3FA7C5-9E89-40FE-8C7C-97CE0994E519}"/>
+								</Reference>
+							</ReferenceList>
+						</Action>
+					</ChildrenList>
+				</Event>
+				<Event Name="sfx_ravager_wheel" ID="{CAC9D206-55FB-47C5-B252-CFA06E7F5920}">
+					<ChildrenList>
+						<Action Name="" ID="{EA0C891B-7BCF-4A57-AF78-59E0E3B3C121}" ShortID="243573505">
+							<ReferenceList>
+								<Reference Name="Target">
+									<ObjectRef Name="sfx_redguy_wheel" ID="{AB9F0365-04D3-4CC1-85CF-B683923BD858}" WorkUnitID="{FE3FA7C5-9E89-40FE-8C7C-97CE0994E519}"/>
+								</Reference>
+							</ReferenceList>
+						</Action>
+					</ChildrenList>
+				</Event>
 			</ChildrenList>
 		</WorkUnit>
 	</Events>
