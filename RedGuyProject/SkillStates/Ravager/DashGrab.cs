@@ -10,6 +10,7 @@ using RoR2.Projectile;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using UnityEngine.Networking;
+using static RoR2.CameraTargetParams;
 
 namespace RedGuyMod.SkillStates.Ravager
 {
@@ -51,7 +52,7 @@ namespace RedGuyMod.SkillStates.Ravager
 		protected GameObject hitEffectPrefab;
 		protected NetworkSoundEventIndex impactSound;
 		public static float groundSlamDamageCoefficient = 10f;
-		private float chargeDamageCoefficient = 1f;
+		private float chargeDamageCoefficient = 8f;
 		private float chargeImpactForce = 2000f;
 		private Vector3 bonusForce = Vector3.up * 2000f;
 		private Vector3 aimDirection;
@@ -65,7 +66,11 @@ namespace RedGuyMod.SkillStates.Ravager
 		private DashGrab.SubState subState;
 		public static float dodgeFOV = DodgeState.dodgeFOV;
 		private uint soundID;
+		private bool c1;
+		private bool c2;
 		private bool releaseEnemies;
+		private CameraParamsOverrideHandle camParamsOverrideHandle;
+		private CameraParamsOverrideHandle camParamsOverrideHandle2;
 
 		private enum SubState
 		{
@@ -177,6 +182,9 @@ namespace RedGuyMod.SkillStates.Ravager
 					{
 						this.stopwatch = 0f;
 						this.subState = DashGrab.SubState.AirGrabbed;
+
+						this.c1 = true;
+						this.camParamsOverrideHandle = Modules.CameraParams.OverrideCameraParams(base.cameraTargetParams, RavagerCameraParams.SLAM, 2f);
 					}
 					else
 					{
@@ -283,9 +291,13 @@ namespace RedGuyMod.SkillStates.Ravager
 							this.subState = DashGrab.SubState.Dragging;
 							this.stopwatch = 0f;
 
+							this.cameraTargetParams.RemoveParamsOverride(this.camParamsOverrideHandle);
+							//this.camParamsOverrideHandle2 = Modules.CameraParams.OverrideCameraParams(base.cameraTargetParams, RavagerCameraParams.DRAG, 1f);
+							//this.c2 = true;
+
 							//base.PlayAnimation("FullBody, Override", "SSpecGrab", "Slash.playbackRate", this.grabDuration);
 
-							this.soundID = Util.PlaySound("DragLoop", base.gameObject);
+							this.soundID = Util.PlaySound("sfx_ravager_dragloop", base.gameObject);
 							this.animator.SetBool("dragGround", true);
 						}
 						else
@@ -467,15 +479,14 @@ namespace RedGuyMod.SkillStates.Ravager
 			base.OnExit();
 			this.penis.inGrab = false;
 
-			if (this.dragEffect)
-			{
-				EntityState.Destroy(this.dragEffect);
-			}
-			AkSoundEngine.StopPlayingID(this.soundID);
-
+			if (this.c1) this.cameraTargetParams.RemoveParamsOverride(this.camParamsOverrideHandle);
+			if (this.c2) this.cameraTargetParams.RemoveParamsOverride(this.camParamsOverrideHandle2);
+			if (this.dragEffect) EntityState.Destroy(this.dragEffect);
 			if (this.fireEffect) EntityState.Destroy(this.fireEffect);
 
+			AkSoundEngine.StopPlayingID(this.soundID);
 			RaycastHit raycastHit;
+
 			if (!Physics.Raycast(new Ray(base.characterBody.footPosition, Vector3.down), out raycastHit, 100f, LayerIndex.world.mask, QueryTriggerInteraction.Collide))
 				base.transform.position = this.lastSafeFootPosition + Vector3.up * 5;
 			AkSoundEngine.StopPlayingID(this.soundID);
@@ -537,11 +548,12 @@ namespace RedGuyMod.SkillStates.Ravager
 					}
 				}
 			}
-
 		}
+
 		public void AttemptGrab(float grabRadius)
 		{
 			Ray aimRay = base.GetAimRay();
+
 			BullseyeSearch bullseyeSearch = new BullseyeSearch
 			{
 				teamMaskFilter = TeamMask.GetEnemyTeams(base.GetTeam()),
@@ -554,6 +566,7 @@ namespace RedGuyMod.SkillStates.Ravager
 			};
 			bullseyeSearch.RefreshCandidates();
 			bullseyeSearch.FilterOutGameObject(base.gameObject);
+
 			List<HurtBox> list = bullseyeSearch.GetResults().ToList<HurtBox>();
 			foreach (HurtBox hurtBox in list)
 			{
@@ -599,6 +612,61 @@ namespace RedGuyMod.SkillStates.Ravager
 							}
 							this.hasGrabbed = true;
 						}
+						else
+                        {
+							if (hurtBox.healthComponent.body.isChampion)
+                            {
+								// PUNCH
+								if (NetworkServer.active)
+								{
+									DamageInfo info = new DamageInfo
+									{
+										attacker = this.gameObject,
+										crit = this.RollCrit(),
+										damage = DashGrab.groundSlamDamageCoefficient * this.damageStat,
+										damageColorIndex = DamageColorIndex.Default,
+										damageType = DamageType.Stun1s,
+										force = aimRay.direction * 14000f,
+										inflictor = this.gameObject,
+										position = hurtBox.transform.position,
+										procChainMask = default(ProcChainMask),
+										procCoefficient = 1f,
+									};
+
+									hurtBox.healthComponent.TakeDamage(info);
+
+									if (this.empowered)
+                                    {
+
+                                    }
+								}
+
+								EffectManager.SpawnEffect(Modules.Assets.bloodBombEffect, new EffectData
+								{
+									origin = hurtBox.transform.position,
+									scale = 2f
+								}, false);
+
+								Util.PlaySound("sfx_ravager_kick", this.gameObject);
+
+								if (base.isAuthority)
+								{
+									//shockwave
+									FireProjectileInfo fireProjectileInfo = default(FireProjectileInfo);
+									fireProjectileInfo.position = base.FindModelChild("HandL").position;
+									fireProjectileInfo.rotation = Quaternion.LookRotation(aimRay.direction);
+									fireProjectileInfo.crit = this.RollCrit();
+									fireProjectileInfo.damage = 4f * this.damageStat;
+									fireProjectileInfo.owner = this.gameObject;
+									fireProjectileInfo.projectilePrefab = Modules.Projectiles.punchShockwave;
+									ProjectileManager.instance.FireProjectile(fireProjectileInfo);
+
+									this.outer.SetNextState(new PunchRecoil());
+								}
+
+								return;
+							}
+                        }
 					}
 				}
 			}

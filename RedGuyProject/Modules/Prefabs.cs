@@ -189,7 +189,10 @@ namespace RedGuyMod.Modules
                 return null;
             }
 
-            return GameObject.Instantiate(Modules.Assets.mainAssetBundle.LoadAsset<GameObject>(modelName));
+            GameObject i = GameObject.Instantiate(Modules.Assets.mainAssetBundle.LoadAsset<GameObject>(modelName));
+            i.AddComponent<Content.Components.RedGuyAnimationEvents>();
+
+            return i;
         }
 
         internal static void SetupCharacterModel(GameObject prefab, CustomRendererInfo[] rendererInfo, int mainRendererIndex)

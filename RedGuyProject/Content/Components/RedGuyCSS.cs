@@ -8,16 +8,18 @@ namespace RedGuyMod.Content.Components
     {
         private void Awake()
         {
-            this.Invoke("Bomba", 0.52f);
+            this.Invoke("Bomba", 0.68f);
+
+            if (Modules.Config.badass.Value) Util.PlaySound("sfx_ravager_badass", this.gameObject);
         }
 
         private void Bomba()
         {
-            Util.PlaySound("sfx_ravager_explosion", this.gameObject);
+            Util.PlaySound("sfx_ravager_stomp", this.gameObject);
 
-            EffectManager.SpawnEffect(Modules.Assets.cssEffect, new EffectData
+            EffectManager.SpawnEffect(Addressables.LoadAssetAsync<GameObject>("RoR2/Base/Common/VFX/CharacterLandImpact.prefab").WaitForCompletion(), new EffectData
             {
-                origin = this.transform.position + (Vector3.up * 1.5f),
+                origin = this.GetComponentInChildren<ChildLocator>().FindChild("FootR").position + new Vector3(0f, -0.25f, 0f),
                 rotation = Quaternion.identity,
                 scale = 0.25f
             }, false);

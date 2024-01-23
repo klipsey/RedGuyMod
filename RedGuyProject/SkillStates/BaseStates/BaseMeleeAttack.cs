@@ -60,6 +60,15 @@ namespace RedGuyMod.SkillStates.BaseStates
             base.characterBody.outOfCombatStopwatch = 0f;
             this.animator.SetBool("attacking", true);
 
+            this.PlayAttackAnimation();
+
+            this.InitializeAttack();
+
+            //this.characterBody.isSprinting = false;
+        }
+
+        protected virtual void InitializeAttack()
+        {
             HitBoxGroup hitBoxGroup = null;
             Transform modelTransform = base.GetModelTransform();
 
@@ -67,8 +76,6 @@ namespace RedGuyMod.SkillStates.BaseStates
             {
                 hitBoxGroup = Array.Find<HitBoxGroup>(modelTransform.GetComponents<HitBoxGroup>(), (HitBoxGroup element) => element.groupName == this.hitboxName);
             }
-
-            this.PlayAttackAnimation();
 
             this.attack = new OverlapAttack();
             this.attack.damageType = this.damageType;
@@ -83,8 +90,6 @@ namespace RedGuyMod.SkillStates.BaseStates
             this.attack.hitBoxGroup = hitBoxGroup;
             this.attack.isCrit = base.RollCrit();
             this.attack.impactSound = this.impactSound;
-
-            //this.characterBody.isSprinting = false;
         }
 
         protected virtual void FireShuriken()
@@ -104,10 +109,7 @@ namespace RedGuyMod.SkillStates.BaseStates
 
             if (this.inHitPause)
             {
-                base.ConsumeHitStopCachedState(this.hitStopCachedState, base.characterMotor, this.animator);
-                this.inHitPause = false;
-                base.characterMotor.velocity = this.storedVelocity;
-                if (this.animator) this.animator.SetFloat("Slash.playbackRate", this.duration);
+                this.ClearHitStop();
             }
 
             base.OnExit();
@@ -115,7 +117,7 @@ namespace RedGuyMod.SkillStates.BaseStates
 
         protected virtual void PlaySwingEffect()
         {
-            EffectManager.SimpleMuzzleFlash(this.swingEffectPrefab, base.gameObject, this.muzzleString, true);
+            EffectManager.SimpleMuzzleFlash(this.swingEffectPrefab, base.gameObject, this.muzzleString, false);
         }
 
         protected virtual void OnHitEnemyAuthority(int amount)
@@ -134,11 +136,16 @@ namespace RedGuyMod.SkillStates.BaseStates
 
             if (!this.inHitPause)
             {
-                this.storedVelocity = base.characterMotor.velocity;
-                this.hitStopCachedState = base.CreateHitStopCachedState(base.characterMotor, this.animator, "Slash.playbackRate");
-                this.hitPauseTimer = this.hitStopDuration / this.attackSpeedStat;
-                this.inHitPause = true;
+                this.TriggerHitStop();
             }
+        }
+
+        protected virtual void TriggerHitStop()
+        {
+            this.storedVelocity = base.characterMotor.velocity;
+            this.hitStopCachedState = base.CreateHitStopCachedState(base.characterMotor, this.animator, "Slash.playbackRate");
+            this.hitPauseTimer = this.hitStopDuration / this.attackSpeedStat;
+            this.inHitPause = true;
         }
 
         protected virtual void FireAttack()
@@ -148,9 +155,10 @@ namespace RedGuyMod.SkillStates.BaseStates
                 this.hasFired = true;
                 Util.PlayAttackSpeedSound(this.swingSoundString, base.gameObject, this.attackSpeedStat);
 
+                this.PlaySwingEffect();
+
                 if (base.isAuthority)
                 {
-                    this.PlaySwingEffect();
                     base.AddRecoil(-1f * this.attackRecoil, -2f * this.attackRecoil, -0.5f * this.attackRecoil, 0.5f * this.attackRecoil);
                 }
             }
@@ -185,9 +193,7 @@ namespace RedGuyMod.SkillStates.BaseStates
 
             if (this.hitPauseTimer <= 0f && this.inHitPause)
             {
-                base.ConsumeHitStopCachedState(this.hitStopCachedState, base.characterMotor, this.animator);
-                this.inHitPause = false;
-                base.characterMotor.velocity = this.storedVelocity;
+                this.ClearHitStop();
             }
 
             if (!this.inHitPause)
@@ -220,6 +226,13 @@ namespace RedGuyMod.SkillStates.BaseStates
                 this.outer.SetNextStateToMain();
                 return;
             }
+        }
+
+        protected virtual void ClearHitStop()
+        {
+            base.ConsumeHitStopCachedState(this.hitStopCachedState, base.characterMotor, this.animator);
+            this.inHitPause = false;
+            base.characterMotor.velocity = this.storedVelocity;
         }
 
         public override InterruptPriority GetMinimumInterruptPriority()

@@ -12,6 +12,7 @@ namespace RedGuyMod.SkillStates.Ravager
 
         private bool hasHopped;
         private SlashType slashType;
+        private GameObject swingEffectInstance;
 
         private enum SlashType
         {
@@ -91,7 +92,11 @@ namespace RedGuyMod.SkillStates.Ravager
         protected override void OnHitEnemyAuthority(int amount)
         {
             base.OnHitEnemyAuthority(amount);
-            if (this.penis) this.penis.FillGauge(1f + (amount * 0.5f));
+            if (this.penis)
+            {
+                this.penis.FillGauge(1f + (amount * 0.5f));
+                this.penis.RefreshBlink();
+            }
         }
 
         protected override void FireAttack()
@@ -125,8 +130,8 @@ namespace RedGuyMod.SkillStates.Ravager
                 Transform muzzleTransform = this.FindModelChild(this.muzzleString);
                 if (muzzleTransform)
                 {
-                    GameObject swingEffectInstance = UnityEngine.Object.Instantiate<GameObject>(this.swingEffectPrefab, muzzleTransform);
-                    ScaleParticleSystemDuration fuck = swingEffectInstance.GetComponent<ScaleParticleSystemDuration>();
+                    this.swingEffectInstance = UnityEngine.Object.Instantiate<GameObject>(this.swingEffectPrefab, muzzleTransform);
+                    ScaleParticleSystemDuration fuck = this.swingEffectInstance.GetComponent<ScaleParticleSystemDuration>();
                     if (fuck) fuck.newDuration = fuck.initialDuration;
                 }
             }
@@ -154,6 +159,28 @@ namespace RedGuyMod.SkillStates.Ravager
                 float force = 4;
                 if (this.empowered) force = 30f;
                 this.characterMotor.velocity += this.GetAimRay().direction * force;
+            }
+        }
+
+        protected override void TriggerHitStop()
+        {
+            base.TriggerHitStop();
+
+            if (this.swingEffectInstance)
+            {
+                ScaleParticleSystemDuration fuck = this.swingEffectInstance.GetComponent<ScaleParticleSystemDuration>();
+                if (fuck) fuck.newDuration = 20f;
+            }
+        }
+
+        protected override void ClearHitStop()
+        {
+            base.ClearHitStop();
+
+            if (this.swingEffectInstance)
+            {
+                ScaleParticleSystemDuration fuck = this.swingEffectInstance.GetComponent<ScaleParticleSystemDuration>();
+                if (fuck) fuck.newDuration = fuck.initialDuration;
             }
         }
 

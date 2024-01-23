@@ -1,5 +1,7 @@
 ﻿using EntityStates;
 using RoR2;
+using UnityEngine;
+using UnityEngine.AddressableAssets;
 using UnityEngine.Networking;
 
 namespace RedGuyMod.SkillStates.Ravager
@@ -28,8 +30,20 @@ namespace RedGuyMod.SkillStates.Ravager
             {
                 this.cock = true;
 
-                EffectManager.SimpleMuzzleFlash(EntityStates.ImpMonster.BlinkState.blinkPrefab, base.gameObject, "Chest", false);
-                Util.PlaySound(EntityStates.ImpMonster.BlinkState.beginSoundString, base.gameObject);
+                EffectManager.SimpleMuzzleFlash(EntityStates.ImpMonster.BlinkState.blinkPrefab, this.gameObject, "Chest", false);
+                Util.PlaySound(EntityStates.ImpMonster.BlinkState.beginSoundString, this.gameObject);
+
+                Transform modelTransform = this.GetModelTransform();
+                if (modelTransform)
+                {
+                    TemporaryOverlay temporaryOverlay = modelTransform.gameObject.AddComponent<TemporaryOverlay>();
+                    temporaryOverlay.duration = 0.6f;
+                    temporaryOverlay.animateShaderAlpha = true;
+                    temporaryOverlay.alphaCurve = AnimationCurve.EaseInOut(0f, 1f, 1f, 0f);
+                    temporaryOverlay.destroyComponentOnEnd = true;
+                    temporaryOverlay.originalMaterial = Addressables.LoadAssetAsync<Material>("RoR2/Base/Imp/matImpDissolve.mat").WaitForCompletion();
+                    temporaryOverlay.AddToCharacerModel(modelTransform.GetComponent<CharacterModel>());
+                }
             }
 
             // i don't know if all this null checking is necessary but i'd rather play it safe than spend time testing

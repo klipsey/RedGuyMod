@@ -4,12 +4,15 @@ using UnityEngine.AddressableAssets;
 using UnityEngine.Networking;
 using R2API.Networking.Interfaces;
 using R2API.Networking;
+using System;
 
 namespace RedGuyMod.Content.Components
 {
     public class RedGuyController : MonoBehaviour
     {
-        public float drainRate = 30f;
+        public bool blinkReady;
+
+        public float drainRate = 24f;
         public float maxDecayRate = 360f;
         public float decayGrowth = 10f;
         public float meter = 0f;
@@ -21,17 +24,28 @@ namespace RedGuyMod.Content.Components
         private HealthComponent healthComponent;
         private Animator animator;
 
+        public int wallJumpCounter;
+
         private ParticleSystem steamEffect;
         private ParticleSystem chargeEffect;
         private ParticleSystem blackElectricityEffect;
+        private ParticleSystem handElectricityEffect;
         private uint playID;
         private CharacterBody characterBody;
         private ModelSkinController skinController;
         private ChildLocator childLocator;
 
+        public float chargeValue;
+
         public bool inGrab;
 
         private RavagerSkinDef cachedSkinDef;
+        public RedGuyPassive passive;
+
+        public static event Action<int> onWallJumpIncremented;
+        public static event Action<bool> onStageCompleted;
+
+        private bool wasBloodWellFilled;
 
         public RavagerSkinDef skinDef
         {
@@ -50,12 +64,24 @@ namespace RedGuyMod.Content.Components
             this.animator = modelTransform.GetComponent<Animator>();
             this.childLocator = modelTransform.GetComponent<ChildLocator>();
             this.skinController = this.GetComponentInChildren<ModelSkinController>();
+            this.passive = this.GetComponent<RedGuyPassive>();
+            this.wallJumpCounter = 0;
 
             this.steamEffect = this.childLocator.FindChild("Steam").gameObject.GetComponent<ParticleSystem>();
             this.chargeEffect = this.childLocator.FindChild("ArmCharge").gameObject.GetComponent<ParticleSystem>();
             this.blackElectricityEffect = this.childLocator.FindChild("BlackElectricity").gameObject.GetComponent<ParticleSystem>();
+            this.handElectricityEffect = this.childLocator.FindChild("HandElectricity").gameObject.GetComponent<ParticleSystem>();
 
             this.Invoke("ApplySkin", 0.3f);
+
+            RoR2.TeleporterInteraction.onTeleporterFinishGlobal += TeleporterInteraction_onTeleporterFinishGlobal;
+        }
+
+        private void TeleporterInteraction_onTeleporterFinishGlobal(TeleporterInteraction obj)
+        {
+            Action<bool> action = onStageCompleted;
+            if (action == null) return;
+            action(this.wasBloodWellFilled);
         }
 
         private void FixedUpdate()
@@ -87,10 +113,35 @@ namespace RedGuyMod.Content.Components
             {
                 float amount = this.iDontEvenKnowAnymore * Time.fixedDeltaTime;
                 this.storedHealth -= amount;
-                if (this.storedHealth >= 0f) this.healthComponent.Heal(iDontEvenKnowAnymore * Time.fixedDeltaTime, default(ProcChainMask), false);
+                if (NetworkServer.active) if (this.storedHealth >= 0f) this.healthComponent.Heal(iDontEvenKnowAnymore * Time.fixedDeltaTime, default(ProcChainMask), false);
+            }
+
+            if (this.characterBody.characterMotor.isGrounded) this.blinkReady = true;
+
+            if (this.blinkReady)
+            {
+                if (!this.handElectricityEffect.isPlaying) this.handElectricityEffect.Play();
+            }
+            else
+            {
+                if (this.handElectricityEffect.isPlaying) this.handElectricityEffect.Stop();
             }
 
             if (this.animator) this.animator.SetBool("isEmpowered", this.draining);
+        }
+
+        public void RefreshBlink()
+        {
+            this.blinkReady = true;
+        }
+
+        public void IncrementWallJump()
+        {
+            this.wallJumpCounter++;
+
+            Action<int> action = onWallJumpIncremented;
+            if (action == null) return;
+            action(this.wallJumpCounter);
         }
 
         public void FillGauge(float multiplier = 1f)
@@ -115,6 +166,7 @@ namespace RedGuyMod.Content.Components
 
         public void ActivateDrain()
         {
+            this.wasBloodWellFilled = true;
             this.meter = 100f;
             this.draining = true;
 
@@ -122,7 +174,7 @@ namespace RedGuyMod.Content.Components
             this.chargeEffect.Play();
             this.blackElectricityEffect.Play();
 
-            this.storedHealth = this.healthComponent.fullHealth * 0.75f;
+            this.storedHealth = this.healthComponent.fullHealth;// * 0.75f;
             this.iDontEvenKnowAnymore = this.storedHealth / (100f / this.drainRate);
 
             Util.PlaySound("sfx_ravager_bloodrush", this.gameObject);
@@ -166,6 +218,7 @@ namespace RedGuyMod.Content.Components
                 this.childLocator.FindChild("FootChargeL").gameObject.GetComponent<ParticleSystemRenderer>().trailMaterial = this.cachedSkinDef.electricityMat;
                 this.childLocator.FindChild("FootChargeR").gameObject.GetComponent<ParticleSystemRenderer>().trailMaterial = this.cachedSkinDef.electricityMat;
                 this.childLocator.FindChild("ArmCharge").gameObject.GetComponent<ParticleSystemRenderer>().trailMaterial = this.cachedSkinDef.electricityMat;
+                this.childLocator.FindChild("HandElectricity").gameObject.GetComponent<ParticleSystemRenderer>().trailMaterial = this.cachedSkinDef.electricityMat;
 
                 foreach (Light i in this.childLocator.gameObject.GetComponentsInChildren<Light>())
                 {

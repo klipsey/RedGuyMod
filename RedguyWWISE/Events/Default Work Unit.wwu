@@ -289,6 +289,116 @@
 						</Action>
 					</ChildrenList>
 				</Event>
+				<Event Name="sfx_ravager_foley_02" ID="{4C5E076C-EFD8-475A-B31D-101C76ACA8A7}">
+					<ChildrenList>
+						<Action Name="" ID="{32469234-39E9-4283-8FBA-0D65D53571C1}" ShortID="285573421">
+							<ReferenceList>
+								<Reference Name="Target">
+									<ObjectRef Name="sfx_ravager_foley_02" ID="{93CCA72B-B07A-41B6-B812-A97CD7DF7B86}" WorkUnitID="{FE3FA7C5-9E89-40FE-8C7C-97CE0994E519}"/>
+								</Reference>
+							</ReferenceList>
+						</Action>
+					</ChildrenList>
+				</Event>
+				<Event Name="sfx_ravager_foley_03" ID="{64777385-7301-464D-8EF4-79FF61628937}">
+					<ChildrenList>
+						<Action Name="" ID="{BF56BF97-7C30-4D8D-B164-42C2B11A6072}" ShortID="617322433">
+							<ReferenceList>
+								<Reference Name="Target">
+									<ObjectRef Name="sfx_ravager_foley_03" ID="{81AFC3D6-1ACD-4D7E-B57F-2D7EFBD04FE1}" WorkUnitID="{FE3FA7C5-9E89-40FE-8C7C-97CE0994E519}"/>
+								</Reference>
+							</ReferenceList>
+						</Action>
+					</ChildrenList>
+				</Event>
+				<Event Name="sfx_ravager_charge_jump" ID="{4EBAE621-ED6C-4F63-870E-496994A2A0A2}">
+					<ChildrenList>
+						<Action Name="" ID="{14C75519-C2A1-4204-A0F3-504579A898A9}" ShortID="867889956">
+							<ReferenceList>
+								<Reference Name="Target">
+									<ObjectRef Name="sfx_ravager_charge_jump" ID="{74B23915-0139-46FA-AAE9-D6621B6E1694}" WorkUnitID="{FE3FA7C5-9E89-40FE-8C7C-97CE0994E519}"/>
+								</Reference>
+							</ReferenceList>
+						</Action>
+					</ChildrenList>
+				</Event>
+				<Event Name="sfx_ravager_dragloop" ID="{3DC16F4F-8F83-4FA0-8149-CA8C1C34D524}">
+					<ChildrenList>
+						<Action Name="" ID="{F442F57F-69D0-4C74-9895-3F06ED09AC39}" ShortID="521712403">
+							<ReferenceList>
+								<Reference Name="Target">
+									<ObjectRef Name="sfx_ravager_dragloop" ID="{3584750C-5D09-4937-89C7-92361D58624E}" WorkUnitID="{FE3FA7C5-9E89-40FE-8C7C-97CE0994E519}"/>
+								</Reference>
+							</ReferenceList>
+						</Action>
+					</ChildrenList>
+				</Event>
+				<Event Name="sfx_ravager_beamloop" ID="{585EF97F-F565-4E5E-AA7A-FA5445980016}">
+					<ChildrenList>
+						<Action Name="" ID="{85153BB7-AA3B-4C0A-91C0-A359CB72E162}" ShortID="57347730">
+							<ReferenceList>
+								<Reference Name="Target">
+									<ObjectRef Name="sfx_ravager_beam_loop" ID="{573B7210-80D7-47FC-B15E-696096D0AFBA}" WorkUnitID="{FE3FA7C5-9E89-40FE-8C7C-97CE0994E519}"/>
+								</Reference>
+							</ReferenceList>
+						</Action>
+					</ChildrenList>
+				</Event>
+				<Event Name="sfx_ravager_beam_end" ID="{33767B5D-91CD-4D37-8CC7-B4F56E53CAB9}">
+					<ChildrenList>
+						<Action Name="" ID="{8AC0C58E-4790-441E-9AC3-DBB27A88E856}" ShortID="750776356">
+							<ReferenceList>
+								<Reference Name="Target">
+									<ObjectRef Name="sfx_ravager_beam_end" ID="{C401197C-FE76-4830-9277-E4DBD164F4E8}" WorkUnitID="{FE3FA7C5-9E89-40FE-8C7C-97CE0994E519}"/>
+								</Reference>
+							</ReferenceList>
+						</Action>
+					</ChildrenList>
+				</Event>
+				<Event Name="sfx_ravager_beam_start" ID="{926CD969-E0B5-4A62-973D-CEC4174A4866}">
+					<ChildrenList>
+						<Action Name="" ID="{1257673F-861F-4E33-81B8-EB1F32F285B4}" ShortID="101140114">
+							<ReferenceList>
+								<Reference Name="Target">
+									<ObjectRef Name="sfx_ravager_beam_start" ID="{DDDDB3DC-D745-4BEC-A8F2-FE8A7B0B87D1}" WorkUnitID="{FE3FA7C5-9E89-40FE-8C7C-97CE0994E519}"/>
+								</Reference>
+							</ReferenceList>
+						</Action>
+					</ChildrenList>
+				</Event>
+				<Event Name="sfx_ravager_stomp" ID="{86E1BEF0-5D08-4F1C-928C-56BB258A38C4}">
+					<ChildrenList>
+						<Action Name="" ID="{12CA9016-04E9-434E-ADEC-D35CC67EA3FA}" ShortID="497038991">
+							<ReferenceList>
+								<Reference Name="Target">
+									<ObjectRef Name="sfx_ravager_stomp" ID="{F9687932-DAD1-4D1A-90F4-35CD1486A268}" WorkUnitID="{FE3FA7C5-9E89-40FE-8C7C-97CE0994E519}"/>
+								</Reference>
+							</ReferenceList>
+						</Action>
+					</ChildrenList>
+				</Event>
+				<Event Name="sfx_ravager_badass" ID="{C121A0CA-6564-4DD2-BCFF-E16081EC03A4}">
+					<ChildrenList>
+						<Action Name="" ID="{9FA0FA28-4777-47D9-B809-991CF4036957}" ShortID="859186036">
+							<ReferenceList>
+								<Reference Name="Target">
+									<ObjectRef Name="sfx_ravager_badass" ID="{16E9157B-BDD1-4CEA-96CF-9BBBBC4AEA00}" WorkUnitID="{FE3FA7C5-9E89-40FE-8C7C-97CE0994E519}"/>
+								</Reference>
+							</ReferenceList>
+						</Action>
+					</ChildrenList>
+				</Event>
+				<Event Name="sfx_ravager_blast" ID="{D8D70B75-1553-4082-9C44-8E595A57E1E5}">
+					<ChildrenList>
+						<Action Name="" ID="{4D8D0E21-9D82-4EFB-948C-7CEFFD0947B4}" ShortID="929636422">
+							<ReferenceList>
+								<Reference Name="Target">
+									<ObjectRef Name="sfx_ravager_blast" ID="{DD90BD26-F58C-4CB7-8CA1-81C69373851E}" WorkUnitID="{FE3FA7C5-9E89-40FE-8C7C-97CE0994E519}"/>
+								</Reference>
+							</ReferenceList>
+						</Action>
+					</ChildrenList>
+				</Event>
 			</ChildrenList>
 		</WorkUnit>
 	</Events>

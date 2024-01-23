@@ -1,6 +1,7 @@
 ﻿using EntityStates;
 using R2API;
 using RedGuyMod.Content;
+using RedGuyMod.Content.Components;
 using RoR2;
 using RoR2.Skills;
 using System;
@@ -15,8 +16,8 @@ namespace RedGuyMod.Modules
         internal static List<RavagerSkillDef> skillDefs = new List<RavagerSkillDef>();
 
         #region genericskills
-        public static void CreateSkillFamilies(GameObject targetPrefab, int families = 15, bool destroyExisting = true) {
-
+        public static void CreateSkillFamilies(GameObject targetPrefab, int families = 15, bool destroyExisting = true)
+        {
             if (destroyExisting) {
                 foreach (GenericSkill obj in targetPrefab.GetComponentsInChildren<GenericSkill>()) {
                     UnityEngine.Object.DestroyImmediate(obj);
@@ -24,6 +25,12 @@ namespace RedGuyMod.Modules
             }
 
             SkillLocator skillLocator = targetPrefab.GetComponent<SkillLocator>();
+
+            RedGuyPassive passive = targetPrefab.GetComponent<RedGuyPassive>();
+            if (passive)
+            {
+                passive.passiveSkillSlot = CreateGenericSkillWithSkillFamily(targetPrefab, "Passive");
+            }
 
             if ((families & (1 << 0)) != 0) {
                 skillLocator.primary = CreateGenericSkillWithSkillFamily(targetPrefab, "Primary");
@@ -35,6 +42,36 @@ namespace RedGuyMod.Modules
                 skillLocator.utility = CreateGenericSkillWithSkillFamily(targetPrefab, "Utility");
             }
             if ((families & (1 << 3)) != 0) {
+                skillLocator.special = CreateGenericSkillWithSkillFamily(targetPrefab, "Special");
+            }
+        }
+
+        public static void KillSkillFamilies(GameObject targetPrefab)
+        {
+            foreach (GenericSkill obj in targetPrefab.GetComponentsInChildren<GenericSkill>())
+            {
+                UnityEngine.Object.DestroyImmediate(obj);
+            }
+        }
+
+        public static void CreateSkillFamilies2(GameObject targetPrefab, int families = 15, bool destroyExisting = true)
+        {
+            SkillLocator skillLocator = targetPrefab.GetComponent<SkillLocator>();
+
+            if ((families & (1 << 0)) != 0)
+            {
+                skillLocator.primary = CreateGenericSkillWithSkillFamily(targetPrefab, "Primary");
+            }
+            if ((families & (1 << 1)) != 0)
+            {
+                skillLocator.secondary = CreateGenericSkillWithSkillFamily(targetPrefab, "Secondary");
+            }
+            if ((families & (1 << 2)) != 0)
+            {
+                skillLocator.utility = CreateGenericSkillWithSkillFamily(targetPrefab, "Utility");
+            }
+            if ((families & (1 << 3)) != 0)
+            {
                 skillLocator.special = CreateGenericSkillWithSkillFamily(targetPrefab, "Special");
             }
         }
@@ -87,6 +124,11 @@ namespace RedGuyMod.Modules
         }
         public static void AddSpecialSkills(GameObject targetPrefab, params SkillDef[] skillDefs) {
             AddSkillsToFamily(targetPrefab.GetComponent<SkillLocator>().special.skillFamily, skillDefs);
+        }
+
+        public static void AddPassiveSkills(SkillFamily passiveSkillFamily, params SkillDef[] skillDefs)
+        {
+            AddSkillsToFamily(passiveSkillFamily, skillDefs);
         }
 
         /// <summary>

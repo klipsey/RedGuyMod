@@ -35,7 +35,7 @@ namespace RedGuyMod
     {
         public const string MODUID = "com.rob.Ravager";
         public const string MODNAME = "Ravager";
-        public const string MODVERSION = "1.1.2";
+        public const string MODVERSION = "1.2.3";
 
         public const string developerPrefix = "ROB";
 
@@ -57,11 +57,9 @@ namespace RedGuyMod
             Modules.Assets.PopulateAssets();
             Modules.CameraParams.InitializeParams();
             Modules.States.RegisterStates();
-            //Modules.Buffs.RegisterBuffs();
             Modules.Projectiles.RegisterProjectiles();
             Modules.Tokens.AddTokens();
             Modules.ItemDisplays.PopulateDisplays();
-            //Modules.NetMessages.RegisterNetworkMessages();
 
             NetworkingAPI.RegisterMessageType<Content.SyncBloodWell>();
 
@@ -76,13 +74,61 @@ namespace RedGuyMod
 
         private void LateSetup(global::HG.ReadOnlyArray<RoR2.ContentManagement.ReadOnlyContentPack> obj)
         {
-            //Modules.Survivors.RedGuy.SetItemDisplays();
+            Content.Survivors.RedGuy.SetItemDisplays();
         }
 
         private void Hook()
         {
             //R2API.RecalculateStatsAPI.GetStatCoefficients += RecalculateStatsAPI_GetStatCoefficients;
             //On.RoR2.Networking.NetworkManagerSystemSteam.OnClientConnect += (s, u, t) => { };
+            On.RoR2.CharacterModel.UpdateOverlays += CharacterModel_UpdateOverlays;
+            On.RoR2.CharacterBody.RecalculateStats += CharacterBody_RecalculateStats;
+        }
+
+        private void CharacterBody_RecalculateStats(On.RoR2.CharacterBody.orig_RecalculateStats orig, CharacterBody self)
+        {
+            orig(self);
+
+            if (self)
+            {
+                if (self.HasBuff(Content.Survivors.RedGuy.grabbedBuff))
+                {
+                    self.damage = 0f;
+                }
+            }
+        }
+
+        private void CharacterModel_UpdateOverlays(On.RoR2.CharacterModel.orig_UpdateOverlays orig, CharacterModel self)
+        {
+            orig(self);
+
+            if (self)
+            {
+                if (self.body && self.body.baseNameToken == Content.Survivors.RedGuy.bodyNameToken)
+                {
+                    Content.Components.RedGuyController penis = self.body.GetComponent<Content.Components.RedGuyController>();
+                    if (penis)
+                    {
+                        if (penis.draining)
+                        {
+                            var tracker = self.body.GetComponent<Content.Components.RavagerOverlayTracker>();
+                            if (!tracker) tracker = self.body.gameObject.AddComponent<Content.Components.RavagerOverlayTracker>();
+                            else return;
+
+                            tracker.body = self.body;
+                            TemporaryOverlay overlay = self.gameObject.AddComponent<TemporaryOverlay>();
+                            overlay.duration = float.PositiveInfinity;
+                            overlay.alphaCurve = AnimationCurve.EaseInOut(0f, 1f, 1f, 0f);
+                            overlay.animateShaderAlpha = true;
+                            overlay.destroyComponentOnEnd = true;
+                            overlay.originalMaterial = Modules.Assets.bloodOverlayMat;
+                            overlay.AddToCharacerModel(self);
+                            tracker.overlay = overlay;
+                            tracker.penis = penis;
+                        }
+                    }
+                }
+            }
         }
 
         private void RecalculateStatsAPI_GetStatCoefficients(CharacterBody sender, R2API.RecalculateStatsAPI.StatHookEventArgs args) {

@@ -12,7 +12,7 @@
 
 [![](https://raw.githubusercontent.com/ArcPh1r3/RedGuyMod/main/RedGuyUnityProject/Assets/Ravager/Icons/texRavagerIcon.png)]()
 
-To share feedback, report bugs, or offer suggestions feel free to create an issue on the GitHub repo
+To share feedback, report bugs, or offer suggestions feel free to create an issue on the GitHub repo or join the Discord: https://discord.gg/HV68ujvkqe
 
 ___
 
@@ -44,6 +44,10 @@ Redacted - Artistic feedback
 
 ## Known Issues
 - Mithrix grab has a certain bug that I won't elaborate on
+- Killing Kjaro and Runald elder lems with Brutalize prevents them from dropping their respective bands
+- Blood Well does not heal when playing as a client in multiplayer
+- By extension Coagulate probably does not work as well
+- Brutalize doesn't destroy corpses for clients in multiplayer (just a visual bug)
 
 ## Future Plans
 - Unlockable skins
@@ -55,6 +59,33 @@ Redacted - Artistic feedback
 ___
 
 ## Changelog
+
+`1.2.1`
+- Brutalize can now be used on bosses to perform a punch with a shockwave hitting enemies directly behind
+- Hack damage: 320% > 270%
+- Hack bonus attack speed while empowered slightly lowered
+- ^Brutalize greatly raised his kill speed on bosses so some nerfing was needed (still real strong)
+- Hopoo Feathers now allow you to perform walljumps in the air
+- Attempted to network Blood Well heal but no guarantees
+- yes i know the skins suck they're just shitposts i'll make proper skins for him eventually
+
+`1.2.0`
+- Added a new unlockable alternate passive
+- Added a new unlockable skin
+- Added a Badass Mode config option (warning: Far Too Epic!!!!)
+- Reworked Eldritch Blast and renamed it to Nullify, added unlock condition
+- Moved Blood Well's description from primary skill to its own passive slot for clarity
+- Blood Well heal amount: 75% max health > 100% max health
+- Brutalize heal amount: 30% max health > 15% max health
+- ^less on demand healing, more reward on the heal you actually have to work for
+- Blood Rush duration slightly increased
+- Coagulate's empowered explosion now always deals max damage regardless of how much meter is left
+- ^makes it a viable finisher to Blood Rush instead of being all around awkward
+- Added some config for the Blood Well HUD
+- Attack hitstop now applies to slash effects as well
+- Fixed Brutalize drag damage being 80% instead of the intended 800%
+- Fixed slash effects not being networked- thanks tsweep :-)
+- Fixed some other misc bugs idek
 
 `1.1.2`
 - Updated a handful of animations, no more pod :-)

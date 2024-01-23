@@ -4,15 +4,15 @@
 - Has item displays
 - Full Risk of Options support for all configuration options
 
-[![](https://raw.githubusercontent.com/ArcPh1r3/RedGuyMod/main/Release/FuckShit/screen1.png)]()
+[![](https://raw.githubusercontent.com/ArcPh1r3/RedGuyMod/main/Release/FuckShit/ss1.png)]()
 
-[![](https://raw.githubusercontent.com/ArcPh1r3/RedGuyMod/main/Release/FuckShit/screen2.png)]()
+[![](https://raw.githubusercontent.com/ArcPh1r3/RedGuyMod/main/Release/FuckShit/ss2.png)]()
 
-[![](https://raw.githubusercontent.com/ArcPh1r3/RedGuyMod/main/Release/FuckShit/screen3.png)]()
+[![](https://raw.githubusercontent.com/ArcPh1r3/RedGuyMod/main/Release/FuckShit/ss3.png)]()
 
 [![](https://raw.githubusercontent.com/ArcPh1r3/RedGuyMod/main/RedGuyUnityProject/Assets/Ravager/Icons/texRavagerIcon.png)]()
 
-To share feedback, report bugs, or offer suggestions feel free to create an issue on the GitHub repo
+To share feedback, report bugs, or offer suggestions feel free to create an issue on the GitHub repo or join the Discord: https://discord.gg/HV68ujvkqe
 
 ___
 
@@ -24,7 +24,30 @@ ___
 
 # Skills
 
-i'll do this at some point
+## Passive
+The Ravager can jump off walls and charge these jumps to perform great leaps
+
+[![](https://github.com/ArcPh1r3/DriverMod/blob/3f2ba4c0dd4ff37efa4f28288620f36525f289f7/Release/FuckShit/passive.gif?raw=true)]()
+
+## Primary
+Shoot gun
+
+[![](https://github.com/ArcPh1r3/DriverMod/blob/3f2ba4c0dd4ff37efa4f28288620f36525f289f7/Release/FuckShit/primary.gif?raw=true)]()
+
+## Secondary
+Aim gun and charge a high damage shot
+
+[![](https://github.com/ArcPh1r3/DriverMod/blob/3f2ba4c0dd4ff37efa4f28288620f36525f289f7/Release/FuckShit/secondary.gif?raw=true)]()
+
+## Utility
+Slide
+
+[![](https://github.com/ArcPh1r3/DriverMod/blob/3f2ba4c0dd4ff37efa4f28288620f36525f289f7/Release/FuckShit/utility.gif?raw=true)]()
+
+## Special
+Stun grenade
+
+[![](https://github.com/ArcPh1r3/DriverMod/blob/3f2ba4c0dd4ff37efa4f28288620f36525f289f7/Release/FuckShit/special.gif?raw=true)]()
 
 ___
 
@@ -44,17 +67,62 @@ Redacted - Artistic feedback
 
 ## Known Issues
 - Mithrix grab has a certain bug that I won't elaborate on
+- Killing Kjaro and Runald elder lems with Brutalize prevents them from dropping their respective bands
+- Blood Well does not heal when playing as a client in multiplayer
+- By extension Coagulate probably does not work as well
+- Brutalize doesn't destroy corpses for clients in multiplayer (just a visual bug)
 
 ## Future Plans
-- Unlockable skins
-- Alternate skills
+- Proper skins
+- More alternate skills
 - Ancient Scepter support
-- Better item displays
 - General polish
 
 ___
 
 ## Changelog
+
+`1.2.3`
+- Twisted Mutation blink distance slightly increased
+- Twisted Mutation blink now refreshes on melee hits and has subtle VFX showing when a blink is available
+- Grabbing enemies with Brutalize now sets their damage stat to 0 to prevent blazing elites from killing you
+- Nullify charge gain per projectile slightly decreased
+- Added config to stop Nullify from eating allied projectiles
+- Added config to let you cling to walls permanently
+- Slight model improvements
+- Updated a handful of item displays
+- Fixed Brutalize punch doing way too much damage
+- Fixed Hopoo Feather interaction not actually working
+
+`1.2.2`
+- Brutalize can now be used on bosses to perform a punch with a shockwave hitting enemies directly behind
+- Hack damage: 320% > 270%
+- Hack bonus attack speed while empowered slightly lowered
+- ^Brutalize greatly raised his kill speed on bosses so some nerfing was needed (still real strong)
+- Hopoo Feathers now allow you to perform walljumps in the air
+- Attempted to network Blood Well heal but no guarantees
+- yes i know the skins suck they're just shitposts i'll make proper skins for him eventually
+
+`1.2.1`
+- Apparently this never existed?
+
+`1.2.0`
+- Added a new unlockable alternate passive
+- Added a new unlockable skin
+- Added a Badass Mode config option (warning: Far Too Epic!!!!)
+- Reworked Eldritch Blast and renamed it to Nullify, added unlock condition
+- Moved Blood Well's description from primary skill to its own passive slot for clarity
+- Blood Well heal amount: 75% max health > 100% max health
+- Brutalize heal amount: 30% max health > 15% max health
+- ^less on demand healing, more reward on the heal you actually have to work for
+- Blood Rush duration slightly increased
+- Coagulate's empowered explosion now always deals max damage regardless of how much meter is left
+- ^makes it a viable finisher to Blood Rush instead of being all around awkward
+- Added some config for the Blood Well HUD
+- Attack hitstop now applies to slash effects as well
+- Fixed Brutalize drag damage being 80% instead of the intended 800%
+- Fixed slash effects not being networked- thanks tsweep :-)
+- Fixed some other misc bugs idek
 
 `1.1.2`
 - Updated a handful of animations, no more pod :-)

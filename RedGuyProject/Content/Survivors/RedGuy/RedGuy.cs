@@ -29,7 +29,7 @@ namespace RedGuyMod.Content.Survivors
         internal static ConfigEntry<bool> forceUnlock;
         internal static ConfigEntry<bool> characterEnabled;
 
-        public static Color characterColor = Color.red;
+        public static Color characterColor = new Color(1f, 28f / 255f, 59f / 255f);
 
         public const string bodyName = "RobRavagerBody";
 
@@ -42,10 +42,16 @@ namespace RedGuyMod.Content.Survivors
 
         // buff
         internal static BuffDef grabbedBuff;
+        internal static BuffDef doubleJumpBuff;
 
+        // achievements
         internal static UnlockableDef characterUnlockableDef;
         internal static UnlockableDef masteryUnlockableDef;
         internal static UnlockableDef grandMasteryUnlockableDef;
+        internal static UnlockableDef voidUnlockableDef;
+
+        internal static UnlockableDef blinkUnlockableDef;
+        internal static UnlockableDef beamUnlockableDef;
 
         // skill overrides
         internal static SkillDef confirmSkillDef;
@@ -63,11 +69,13 @@ namespace RedGuyMod.Content.Survivors
             {
                 forceUnlock = Modules.Config.ForceUnlockConfig("Ravager");
 
-                masteryUnlockableDef = R2API.UnlockableAPI.AddUnlockable<RedGuyMod.Modules.Achievements.MasteryAchievement>();
+                masteryUnlockableDef = R2API.UnlockableAPI.AddUnlockable<Modules.Achievements.MasteryAchievement>();
                 //grandMasteryUnlockableDef = R2API.UnlockableAPI.AddUnlockable<Achievements.GrandMasteryAchievement>();
                 //suitUnlockableDef = R2API.UnlockableAPI.AddUnlockable<Achievements.SuitAchievement>();
+                voidUnlockableDef = R2API.UnlockableAPI.AddUnlockable<Modules.Achievements.RavagerVoidAchievement>();
 
-                //supplyDropUnlockableDef = R2API.UnlockableAPI.AddUnlockable<Achievements.SupplyDropAchievement>();
+                blinkUnlockableDef = R2API.UnlockableAPI.AddUnlockable<Modules.Achievements.RavagerWallJumpAchievement>();
+                beamUnlockableDef = R2API.UnlockableAPI.AddUnlockable<Modules.Achievements.RavagerBeamAchievement>();
 
                 //if (!forceUnlock.Value) characterUnlockableDef = R2API.UnlockableAPI.AddUnlockable<Achievements.DriverUnlockAchievement>();
 
@@ -83,6 +91,7 @@ namespace RedGuyMod.Content.Survivors
                 umbraMaster = CreateMaster(characterPrefab, "RobRavagerMonsterMaster");
 
                 grabbedBuff = Modules.Buffs.AddNewBuff("RavagerGrabbed", null, Color.white, false, false, true);
+                doubleJumpBuff = Modules.Buffs.AddNewBuff("RavagerDoubleJumped", null, Color.white, false, false, true);
             }
 
             Hook();
@@ -159,12 +168,15 @@ namespace RedGuyMod.Content.Survivors
             foreach (EntityStateMachine i in newPrefab.GetComponents<EntityStateMachine>())
             {
                 if (i.customName == "Body") i.mainStateType = new EntityStates.SerializableEntityStateType(typeof(SkillStates.Ravager.MainState));
-                if (i.customName == "Slide")
+                /*if (i.customName == "Slide")
                 {
                     i.initialStateType = new EntityStates.SerializableEntityStateType(typeof(SkillStates.Ravager.WallJump));
                     i.mainStateType = new EntityStates.SerializableEntityStateType(typeof(SkillStates.Ravager.WallJump));
-                }
+                }*/
             }
+            EntityStateMachine passiveController = newPrefab.AddComponent<EntityStateMachine>();
+            passiveController.initialStateType = new EntityStates.SerializableEntityStateType(typeof(SkillStates.Ravager.WallJump));
+            passiveController.mainStateType = new EntityStates.SerializableEntityStateType(typeof(SkillStates.Ravager.WallJump));
 
             //var state = isPlayer ? typeof(EntityStates.SpawnTeleporterState) : typeof(SpawnState);
             //newPrefab.GetComponent<EntityStateMachine>().initialStateType = new EntityStates.SerializableEntityStateType(state);
@@ -388,16 +400,18 @@ namespace RedGuyMod.Content.Survivors
 
         private static void CreateSkills(GameObject prefab)
         {
+            RedGuyPassive passive = prefab.AddComponent<RedGuyPassive>();
             Modules.Skills.CreateSkillFamilies(prefab);
 
             string prefix = MainPlugin.developerPrefix;
             SkillLocator skillLocator = prefab.GetComponent<SkillLocator>();
 
             skillLocator.passiveSkill.enabled = true;
-            skillLocator.passiveSkill.skillNameToken = prefix + "_RAVAGER_BODY_PASSIVE_NAME";
-            skillLocator.passiveSkill.skillDescriptionToken = prefix + "_RAVAGER_BODY_PASSIVE_DESCRIPTION";
-            skillLocator.passiveSkill.icon = Modules.Assets.mainAssetBundle.LoadAsset<Sprite>("texPassiveIcon");
+            skillLocator.passiveSkill.skillNameToken = prefix + "_RAVAGER_BODY_BLOODWELL_NAME";
+            skillLocator.passiveSkill.skillDescriptionToken = prefix + "_RAVAGER_BODY_BLOODWELL_DESCRIPTION";
+            skillLocator.passiveSkill.icon = Modules.Assets.mainAssetBundle.LoadAsset<Sprite>("texBloodWellIcon");
 
+            #region Generic
             confirmSkillDef = Modules.Skills.CreateSkillDef(new SkillDefInfo
             {
                 skillName = prefix + "_RAVAGER_BODY_CONFIRM_NAME",
@@ -447,6 +461,66 @@ namespace RedGuyMod.Content.Survivors
                 requiredStock = 1,
                 stockToConsume = 0,
             });
+            #endregion
+
+            #region Passive
+            passive.wallJumpPassive = Modules.Skills.CreateSkillDef(new SkillDefInfo
+            {
+                skillName = prefix + "_RAVAGER_BODY_PASSIVE_NAME",
+                skillNameToken = prefix + "_RAVAGER_BODY_PASSIVE_NAME",
+                skillDescriptionToken = prefix + "_RAVAGER_BODY_PASSIVE_DESCRIPTION",
+                baseIcon = Modules.Assets.mainAssetBundle.LoadAsset<Sprite>("texPassiveIcon"),
+                empoweredIcon = Modules.Assets.mainAssetBundle.LoadAsset<Sprite>("texPassiveIcon"),
+                activationState = new EntityStates.SerializableEntityStateType(typeof(EntityStates.Idle)),
+                activationStateMachineName = "",
+                baseMaxStock = 1,
+                baseRechargeInterval = 0f,
+                beginSkillCooldownOnSkillEnd = false,
+                canceledFromSprinting = false,
+                forceSprintDuringState = false,
+                fullRestockOnAssign = true,
+                interruptPriority = EntityStates.InterruptPriority.Any,
+                resetCooldownTimerOnUse = false,
+                isCombatSkill = false,
+                mustKeyPress = false,
+                cancelSprintingOnActivation = false,
+                rechargeStock = 1,
+                requiredStock = 2,
+                stockToConsume = 1
+            });
+
+            passive.blinkPassive = Modules.Skills.CreateSkillDef(new SkillDefInfo
+            {
+                skillName = prefix + "_RAVAGER_BODY_PASSIVE2_NAME",
+                skillNameToken = prefix + "_RAVAGER_BODY_PASSIVE2_NAME",
+                skillDescriptionToken = prefix + "_RAVAGER_BODY_PASSIVE2_DESCRIPTION",
+                baseIcon = Modules.Assets.mainAssetBundle.LoadAsset<Sprite>("texBlinkIcon"),
+                empoweredIcon = Modules.Assets.mainAssetBundle.LoadAsset<Sprite>("texBlinkIcon"),
+                activationState = new EntityStates.SerializableEntityStateType(typeof(EntityStates.Idle)),
+                activationStateMachineName = "",
+                baseMaxStock = 1,
+                baseRechargeInterval = 0f,
+                beginSkillCooldownOnSkillEnd = false,
+                canceledFromSprinting = false,
+                forceSprintDuringState = false,
+                fullRestockOnAssign = true,
+                interruptPriority = EntityStates.InterruptPriority.Any,
+                resetCooldownTimerOnUse = false,
+                isCombatSkill = false,
+                mustKeyPress = false,
+                cancelSprintingOnActivation = false,
+                rechargeStock = 1,
+                requiredStock = 2,
+                stockToConsume = 1
+            });
+
+            Modules.Skills.AddPassiveSkills(passive.passiveSkillSlot.skillFamily, new SkillDef[]{
+                passive.wallJumpPassive,
+                passive.blinkPassive
+            });
+            Modules.Skills.AddUnlockablesToFamily(passive.passiveSkillSlot.skillFamily,
+                null, blinkUnlockableDef);
+            #endregion
 
             #region Primary
             RavagerSkillDef primary = Modules.Skills.CreatePrimarySkillDef(new EntityStates.SerializableEntityStateType(typeof(SkillStates.Ravager.Slash)),
@@ -532,8 +606,8 @@ namespace RedGuyMod.Content.Survivors
                 skillName = prefix + "_RAVAGER_BODY_UTILITY_BEAM_NAME",
                 skillNameToken = prefix + "_RAVAGER_BODY_UTILITY_BEAM_NAME",
                 skillDescriptionToken = prefix + "_RAVAGER_BODY_UTILITY_BEAM_DESCRIPTION",
-                baseIcon = Modules.Assets.mainAssetBundle.LoadAsset<Sprite>("texGrappleIcon"),
-                empoweredIcon = Modules.Assets.mainAssetBundle.LoadAsset<Sprite>("texGrappleIcon2"),
+                baseIcon = Modules.Assets.mainAssetBundle.LoadAsset<Sprite>("texBeamIcon"),
+                empoweredIcon = Modules.Assets.mainAssetBundle.LoadAsset<Sprite>("texBeamIcon2"),
                 activationState = new EntityStates.SerializableEntityStateType(typeof(SkillStates.Ravager.ChargeBeam)),
                 activationStateMachineName = "Weapon",
                 baseMaxStock = 1,
@@ -557,6 +631,8 @@ namespace RedGuyMod.Content.Survivors
             });
 
             Modules.Skills.AddUtilitySkills(prefab, /*beamSkillDef,*/ healSkillDef, beamSkillDef);
+
+            Modules.Skills.AddUnlockablesToFamily(skillLocator.utility.skillFamily, null, beamUnlockableDef);
             #endregion
 
             #region Special
@@ -585,7 +661,8 @@ namespace RedGuyMod.Content.Survivors
                 stockToConsume = 1,
                 keywordTokens = new string[]
                 {
-                    "KEYWORD_REDGUY_GRAB"
+                    "KEYWORD_REDGUY_GRAB",
+                    "KEYWORD_REDGUY_GRAB2"
                 }
             });
 
@@ -652,6 +729,41 @@ namespace RedGuyMod.Content.Survivors
             skins.Add(masterySkin);
             #endregion
 
+            #region VoidSkin
+            SkinDef voidSkin = Modules.Skins.CreateSkinDef(MainPlugin.developerPrefix + "_RAVAGER_BODY_VOID_SKIN_NAME",
+    Addressables.LoadAssetAsync<SkinDef>("RoR2/DLC1/VoidSurvivor/skinVoidSurvivorDefault.asset").WaitForCompletion().icon,
+                SkinRendererInfos(defaultRenderers, new Material[]
+                {
+                    Addressables.LoadAssetAsync<Material>("RoR2/DLC1/VoidSurvivor/matVoidSurvivorFlesh.mat").WaitForCompletion(),
+                    Addressables.LoadAssetAsync<Material>("RoR2/DLC1/VoidSurvivor/matVoidSurvivorHead.mat").WaitForCompletion(),
+                    Addressables.LoadAssetAsync<Material>("RoR2/DLC1/voidstage/matVoidFoam.mat").WaitForCompletion()
+                }),
+    mainRenderer,
+    model,
+    voidUnlockableDef);
+
+            voidSkin.meshReplacements = new SkinDef.MeshReplacement[]
+            {
+                new SkinDef.MeshReplacement
+                {
+                    mesh = Modules.Assets.mainAssetBundle.LoadAsset<Mesh>("meshBodyVoid"),
+                    renderer = mainRenderer
+                },
+                new SkinDef.MeshReplacement
+                {
+                    mesh = Modules.Assets.mainAssetBundle.LoadAsset<Mesh>("meshHeadVoid"),
+                    renderer = childLocator.FindChild("SwordModel").GetComponent<SkinnedMeshRenderer>()
+                },
+                new SkinDef.MeshReplacement
+                {
+                    mesh = Modules.Assets.mainAssetBundle.LoadAsset<Mesh>("meshVoidMetal"),
+                    renderer = childLocator.FindChild("ImpWrapModel").GetComponent<SkinnedMeshRenderer>()
+                }
+            };
+
+            skins.Add(voidSkin);
+            #endregion
+
             skinController.skins = skins.ToArray();
 
 
@@ -691,6 +803,24 @@ namespace RedGuyMod.Content.Survivors
             masterySkinDef.swordElectricityMat = Addressables.LoadAssetAsync<Material>("RoR2/Base/Loader/matLightningLongYellow.mat").WaitForCompletion();
             masterySkinDef.glowColor = Color.white;
             RavagerSkinCatalog.AddSkin(masterySkinDef);
+
+            RavagerSkinDef voidSkinDef = ScriptableObject.CreateInstance<RavagerSkinDef>();
+            voidSkinDef.name = "rsdVoid";
+            voidSkinDef.nameToken = voidSkin.nameToken;
+            voidSkinDef.basicSwingEffectPrefab = Modules.Assets.swingEffectVoid;
+            voidSkinDef.bigSwingEffectPrefab = Modules.Assets.bigSwingEffectVoid;
+            voidSkinDef.leapEffectPrefab = Modules.Assets.leapEffectVoid;
+            voidSkinDef.slashEffectPrefab = Modules.Assets.slashImpactEffect;
+            voidSkinDef.bloodOrbEffectPrefab = Modules.Assets.consumeOrb;
+            voidSkinDef.bloodBombEffectPrefab = Modules.Assets.bloodBombEffect;
+            voidSkinDef.bloodRushActivationEffectPrefab = Addressables.LoadAssetAsync<GameObject>("RoR2/Base/ImpBoss/ImpBossBlink.prefab").WaitForCompletion();
+            voidSkinDef.bloodOrbOverlayMaterial = Addressables.LoadAssetAsync<Material>("RoR2/Base/Imp/matImpBossDissolve.mat").WaitForCompletion();
+            voidSkinDef.consumeSoundString = "sfx_ravager_consume";
+            voidSkinDef.healSoundString = "sfx_ravager_steam";
+            voidSkinDef.electricityMat = Addressables.LoadAssetAsync<Material>("RoR2/DLC1/ChainLightningVoid/matLightningVoid.mat").WaitForCompletion();
+            voidSkinDef.swordElectricityMat = Addressables.LoadAssetAsync<Material>("RoR2/DLC1/ChainLightningVoid/matLightningVoid.mat").WaitForCompletion();
+            voidSkinDef.glowColor = new Color(157f / 255f, 42f / 255f, 179 / 255f);
+            RavagerSkinCatalog.AddSkin(voidSkinDef);
         }
 
         private static void InitializeItemDisplays(GameObject prefab)
@@ -720,12 +850,40 @@ namespace RedGuyMod.Content.Survivors
                     ruleType = ItemDisplayRuleType.ParentedPrefab,
                     followerPrefab = Modules.ItemDisplays.LoadDisplay("DisplayDoubleMag"),
                     limbMask = LimbFlags.None,
-childName = "GunR",
-localPos = new Vector3(0.00888F, -0.03648F, -0.20898F),
-localAngles = new Vector3(39.35415F, 348.9445F, 164.0792F),
-localScale = new Vector3(0.06F, 0.06F, 0.06F)
+childName = "Sword",
+localPos = new Vector3(0.00096F, -0.06695F, -0.11279F),
+localAngles = new Vector3(328.2355F, 6.92052F, 165.5537F),
+localScale = new Vector3(0.08365F, 0.08365F, 0.08365F)
                 }
             });
+
+            ReplaceItemDisplay(DLC1Content.Items.PermanentDebuffOnHit, new ItemDisplayRule[]
+{
+                new ItemDisplayRule
+                {
+                    ruleType = ItemDisplayRuleType.ParentedPrefab,
+                    followerPrefab = Modules.ItemDisplays.LoadDisplay("DisplayScorpion"),
+                    limbMask = LimbFlags.None,
+childName = "Head",
+localPos = new Vector3(0.00001F, 0.25541F, -0.04204F),
+localAngles = new Vector3(10.25173F, 0F, 180F),
+localScale = new Vector3(1.23384F, 1.23384F, 1.23384F)
+                }
+});
+
+            ReplaceItemDisplay(RoR2Content.Items.RandomDamageZone, new ItemDisplayRule[]
+{
+                new ItemDisplayRule
+                {
+                    ruleType = ItemDisplayRuleType.ParentedPrefab,
+                    followerPrefab = Modules.ItemDisplays.LoadDisplay("DisplayRandomDamageZone"),
+                    limbMask = LimbFlags.None,
+childName = "Chest",
+localPos = new Vector3(0.02159F, 0.53998F, -0.34732F),
+localAngles = new Vector3(12.95415F, 0F, 0F),
+localScale = new Vector3(0.13601F, 0.13601F, 0.13601F)
+                }
+});
 
             ReplaceItemDisplay(RoR2Content.Items.CritGlasses, new ItemDisplayRule[]
 {
@@ -735,9 +893,9 @@ localScale = new Vector3(0.06F, 0.06F, 0.06F)
                     followerPrefab = Modules.ItemDisplays.LoadDisplay("DisplayGlasses"),
                     limbMask = LimbFlags.None,
 childName = "Head",
-localPos = new Vector3(0.0006F, 0.25054F, 0.04672F),
-localAngles = new Vector3(314.7648F, 358.1459F, 0.48047F),
-localScale = new Vector3(0.30902F, 0.09537F, 0.30934F)
+localPos = new Vector3(0F, 0.18539F, 0.16193F),
+localAngles = new Vector3(0F, 0F, 0F),
+localScale = new Vector3(0.25238F, 0.18035F, 0.25014F)
                 }
 });
 
@@ -748,10 +906,10 @@ localScale = new Vector3(0.30902F, 0.09537F, 0.30934F)
                     ruleType = ItemDisplayRuleType.ParentedPrefab,
                     followerPrefab = Modules.ItemDisplays.LoadDisplay("DisplayWolfPelt"),
                     limbMask = LimbFlags.None,
-childName = "UpperArmR",
-localPos = new Vector3(-0.01092F, 0.02048F, -0.00403F),
-localAngles = new Vector3(309.4066F, 250.1116F, 175.7708F),
-localScale = new Vector3(0.363F, 0.363F, 0.363F)
+childName = "Sword",
+localPos = new Vector3(0.00001F, -0.25745F, 0.00959F),
+localAngles = new Vector3(0F, 0F, 180F),
+localScale = new Vector3(0.15442F, 0.15442F, 0.15442F)
                 }
 });
 
@@ -763,9 +921,9 @@ localScale = new Vector3(0.363F, 0.363F, 0.363F)
                     followerPrefab = Modules.ItemDisplays.LoadDisplay("DisplayGlassesVoid"),
                     limbMask = LimbFlags.None,
 childName = "Head",
-localPos = new Vector3(0F, 0.1555F, 0.11598F),
-localAngles = new Vector3(340.0668F, 0F, 0F),
-localScale = new Vector3(0.30387F, 0.39468F, 0.46147F)
+localPos = new Vector3(0F, 0.20164F, 0.15033F),
+localAngles = new Vector3(0F, 0F, 0F),
+localScale = new Vector3(0.2583F, 0.30333F, 0.30333F)
                 }
 });
 
@@ -777,9 +935,9 @@ localScale = new Vector3(0.30387F, 0.39468F, 0.46147F)
                     followerPrefab = Modules.ItemDisplays.LoadDisplay("DisplaySunHeadNeck"),
                     limbMask = LimbFlags.None,
 childName = "Chest",
-localPos = new Vector3(-0.02605F, 0.38179F, -0.0112F),
+localPos = new Vector3(0F, 0.43585F, 0.01679F),
 localAngles = new Vector3(-0.00001F, 262.1551F, 0.00001F),
-localScale = new Vector3(1.76594F, 1.84475F, 1.84475F)
+localScale = new Vector3(1.91291F, 1.99828F, 1.99828F)
                 },
                 new ItemDisplayRule
                 {
@@ -787,9 +945,9 @@ localScale = new Vector3(1.76594F, 1.84475F, 1.84475F)
                     followerPrefab = Modules.ItemDisplays.LoadDisplay("DisplaySunHead"),
                     limbMask = LimbFlags.Head,
 childName = "Head",
-localPos = new Vector3(0F, 0.10143F, -0.01147F),
+localPos = new Vector3(0F, 0.15526F, 0.0304F),
 localAngles = new Vector3(0F, 0F, 0F),
-localScale = new Vector3(0.90836F, 0.90836F, 0.90836F)
+localScale = new Vector3(1F, 1F, 1F)
                 }
 });
 
@@ -801,9 +959,9 @@ localScale = new Vector3(0.90836F, 0.90836F, 0.90836F)
                     followerPrefab = Modules.ItemDisplays.LoadDisplay("DisplayMask"),
                     limbMask = LimbFlags.None,
 childName = "Head",
-localPos = new Vector3(0.0029F, 0.15924F, 0.07032F),
-localAngles = new Vector3(355.7367F, 0.15F, 0F),
-localScale = new Vector3(0.6F, 0.6F, 0.6F)
+localPos = new Vector3(0.003F, 0.18377F, 0.10972F),
+localAngles = new Vector3(355.744F, 0.15F, 0F),
+localScale = new Vector3(0.3983F, 0.48622F, 0.45863F)
                 }
 });
 
@@ -815,9 +973,9 @@ localScale = new Vector3(0.6F, 0.6F, 0.6F)
                     followerPrefab = Modules.ItemDisplays.LoadDisplay("DisplayBoneCrown"),
                     limbMask = LimbFlags.None,
 childName = "Head",
-localPos = new Vector3(0F, 0.15159F, -0.0146F),
+localPos = new Vector3(0F, 0.16878F, 0.0021F),
 localAngles = new Vector3(8.52676F, 0F, 0F),
-localScale = new Vector3(0.90509F, 0.90509F, 0.90509F)
+localScale = new Vector3(1.00482F, 1.00373F, 1.00373F)
                 }
 });
 
@@ -828,10 +986,10 @@ localScale = new Vector3(0.90509F, 0.90509F, 0.90509F)
                     ruleType = ItemDisplayRuleType.ParentedPrefab,
                     followerPrefab = Modules.ItemDisplays.LoadDisplay("DisplayWaxBird"),
                     limbMask = LimbFlags.None,
-childName = "Head",
-localPos = new Vector3(0F, -0.228F, -0.108F),
-localAngles = new Vector3(0F, 0F, 0F),
-localScale = new Vector3(0.79857F, 0.79857F, 0.79857F)
+childName = "Chest",
+localPos = new Vector3(-0.15614F, -0.05199F, -0.09115F),
+localAngles = new Vector3(0F, 342.8027F, 0F),
+localScale = new Vector3(1F, 1F, 1F)
                 }
 });
 
@@ -843,9 +1001,9 @@ localScale = new Vector3(0.79857F, 0.79857F, 0.79857F)
                     followerPrefab = Modules.ItemDisplays.LoadDisplay("DisplayBrainstalk"),
                     limbMask = LimbFlags.None,
 childName = "Head",
-localPos = new Vector3(0F, 0.12823F, 0.035F),
+localPos = new Vector3(0F, 0.19467F, 0.035F),
 localAngles = new Vector3(0F, 0F, 0F),
-localScale = new Vector3(0.17982F, 0.17982F, 0.17982F)
+localScale = new Vector3(0.25F, 0.25F, 0.25F)
                 }
 });
 
@@ -856,10 +1014,192 @@ localScale = new Vector3(0.17982F, 0.17982F, 0.17982F)
                     ruleType = ItemDisplayRuleType.ParentedPrefab,
                     followerPrefab = Modules.ItemDisplays.LoadDisplay("DisplayBirdEye"),
                     limbMask = LimbFlags.None,
-childName = "Head",
-localPos = new Vector3(0F, 0.18736F, 0.08896F),
-localAngles = new Vector3(306.9798F, 180F, 180F),
-localScale = new Vector3(0.31302F, 0.31302F, 0.31302F)
+childName = "Sword",
+localPos = new Vector3(0.00001F, -0.30349F, 0.00004F),
+localAngles = new Vector3(0F, 0F, 0F),
+localScale = new Vector3(0.4F, 0.4F, 0.4F)
+                }
+});
+
+            ReplaceItemDisplay(RoR2Content.Items.Crowbar, new ItemDisplayRule[]
+{
+                new ItemDisplayRule
+                {
+                    ruleType = ItemDisplayRuleType.ParentedPrefab,
+                    followerPrefab = Modules.ItemDisplays.LoadDisplay("DisplayCrowbar"),
+                    limbMask = LimbFlags.None,
+childName = "Sword",
+localPos = new Vector3(0.05007F, -0.00044F, 0.00026F),
+localAngles = new Vector3(2.08417F, 359.7186F, 359.4993F),
+localScale = new Vector3(0.4F, 0.4F, 0.4F)
+                }
+});
+
+            ReplaceItemDisplay(RoR2Content.Items.ArmorPlate, new ItemDisplayRule[]
+{
+                new ItemDisplayRule
+                {
+                    ruleType = ItemDisplayRuleType.ParentedPrefab,
+                    followerPrefab = Modules.ItemDisplays.LoadDisplay("DisplayRepulsionArmorPlate"),
+                    limbMask = LimbFlags.None,
+childName = "Chest",
+localPos = new Vector3(0.11703F, 0.34167F, -0.14988F),
+localAngles = new Vector3(329.9208F, 281.8911F, 237.3754F),
+localScale = new Vector3(-0.2958F, 0.2958F, 0.29581F)
+                }
+});
+
+            ReplaceItemDisplay(RoR2Content.Items.Behemoth, new ItemDisplayRule[]
+{
+                new ItemDisplayRule
+                {
+                    ruleType = ItemDisplayRuleType.ParentedPrefab,
+                    followerPrefab = Modules.ItemDisplays.LoadDisplay("DisplayBehemoth"),
+                    limbMask = LimbFlags.None,
+childName = "LowerArmL",
+localPos = new Vector3(0.17737F, 0.28677F, -0.00002F),
+localAngles = new Vector3(350.773F, 90F, 0F),
+localScale = new Vector3(0.09F, 0.09F, 0.09F)
+                }
+});
+
+            ReplaceItemDisplay(RoR2Content.Items.FireballsOnHit, new ItemDisplayRule[]
+{
+                new ItemDisplayRule
+                {
+                    ruleType = ItemDisplayRuleType.ParentedPrefab,
+                    followerPrefab = Modules.ItemDisplays.LoadDisplay("DisplayFireballsOnHit"),
+                    limbMask = LimbFlags.None,
+childName = "Sword",
+localPos = new Vector3(-0.1916F, 1.05205F, 0.00002F),
+localAngles = new Vector3(280.8255F, 270F, 180F),
+localScale = new Vector3(0.11599F, 0.11599F, 0.11599F)
+                }
+});
+
+            ReplaceItemDisplay(RoR2Content.Items.FlatHealth, new ItemDisplayRule[]
+{
+                new ItemDisplayRule
+                {
+                    ruleType = ItemDisplayRuleType.ParentedPrefab,
+                    followerPrefab = Modules.ItemDisplays.LoadDisplay("DisplaySteakCurved"),
+                    limbMask = LimbFlags.None,
+childName = "Sword",
+localPos = new Vector3(-0.00001F, 1.14147F, 0.11173F),
+localAngles = new Vector3(294.7101F, -0.00001F, 180F),
+localScale = new Vector3(0.15F, 0.15F, 0.15F)
+                }
+});
+
+            ReplaceItemDisplay(RoR2Content.Items.Medkit, new ItemDisplayRule[]
+{
+                new ItemDisplayRule
+                {
+                    ruleType = ItemDisplayRuleType.ParentedPrefab,
+                    followerPrefab = Modules.ItemDisplays.LoadDisplay("DisplayMedkit"),
+                    limbMask = LimbFlags.None,
+childName = "Chest",
+localPos = new Vector3(0.25141F, -0.09947F, -0.13521F),
+localAngles = new Vector3(270.422F, 349.1096F, 141.4891F),
+localScale = new Vector3(0.75172F, 0.75172F, 0.75172F)
+                }
+});
+
+            ReplaceItemDisplay(RoR2Content.Items.NearbyDamageBonus, new ItemDisplayRule[]
+{
+                new ItemDisplayRule
+                {
+                    ruleType = ItemDisplayRuleType.ParentedPrefab,
+                    followerPrefab = Modules.ItemDisplays.LoadDisplay("DisplayDiamond"),
+                    limbMask = LimbFlags.None,
+childName = "HandR",
+localPos = new Vector3(-0.05574F, 0.10007F, -0.00403F),
+localAngles = new Vector3(2.93824F, 348.6614F, 13.66504F),
+localScale = new Vector3(0.06821F, 0.06821F, 0.06821F)
+                }
+});
+
+            ReplaceItemDisplay(RoR2Content.Items.Bandolier, new ItemDisplayRule[]
+{
+                new ItemDisplayRule
+                {
+                    ruleType = ItemDisplayRuleType.ParentedPrefab,
+                    followerPrefab = Modules.ItemDisplays.LoadDisplay("DisplayBandolier"),
+                    limbMask = LimbFlags.None,
+childName = "ThighR",
+localPos = new Vector3(-0.00913F, 0.33169F, 0.0145F),
+localAngles = new Vector3(90F, 294.7478F, 0F),
+localScale = new Vector3(0.37958F, 0.54297F, 0.29605F)
+                }
+});
+
+            ReplaceItemDisplay(RoR2Content.Items.BarrierOnOverHeal, new ItemDisplayRule[]
+{
+                new ItemDisplayRule
+                {
+                    ruleType = ItemDisplayRuleType.ParentedPrefab,
+                    followerPrefab = Modules.ItemDisplays.LoadDisplay("DisplayAegis"),
+                    limbMask = LimbFlags.None,
+childName = "Sword",
+localPos = new Vector3(0.04708F, 0.44137F, 0.00002F),
+localAngles = new Vector3(90F, 270F, 0F),
+localScale = new Vector3(0.25808F, 0.25808F, 0.25808F)
+                }
+});
+
+            ReplaceItemDisplay(RoR2Content.Items.BleedOnHit, new ItemDisplayRule[]
+{
+                new ItemDisplayRule
+                {
+                    ruleType = ItemDisplayRuleType.ParentedPrefab,
+                    followerPrefab = Modules.ItemDisplays.LoadDisplay("DisplayTriTip"),
+                    limbMask = LimbFlags.None,
+childName = "Chest",
+localPos = new Vector3(0.10979F, 0.34789F, 0.35536F),
+localAngles = new Vector3(23.47682F, 195.9212F, 8.74267F),
+localScale = new Vector3(0.65499F, 0.65499F, 0.65499F)
+                }
+});
+
+            ReplaceItemDisplay(DLC1Content.Items.FragileDamageBonus, new ItemDisplayRule[]
+{
+                new ItemDisplayRule
+                {
+                    ruleType = ItemDisplayRuleType.ParentedPrefab,
+                    followerPrefab = Modules.ItemDisplays.LoadDisplay("DisplayDelicateWatch"),
+                    limbMask = LimbFlags.None,
+childName = "HandL",
+localPos = new Vector3(-0.00156F, 0.04171F, 0.01022F),
+localAngles = new Vector3(90F, 87.54613F, 0F),
+localScale = new Vector3(0.67914F, 0.89103F, 0.89103F)
+                }
+});
+
+            ReplaceItemDisplay(DLC1Content.Items.PrimarySkillShuriken, new ItemDisplayRule[]
+{
+                new ItemDisplayRule
+                {
+                    ruleType = ItemDisplayRuleType.ParentedPrefab,
+                    followerPrefab = Modules.ItemDisplays.LoadDisplay("DisplayShuriken"),
+                    limbMask = LimbFlags.None,
+childName = "HandL",
+localPos = new Vector3(0.08106F, 0.10368F, 0.06106F),
+localAngles = new Vector3(1.42652F, 354.053F, 77.58773F),
+localScale = new Vector3(0.43691F, 0.43691F, 0.43691F)
+                }
+});
+
+            ReplaceItemDisplay(DLC1Content.Items.MoreMissile, new ItemDisplayRule[]
+{
+                new ItemDisplayRule
+                {
+                    ruleType = ItemDisplayRuleType.ParentedPrefab,
+                    followerPrefab = Modules.ItemDisplays.LoadDisplay("DisplayICBM"),
+                    limbMask = LimbFlags.None,
+childName = "LowerArmL",
+localPos = new Vector3(-0.0953F, 0.43344F, -0.00002F),
+localAngles = new Vector3(0F, 0F, 199.9023F),
+localScale = new Vector3(0.33272F, 0.24947F, 0.33272F)
                 }
 });
 
@@ -948,6 +1288,22 @@ localScale = new Vector3(0.13457F, 0.19557F, 0.19557F)
             RoR2.GlobalEventManager.onCharacterDeathGlobal += GlobalEventManager_onCharacterDeathGlobal;
             On.RoR2.HealthComponent.TakeDamage += HealthComponent_TakeDamage;
             On.RoR2.HealthComponent.UpdateLastHitTime += HealthComponent_UpdateLastHitTime;
+
+            On.RoR2.UI.LoadoutPanelController.Rebuild += LoadoutPanelController_Rebuild;// the most useless hook ever.
+        }
+
+        private static void LoadoutPanelController_Rebuild(On.RoR2.UI.LoadoutPanelController.orig_Rebuild orig, LoadoutPanelController self)
+        {
+            orig(self);
+
+            // this is beyond stupid lmfao who let this monkey code
+            if (self.currentDisplayData.bodyIndex == BodyCatalog.FindBodyIndex("RobRavagerBody"))
+            {
+                foreach (LanguageTextMeshController i in self.gameObject.GetComponentsInChildren<LanguageTextMeshController>())
+                {
+                    if (i && i.token == "LOADOUT_SKILL_MISC") i.token = "Passive";
+                }
+            }
         }
 
         private static void HealthComponent_UpdateLastHitTime(On.RoR2.HealthComponent.orig_UpdateLastHitTime orig, HealthComponent self, float damageValue, Vector3 damagePosition, bool damageIsSilent, GameObject attacker)
@@ -1063,47 +1419,64 @@ localScale = new Vector3(0.13457F, 0.19557F, 0.19557F)
 
                 Transform healthbarContainer = hud.transform.Find("MainContainer").Find("MainUIArea").Find("SpringCanvas").Find("BottomLeftCluster").Find("BarRoots").Find("LevelDisplayCluster");
 
-                GameObject chargeRing = GameObject.Instantiate(Modules.Assets.mainAssetBundle.LoadAsset<GameObject>("ChargeRing"));
-                chargeRing.transform.SetParent(hud.transform.Find("MainContainer").Find("MainUIArea").Find("CrosshairCanvas").Find("CrosshairExtras"));
-
-                RectTransform rect = chargeRing.GetComponent<RectTransform>();
-
-                rect.localScale = new Vector3(0.4f, 0.4f, 1f);
-                rect.anchorMin = new Vector2(0f, 0f);
-                rect.anchorMax = new Vector2(0f, 0f);
-                rect.pivot = new Vector2(0.5f, 0f);
-                rect.anchoredPosition = new Vector2(50f, 0f);
-                rect.localPosition = new Vector3(65f, -75f, 0f);
-
-                var p = chargeRing.transform.GetChild(0).gameObject.AddComponent<Content.Components.BloodGauge2>();
-                p.targetHUD = hud;
-                p.fillBar = p.GetComponent<Image>();
-
-                // you'll be back someday
-                /*if (!hud.transform.Find("MainContainer").Find("MainUIArea").Find("SpringCanvas").Find("BottomLeftCluster").Find("BloodGauge"))
+                if (Modules.Config.oldBloodWell.Value)
                 {
-                    GameObject bloodGauge = GameObject.Instantiate(healthbarContainer.gameObject, hud.transform.Find("MainContainer").Find("MainUIArea").Find("SpringCanvas").Find("BottomLeftCluster"));
-                    bloodGauge.name = "BloodGauge";
+                    // you're back :-)
+                    if (!hud.transform.Find("MainContainer").Find("MainUIArea").Find("SpringCanvas").Find("BottomLeftCluster").Find("BloodGauge"))
+                    {
+                        GameObject bloodGauge = GameObject.Instantiate(healthbarContainer.gameObject, hud.transform.Find("MainContainer").Find("MainUIArea").Find("SpringCanvas").Find("BottomLeftCluster"));
+                        bloodGauge.name = "BloodGauge";
 
-                    GameObject.DestroyImmediate(bloodGauge.transform.GetChild(0).gameObject);
-                    MonoBehaviour.Destroy(bloodGauge.GetComponentInChildren<LevelText>());
-                    MonoBehaviour.Destroy(bloodGauge.GetComponentInChildren<ExpBar>());
+                        GameObject.DestroyImmediate(bloodGauge.transform.GetChild(0).gameObject);
+                        MonoBehaviour.Destroy(bloodGauge.GetComponentInChildren<LevelText>());
+                        MonoBehaviour.Destroy(bloodGauge.GetComponentInChildren<ExpBar>());
 
-                    BloodGauge bloodGaugeComponent = bloodGauge.AddComponent<BloodGauge>();
-                    bloodGaugeComponent.targetHUD = hud;
-                    bloodGaugeComponent.fillRectTransform = bloodGauge.transform.Find("ExpBarRoot").GetChild(0).GetChild(0).GetComponent<RectTransform>();
+                        BloodGauge bloodGaugeComponent = bloodGauge.AddComponent<BloodGauge>();
+                        bloodGaugeComponent.targetHUD = hud;
+                        bloodGaugeComponent.fillRectTransform = bloodGauge.transform.Find("ExpBarRoot").GetChild(0).GetChild(0).GetComponent<RectTransform>();
 
-                    bloodGauge.transform.Find("LevelDisplayRoot").Find("ValueText").gameObject.SetActive(false);
-                    bloodGauge.transform.Find("LevelDisplayRoot").Find("PrefixText").gameObject.GetComponent<LanguageTextMeshController>().token = "Blood Well";
+                        bloodGauge.transform.Find("LevelDisplayRoot").Find("ValueText").gameObject.SetActive(false);
+                        bloodGauge.transform.Find("LevelDisplayRoot").Find("PrefixText").gameObject.GetComponent<LanguageTextMeshController>().token = "Blood Well";
 
-                    bloodGauge.transform.Find("ExpBarRoot").GetChild(0).GetComponent<Image>().enabled = true;
+                        bloodGauge.transform.Find("ExpBarRoot").GetChild(0).GetComponent<Image>().enabled = true;
 
-                    bloodGauge.transform.Find("LevelDisplayRoot").GetComponent<RectTransform>().anchoredPosition = new Vector2(-12f, 0f);
+                        bloodGauge.transform.Find("LevelDisplayRoot").GetComponent<RectTransform>().anchoredPosition = new Vector2(-12f, 0f);
 
-                    rect = bloodGauge.GetComponent<RectTransform>();
-                    rect.anchorMax = new Vector2(1f, 1f);
-                    rect.anchoredPosition = new Vector2(0f, -20f);
-                }*/
+                        RectTransform rect = bloodGauge.GetComponent<RectTransform>();
+                        rect.anchorMax = new Vector2(1f, 1f);
+                        rect.anchoredPosition = new Vector2(0f, -20f);
+                    }
+                }
+                else
+                {
+                    GameObject chargeRing = GameObject.Instantiate(Modules.Assets.mainAssetBundle.LoadAsset<GameObject>("ChargeRing"));
+                    chargeRing.transform.SetParent(hud.transform.Find("MainContainer").Find("MainUIArea").Find("CrosshairCanvas").Find("CrosshairExtras"));
+
+                    RectTransform rect = chargeRing.GetComponent<RectTransform>();
+
+                    if (Modules.Config.centeredBloodWell.Value)
+                    {
+                        rect.localScale = new Vector3(0.5f, 0.5f, 1f);
+                        rect.anchorMin = new Vector2(0f, 0f);
+                        rect.anchorMax = new Vector2(0f, 0f);
+                        rect.pivot = new Vector2(0.5f, 0.5f);
+                        rect.anchoredPosition = new Vector2(0f, 0f);
+                        rect.localPosition = new Vector3(0f, 0f, 0f);
+                    }
+                    else
+                    {
+                        rect.localScale = new Vector3(0.4f, 0.4f, 1f);
+                        rect.anchorMin = new Vector2(0f, 0f);
+                        rect.anchorMax = new Vector2(0f, 0f);
+                        rect.pivot = new Vector2(0.5f, 0f);
+                        rect.anchoredPosition = new Vector2(50f, 0f);
+                        rect.localPosition = new Vector3(65f, -75f, 0f);
+                    }
+
+                    var p = chargeRing.transform.GetChild(0).gameObject.AddComponent<Content.Components.BloodGauge2>();
+                    p.targetHUD = hud;
+                    p.fillBar = p.GetComponent<Image>();
+                }
             }
         }
     }

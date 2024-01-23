@@ -22,7 +22,9 @@ namespace RedGuyMod.Content
                     if (!penis.draining) this.icon = this.baseIcon;
                     else this.icon = this.empoweredIcon;
                 }
+                else this.icon = this.baseIcon;
             }
+            else this.icon = this.baseIcon;
         }
     }
 }

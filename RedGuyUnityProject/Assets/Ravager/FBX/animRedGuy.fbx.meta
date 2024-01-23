@@ -92,6 +92,11 @@ ModelImporter:
     100172: headtail.04
     100174: meshDivineWheel
     100176: halo
+    100178: meshBodyVoid
+    100180: meshHeadVoid
+    100182: mdlVoidMetal
+    100184: meshVoidMetal
+    100186: meshVoidWrap
     400000: //RootNode
     400002: Armature
     400004: base
@@ -181,18 +186,29 @@ ModelImporter:
     400172: headtail.04
     400174: meshDivineWheel
     400176: halo
+    400178: meshBodyVoid
+    400180: meshHeadVoid
+    400182: mdlVoidMetal
+    400184: meshVoidMetal
+    400186: meshVoidWrap
     2100000: Material.001
     2100002: matImpBoss
     2100004: Material.002
     2100006: Material.003
     2100008: Material.004
     2100010: Material.005
+    2100012: matVoidSurvivorHead
+    2100014: matVoidSurvivorFlesh
+    2100016: matVoidSurvivorMetal.001
+    2100018: Default-Material
     2300000: meshBodyAlt
     2300002: meshGunB
     2300004: meshSwordB
+    2300006: meshVoidWrap
     3300000: meshBodyAlt
     3300002: meshGunB
     3300004: meshSwordB
+    3300006: meshVoidWrap
     4300000: meshBodyAlt
     4300002: meshImpWrap
     4300004: meshSwordAlt
@@ -204,6 +220,11 @@ ModelImporter:
     4300016: meshSword.001
     4300018: Cube
     4300020: meshDivineWheel
+    4300022: meshHeadVoid
+    4300024: meshBodyVoid
+    4300026: mdlVoidMetal
+    4300028: meshVoidMetal
+    4300030: meshVoidWrap
     7400000: Armature|AimPitch
     7400002: Armature|AimYaw
     7400004: Armature|aPose
@@ -278,6 +299,11 @@ ModelImporter:
     7400142: Armature|Spawn
     7400144: Armature|SprintSlow
     7400146: Armature|WheelSpin
+    7400148: Armature|Slash1X
+    7400150: Armature|Slash2X
+    7400152: Armature|PunchHit
+    7400154: Armature|PunchHitDown
+    7400156: Armature|PunchHitUp
     9500000: //RootNode
     10800000: Sun
     10800002: Sun.001
@@ -290,6 +316,10 @@ ModelImporter:
     13700012: Cube
     13700014: meshBodyAlt
     13700016: meshDivineWheel
+    13700018: meshBodyVoid
+    13700020: meshHeadVoid
+    13700022: mdlVoidMetal
+    13700024: meshVoidMetal
     2186277476908879412: ImportLogs
   externalObjects: {}
   materials:
@@ -303,8 +333,7 @@ ModelImporter:
     resampleCurves: 1
     optimizeGameObjects: 0
     motionNodeName: 
-    rigImportErrors: "Avatar creation failed:\n\tCannot find root motion transform
-      'ROOT'.\n"
+    rigImportErrors: 
     rigImportWarnings: 
     animationImportErrors: 
     animationImportWarnings: 

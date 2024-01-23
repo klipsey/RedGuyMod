@@ -9,7 +9,8 @@ namespace RedGuyMod.SkillStates.Ravager
 {
     public class Slash : BaseMeleeAttack
     {
-        public static float _damageCoefficient = 3.2f;
+        public static float _damageCoefficient = 2.7f;
+        private GameObject swingEffectInstance;
 
         public override void OnEnter()
         {
@@ -19,7 +20,7 @@ namespace RedGuyMod.SkillStates.Ravager
             this.damageCoefficient = Slash._damageCoefficient;
             this.pushForce = 200f;
             this.baseDuration = 1.1f;
-            if (this.empowered) this.baseDuration *= 0.6f;
+            if (this.empowered) this.baseDuration *= 0.65f;
             this.baseEarlyExitTime = 0.5f;
             this.attackRecoil = 2f / this.attackSpeedStat;
 
@@ -41,12 +42,22 @@ namespace RedGuyMod.SkillStates.Ravager
             else this.muzzleString = "SwingMuzzle2";
 
             base.OnEnter();
+
+            /*if (this.empowered)
+            {
+                this.FireAttack();
+                this.InitializeAttack();
+            }*/
         }
 
         protected override void OnHitEnemyAuthority(int amount)
         {
             base.OnHitEnemyAuthority(amount);
-            if (this.penis) this.penis.FillGauge(0.5f + (amount * 0.5f));
+            if (this.penis)
+            {
+                this.penis.FillGauge(0.5f + (amount * 0.5f));
+                this.penis.RefreshBlink();
+            }
         }
 
         protected override void FireAttack()
@@ -69,10 +80,32 @@ namespace RedGuyMod.SkillStates.Ravager
                 Transform muzzleTransform = this.FindModelChild(this.muzzleString);
                 if (muzzleTransform)
                 {
-                    GameObject swingEffectInstance = UnityEngine.Object.Instantiate<GameObject>(this.swingEffectPrefab, muzzleTransform);
-                    ScaleParticleSystemDuration fuck = swingEffectInstance.GetComponent<ScaleParticleSystemDuration>();
+                    this.swingEffectInstance = UnityEngine.Object.Instantiate<GameObject>(this.swingEffectPrefab, muzzleTransform);
+                    ScaleParticleSystemDuration fuck = this.swingEffectInstance.GetComponent<ScaleParticleSystemDuration>();
                     if (fuck) fuck.newDuration = fuck.initialDuration;
                 }
+            }
+        }
+
+        protected override void TriggerHitStop()
+        {
+            base.TriggerHitStop();
+
+            if (this.swingEffectInstance)
+            {
+                ScaleParticleSystemDuration fuck = this.swingEffectInstance.GetComponent<ScaleParticleSystemDuration>();
+                if (fuck) fuck.newDuration = 20f;
+            }    
+        }
+
+        protected override void ClearHitStop()
+        {
+            base.ClearHitStop();
+
+            if (this.swingEffectInstance)
+            {
+                ScaleParticleSystemDuration fuck = this.swingEffectInstance.GetComponent<ScaleParticleSystemDuration>();
+                if (fuck) fuck.newDuration = fuck.initialDuration;
             }
         }
 
@@ -80,6 +113,17 @@ namespace RedGuyMod.SkillStates.Ravager
         {
             if (this.swingIndex == 1) base.PlayCrossfade("Gesture, Override", "Slash2", "Slash.playbackRate", this.duration, 0.1f);
             else base.PlayCrossfade("Gesture, Override", "Slash1", "Slash.playbackRate", this.duration, 0.1f);
+            return;
+            if (this.empowered)
+            {
+                if (this.swingIndex == 1) base.PlayAnimation("Gesture, Override", "Slash2X", "Slash.playbackRate", this.duration);
+                else base.PlayAnimation("Gesture, Override", "Slash1X", "Slash.playbackRate", this.duration);
+            }
+            else
+            {
+                if (this.swingIndex == 1) base.PlayCrossfade("Gesture, Override", "Slash2", "Slash.playbackRate", this.duration, 0.1f);
+                else base.PlayCrossfade("Gesture, Override", "Slash1", "Slash.playbackRate", this.duration, 0.1f);
+            }
         }
 
         protected override void SetNextState()

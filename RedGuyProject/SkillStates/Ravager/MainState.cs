@@ -100,6 +100,7 @@ namespace RedGuyMod.SkillStates.Ravager
 
 					if (base.characterMotor.jumpCount >= base.characterBody.baseJumpCount)
 					{
+						this.characterBody.AddTimedBuffAuthority(Content.Survivors.RedGuy.doubleJumpBuff.buffIndex, 0.1f);
 						hopooFeather = true;
 						horizontalBonus = 1.5f;
 						verticalBonus = 1.5f;

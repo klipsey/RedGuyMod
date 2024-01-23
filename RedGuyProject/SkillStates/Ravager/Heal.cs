@@ -63,7 +63,7 @@ namespace RedGuyMod.SkillStates.Ravager
                                 procCoefficient = 1f,
                                 bonusForce = 400 * Vector3.up,
                                 baseForce = 2000f,
-                                baseDamage = Util.Remap(charge, 0f, 1f, Heal.minDamageCoefficient, Heal.maxDamageCoefficient) * this.damageStat,
+                                baseDamage = Util.Remap(charge, 0f, 1f, Heal.maxDamageCoefficient, Heal.maxDamageCoefficient) * this.damageStat,
                                 falloffModel = BlastAttack.FalloffModel.None,
                                 radius = 16f,
                                 position = this.characterBody.corePosition,
@@ -84,11 +84,14 @@ namespace RedGuyMod.SkillStates.Ravager
                         }, false);
                     }
 
-                    ConsumeOrb orb = new ConsumeOrb();
-                    orb.origin = this.FindModelChild("HandR").position;
-                    orb.target = this.characterBody.mainHurtBox;
-                    orb.healOverride = amount;
-                    OrbManager.instance.AddOrb(orb);
+                    if (NetworkServer.active)
+                    {
+                        ConsumeOrb orb = new ConsumeOrb();
+                        orb.origin = this.FindModelChild("HandR").position;
+                        orb.target = this.characterBody.mainHurtBox;
+                        orb.healOverride = amount;
+                        OrbManager.instance.AddOrb(orb);
+                    }
                 }
             }
 

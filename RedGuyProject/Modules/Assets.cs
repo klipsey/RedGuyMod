@@ -11,6 +11,7 @@ using UnityEngine.AddressableAssets;
 using TMPro;
 using UnityEngine.Rendering.PostProcessing;
 using ThreeEyedGames;
+using RoR2.UI;
 
 namespace RedGuyMod.Modules
 {
@@ -24,6 +25,10 @@ namespace RedGuyMod.Modules
         internal static List<EffectDef> effectDefs = new List<EffectDef>();
         internal static List<NetworkSoundEventDef> networkSoundEventDefs = new List<NetworkSoundEventDef>();
 
+        internal static Material bloodOverlayMat;
+
+        internal static GameObject beamCrosshair;
+
         internal static GameObject swingEffect;
         internal static GameObject bigSwingEffect;
         internal static GameObject slashImpactEffect;
@@ -32,8 +37,12 @@ namespace RedGuyMod.Modules
         internal static GameObject bigSwingEffectMastery;
         internal static GameObject slashImpactEffectMastery;
 
+        internal static GameObject swingEffectVoid;
+        internal static GameObject bigSwingEffectVoid;
+
         internal static GameObject leapEffect;
         internal static GameObject leapEffectMastery;
+        internal static GameObject leapEffectVoid;
 
         internal static GameObject slamImpactEffect;
         internal static GameObject bloodBombEffect;
@@ -84,9 +93,40 @@ namespace RedGuyMod.Modules
 
             Modules.Config.InitROO(Assets.mainAssetBundle.LoadAsset<Sprite>("texRavagerIcon"), "Ravager mod");
 
+            bloodOverlayMat = Material.Instantiate(Addressables.LoadAssetAsync<Material>("RoR2/DLC1/VoidMegaCrab/matVoidCrabMatterOverlay.mat").WaitForCompletion());
+            bloodOverlayMat.SetColor("_TintColor", Color.red);
+
+            #region Beam Crosshair
+            beamCrosshair = Addressables.LoadAssetAsync<GameObject>("RoR2/Base/Bandit2/Bandit2Crosshair.prefab").WaitForCompletion().InstantiateClone("RavagerBeamCrosshair", false);
+
+            beamCrosshair.GetComponent<CrosshairController>().skillStockSpriteDisplays = new CrosshairController.SkillStockSpriteDisplay[0];
+
+            beamCrosshair.transform.Find("Center, Available").gameObject.SetActive(false);
+            beamCrosshair.transform.Find("GameObject").gameObject.SetActive(false);
+
+            GameObject chargeBar = GameObject.Instantiate(mainAssetBundle.LoadAsset<GameObject>("ChargeBar"));
+            chargeBar.transform.SetParent(beamCrosshair.transform);
+
+            RectTransform rect = chargeBar.GetComponent<RectTransform>();
+
+            rect.localScale = new Vector3(0.75f, 0.075f, 1f);
+            rect.anchorMin = new Vector2(0f, 0f);
+            rect.anchorMax = new Vector2(0f, 0f);
+            rect.pivot = new Vector2(0.5f, 0f);
+            rect.anchoredPosition = new Vector2(50f, 0f);
+            rect.localPosition = new Vector3(0f, -60f, 0f);
+
+            chargeBar.transform.GetChild(0).gameObject.AddComponent<Content.Components.CrosshairChargeBar>().crosshairController = beamCrosshair.GetComponent<RoR2.UI.CrosshairController>();
+            #endregion
+
+
             swingEffect = Addressables.LoadAssetAsync<GameObject>("RoR2/Base/Merc/MercSwordFinisherSlash.prefab").WaitForCompletion().InstantiateClone("RavagerSwordSwing");
             swingEffect.transform.GetChild(0).gameObject.SetActive(false);
             swingEffect.transform.GetChild(1).gameObject.GetComponent<ParticleSystemRenderer>().material = Addressables.LoadAssetAsync<Material>("RoR2/Base/Imp/matImpSwipe.mat").WaitForCompletion();
+
+            swingEffectVoid = Addressables.LoadAssetAsync<GameObject>("RoR2/Base/Merc/MercSwordFinisherSlash.prefab").WaitForCompletion().InstantiateClone("RavagerSwordSwingVoid");
+            swingEffectVoid.transform.GetChild(0).gameObject.SetActive(false);
+            swingEffectVoid.transform.GetChild(1).gameObject.GetComponent<ParticleSystemRenderer>().material = Addressables.LoadAssetAsync<Material>("RoR2/DLC1/VoidSurvivor/matVoidSurvivorMeleeSlash.mat").WaitForCompletion();
 
             swingEffectMastery = Addressables.LoadAssetAsync<GameObject>("RoR2/Base/Merc/MercSwordFinisherSlash.prefab").WaitForCompletion().InstantiateClone("RavagerSwordSwingMastery");
             swingEffectMastery.transform.GetChild(0).gameObject.SetActive(false);
@@ -98,6 +138,13 @@ namespace RedGuyMod.Modules
             sex.startLifetimeMultiplier = 0.6f;
             bigSwingEffect.transform.GetChild(0).localScale = Vector3.one * 2f;
             MainPlugin.Destroy(bigSwingEffect.GetComponent<EffectComponent>());
+
+            bigSwingEffectVoid = Addressables.LoadAssetAsync<GameObject>("RoR2/Base/Merc/MercSwordSlashWhirlwind.prefab").WaitForCompletion().InstantiateClone("RavagerBigSwordSwingVoid");
+            bigSwingEffectVoid.transform.GetChild(0).gameObject.GetComponent<ParticleSystemRenderer>().material = Addressables.LoadAssetAsync<Material>("RoR2/DLC1/VoidSurvivor/matVoidSurvivorMeleeSlash.mat").WaitForCompletion();
+            sex = bigSwingEffectVoid.transform.GetChild(0).gameObject.GetComponent<ParticleSystem>().main;
+            sex.startLifetimeMultiplier = 0.6f;
+            bigSwingEffectVoid.transform.GetChild(0).localScale = Vector3.one * 2f;
+            MainPlugin.Destroy(bigSwingEffectVoid.GetComponent<EffectComponent>());
 
             bigSwingEffectMastery = Addressables.LoadAssetAsync<GameObject>("RoR2/Base/Merc/MercSwordSlashWhirlwind.prefab").WaitForCompletion().InstantiateClone("RavagerBigSwordSwingMastery");
             bigSwingEffectMastery.transform.GetChild(0).gameObject.GetComponent<ParticleSystemRenderer>().material = Addressables.LoadAssetAsync<Material>("RoR2/Base/Huntress/matHuntressSwingTrail.mat").WaitForCompletion();
@@ -141,7 +188,7 @@ namespace RedGuyMod.Modules
             {
                 if (i)
                 {
-                    i.wave.amplitude *= 0.25f;
+                    i.wave.amplitude *= 0.15f;
                 }
             }
 
@@ -257,6 +304,20 @@ namespace RedGuyMod.Modules
 
             AddNewEffectDef(leapEffectMastery);
 
+            leapEffectVoid = PrefabAPI.InstantiateClone(RoR2.LegacyResourcesAPI.Load<GameObject>("Prefabs/Effects/BrotherDashEffect"), "RavagerDashEffectVoid", true);
+            leapEffectVoid.AddComponent<NetworkIdentity>();
+            leapEffectVoid.GetComponent<EffectComponent>().applyScale = true;
+            leapEffectVoid.transform.localScale *= 0.35f;
+
+            leapEffectVoid.transform.Find("Dash").GetComponent<ParticleSystemRenderer>().material = Addressables.LoadAssetAsync<Material>("RoR2/DLC1/VoidSurvivor/matVoidSurvivorMeleeSlash.mat").WaitForCompletion();
+            leapEffectVoid.transform.Find("Dash").transform.localPosition = new Vector3(0f, 0f, -8f);
+            leapEffectVoid.transform.Find("Donut").transform.localScale = Vector3.one * 0.25f;
+            leapEffectVoid.transform.Find("Donut").GetComponent<ParticleSystemRenderer>().material = Addressables.LoadAssetAsync<Material>("RoR2/DLC1/DeepVoidPortal/matDeepVoidPortalOpaque.mat").WaitForCompletion();
+            leapEffectVoid.transform.Find("Donut, Distortion").transform.localScale = Vector3.one * 0.25f;
+            leapEffectVoid.GetComponentInChildren<Light>().color = new Color(157f / 255f, 42f / 255f, 179 / 255f);
+
+            AddNewEffectDef(leapEffectVoid);
+
             genericBloodExplosionEffect = CreateBloodExplosionEffect("RavagerGenericBloodExplosion", Addressables.LoadAssetAsync<Material>("RoR2/Base/Common/VFX/matBloodGeneric.mat").WaitForCompletion());
             largeBloodExplosionEffect = CreateBloodExplosionEffect("RavagerLargeBloodExplosion", Addressables.LoadAssetAsync<Material>("RoR2/Base/Common/VFX/matBloodHumanLarge.mat").WaitForCompletion(), 3f);
             gupBloodExplosionEffect = CreateBloodExplosionEffect("RavagerGupBloodExplosion", Addressables.LoadAssetAsync<Material>("RoR2/DLC1/Gup/matGupBlood.mat").WaitForCompletion());
@@ -310,10 +371,14 @@ namespace RedGuyMod.Modules
 
             beamChargeEffect = PrefabAPI.InstantiateClone(Addressables.LoadAssetAsync<GameObject>("RoR2/DLC1/VoidSurvivor/VoidSurvivorChargeMegaBlaster.prefab").WaitForCompletion(), "RavagerBeamCharge");
             MainPlugin.Destroy(beamChargeEffect.GetComponent<ObjectScaleCurve>());
+            //
+            beamChargeEffect.transform.Find("Base").GetComponent<ParticleSystemRenderer>().material = Addressables.LoadAssetAsync<Material>("RoR2/DLC1/VoidSurvivor/matVoidSurvivorBlasterFireCorrupted.mat").WaitForCompletion();
+            beamChargeEffect.transform.Find("OrbCore").GetComponent<MeshRenderer>().material = Addressables.LoadAssetAsync<Material>("RoR2/DLC1/VoidRaidCrab/matVoidRaidCrabJointBrokenSphere.mat").WaitForCompletion();
+            beamChargeEffect.transform.Find("Sparks, Misc").GetComponent<ParticleSystemRenderer>().material = Addressables.LoadAssetAsync<Material>("RoR2/DLC1/VoidSurvivor/matVoidSurvivorBlasterCoreCorrupted.mat").WaitForCompletion();
+            beamChargeEffect.transform.Find("Sparks, In").GetComponent<ParticleSystemRenderer>().material = Addressables.LoadAssetAsync<Material>("RoR2/DLC1/VoidSurvivor/matVoidSurvivorBlasterFireCorrupted.mat").WaitForCompletion();
 
-            beamChargeEffect.transform.Find("Base").GetComponent<ParticleSystemRenderer>().material = Addressables.LoadAssetAsync<Material>("RoR2/DLC1/VoidSurvivor/matVoidSurvivorLightningCorrupted.mat").WaitForCompletion();
-            beamChargeEffect.transform.Find("OrbCore").GetComponent<MeshRenderer>().material = Addressables.LoadAssetAsync<Material>("RoR2/Base/MagmaWorm/matMagmaWormExplosionSphere.mat").WaitForCompletion();
-            beamChargeEffect.transform.Find("Sparks, Misc").GetComponent<ParticleSystemRenderer>().material = Addressables.LoadAssetAsync<Material>("RoR2/Base/Imp/matImpDust.mat").WaitForCompletion();
+            beamChargeEffect.transform.Find("Base (1)").GetComponent<ParticleSystemRenderer>().material = Addressables.LoadAssetAsync<Material>("RoR2/DLC1/VoidSurvivor/matVoidSurvivorLightningCorrupted.mat").WaitForCompletion();
+            beamChargeEffect.transform.Find("Base (1)").localScale = Vector3.one * 1.5f;
         }
 
         private static GameObject CreateBloodExplosionEffect(string effectName, Material bloodMat, float scale = 1f)

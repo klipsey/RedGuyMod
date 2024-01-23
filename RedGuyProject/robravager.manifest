@@ -1,9 +1,9 @@
 ManifestFileVersion: 0
-CRC: 760226568
+CRC: 1437192693
 Hashes:
   AssetFileHash:
     serializedVersion: 2
-    Hash: b9bec572c7b5276f88db0651f8a7bdaf
+    Hash: 102b0dea811c1a0954ec876011b31786
   TypeTreeHash:
     serializedVersion: 2
     Hash: f486804d8030e363181b10babec2be60
@@ -67,9 +67,12 @@ ClassTypes:
   Script: {instanceID: 0}
 Assets:
 - Assets/Ravager/Textures/texBodyEmission.png
+- Assets/Ravager/Icons/texBlinkIcon.png
 - Assets/Ravager/FBX/meshImpWrap.mesh
-- Assets/Ravager/FBX/meshSwordAlt 1.mesh
+- Assets/Ravager/Icons/texBeamIcon.png
+- Assets/Ravager/Animations/MenuIdle.anim
 - Assets/Ravager/FBX/meshBody.mesh
+- Assets/Ravager/Animations/RestIdleIn.anim
 - Assets/Ravager/VFX/matBlackLightning.mat
 - Assets/Ravager/Animations/SprintF.anim
 - Assets/Ravager/Animations/maskRedGuySpike2.mask
@@ -80,6 +83,7 @@ Assets:
 - Assets/Ravager/Icons/texGrabIcon.png
 - Assets/Ravager/Animations/Spike3Idle.anim
 - Assets/Ravager/Animations/AimPitch.anim
+- Assets/Ravager/Animations/Idle.anim
 - Assets/Ravager/Animations/DefaultPose.anim
 - Assets/Ravager/Textures/texBodyAlt.png
 - Assets/Ravager/Icons/texSpinSlashIcon2.png
@@ -96,8 +100,11 @@ Assets:
 - Assets/Ravager/FBX/meshDivineWheel.mesh
 - Assets/Ravager/Icons/texConfirmIcon.png
 - Assets/Ravager/FBX/meshSwordAlt.mesh
+- Assets/Ravager/FBX/meshVoidMetal.mesh
 - Assets/Ravager/Icons/texMinecraftSkin.png
+- Assets/Ravager/Icons/texBloodWellIcon.png
 - Assets/Ravager/Icons/texRavagerAchievement.png
+- Assets/Ravager/Icons/texBeamIcon2.png
 - Assets/Ravager/VFX/texBlackLightning.png
 - Assets/Ravager/Icons/texMainSkin.png
 - Assets/Ravager/Animations/Ascend.anim
@@ -118,8 +125,8 @@ Assets:
 - Assets/Ravager/Animations/AimYaw.anim
 - Assets/Ravager/Materials/matSwordAlt.mat
 - Assets/Ravager/HUD/ChargeRing.prefab
-- Assets/Ravager/Animations/Idle.anim
 - Assets/Ravager/FBX/meshSword.mesh
+- Assets/Ravager/FBX/meshBodyVoid.mesh
 - Assets/Ravager/Icons/texPassiveIcon.png
 - Assets/Ravager/HUD/Textures/texChargeRing.png
 - Assets/Ravager/Textures/texBody.png
@@ -136,8 +143,8 @@ Assets:
 - Assets/Ravager/Icons/texSlashIcon.png
 - Assets/Ravager/Animations/RunF.anim
 - Assets/Ravager/Animations/maskRedGuySpike1.mask
+- Assets/Ravager/FBX/meshHeadVoid.mesh
 - Assets/Ravager/FBX/animRedGuy.fbx
 - Assets/Ravager/HUD/Textures/texSniperBulletIndicator.png
-- Assets/Ravager/Animations/MenuIdle.anim
 - Assets/Ravager/Icons/texHealIcon2.png
 Dependencies: []

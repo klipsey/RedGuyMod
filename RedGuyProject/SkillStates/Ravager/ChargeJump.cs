@@ -7,6 +7,7 @@ namespace RedGuyMod.SkillStates.Ravager
     public class ChargeJump : BaseRavagerState
     {
         public float duration = 0.65f;
+        public bool hopoo = false;
 
         private bool success;
         private Vector3 origin;
@@ -17,6 +18,8 @@ namespace RedGuyMod.SkillStates.Ravager
         private Vector3 jumpDir;
         private float jumpForce;
         private bool isSliding;
+        private uint playID;
+        private bool permaCling;
 
         public override void OnEnter()
         {
@@ -24,12 +27,17 @@ namespace RedGuyMod.SkillStates.Ravager
             this.origin = this.transform.position;
             base.PlayAnimation("Body", "JumpCharge", "Jump.playbackRate", this.duration);
             base.PlayAnimation("FullBody, Override Soft", "BufferEmpty");
+            this.permaCling = Modules.Config.permanentCling.Value;
 
             this.x1 = this.FindModelChild("FootChargeL").gameObject.GetComponent<ParticleSystem>();
             this.x2 = this.FindModelChild("FootChargeR").gameObject.GetComponent<ParticleSystem>();
 
             this.x1.Play();
             this.x2.Play();
+
+            this.playID = Util.PlaySound("sfx_ravager_charge_jump", this.gameObject);
+
+            this.penis.IncrementWallJump();
         }
 
         public override void OnExit()
@@ -38,6 +46,7 @@ namespace RedGuyMod.SkillStates.Ravager
             if (!this.success) base.PlayAnimation("Body", "AscendDescend");
             this.x1.Stop();
             this.x2.Stop();
+            AkSoundEngine.StopPlayingID(this.playID);
         }
 
         public override InterruptPriority GetMinimumInterruptPriority()
@@ -81,7 +90,7 @@ namespace RedGuyMod.SkillStates.Ravager
                     EntityStateMachine.FindByCustomName(this.gameObject, "Weapon").SetInterruptState(new ChargeSlash(), InterruptPriority.Skill);
                 }
                 
-                if (base.fixedAge >= this.duration || !this.inputBank.jump.down || this.isGrounded)
+                if ((base.fixedAge >= this.duration && !this.permaCling) || !this.inputBank.jump.down || (!this.hopoo && this.isGrounded))
                 {
                     this.x1.Stop();
                     this.x2.Stop();
@@ -104,7 +113,7 @@ namespace RedGuyMod.SkillStates.Ravager
                         float recoil = 15f;
                         base.AddRecoil(-1f * recoil, -2f * recoil, -0.5f * recoil, 0.5f * recoil);
 
-                        float charge = Util.Remap(base.fixedAge, 0f, this.duration, 0f, 1f);
+                        float charge = Mathf.Clamp01(Util.Remap(base.fixedAge, 0f, this.duration, 0f, 1f));
 
                         this.jumpDir = this.GetAimRay().direction;
                         this.jumpForce = (Util.Remap(charge, 0f, 1f, 1.8f, 4.5f) * this.characterBody.jumpPower);

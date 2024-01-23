@@ -17,8 +17,51 @@ namespace RedGuyMod.Modules
         public static ConfigEntry<KeyboardShortcut> tauntKey;
         public static ConfigEntry<KeyboardShortcut> danceKey;
 
+        public static ConfigEntry<bool> centeredBloodWell;
+        public static ConfigEntry<bool> oldBloodWell;
+        public static ConfigEntry<bool> badass;
+        public static ConfigEntry<bool> permanentCling;
+        public static ConfigEntry<bool> allySucc;
+        public static ConfigEntry<bool> useless;
+
         internal static void ReadConfig()
         {
+            centeredBloodWell
+    = Config.BindAndOptions("01 - General",
+             "Centered Blood Well",
+             false,
+             "Puts the Blood Well gauge on top of the crosshair. Does nothing if Old Blood Well is enabled. Requires run restart.");
+
+            oldBloodWell
+                = Config.BindAndOptions("01 - General",
+             "Old Blood Well",
+             false,
+             "Uses the old Blood Well gauge below the health bar. Requires run restart.");
+
+            badass
+= Config.BindAndOptions("01 - General",
+"Badass Mode",
+false,
+"If set to true, Ravager becomes a total BadAss when selected.");
+
+            permanentCling
+= Config.BindAndOptions("01 - General",
+"Permanent Cling",
+false,
+"If set to true, you can cling onto walls indefinitely.");
+
+            allySucc
+= Config.BindAndOptions("01 - General",
+"Allow Ally Projectile Suck",
+true,
+"If set to false, Nullify stops absorbing ally projectiles.");
+
+            useless
+= Config.BindAndOptions("01 - General",
+ "Useless",
+ true,
+ "Don't change this.");
+
             #region Emotes
             restKey
                 = Config.BindAndOptions("02 - Keybinds",

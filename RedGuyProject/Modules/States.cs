@@ -24,12 +24,16 @@ namespace RedGuyMod.Modules
             entityStates.Add(typeof(RedGuyMod.SkillStates.Ravager.BaseRavagerState));
             entityStates.Add(typeof(RedGuyMod.SkillStates.Ravager.ChargeJump));
             entityStates.Add(typeof(RedGuyMod.SkillStates.Ravager.WallJump));
+            entityStates.Add(typeof(RedGuyMod.SkillStates.Ravager.Blink));
 
             entityStates.Add(typeof(RedGuyMod.SkillStates.Ravager.Slash));
 
             entityStates.Add(typeof(RedGuyMod.SkillStates.Ravager.SpinSlash));
 
             entityStates.Add(typeof(RedGuyMod.SkillStates.Ravager.Heal));
+
+            entityStates.Add(typeof(RedGuyMod.SkillStates.Ravager.ChargeBeam));
+            entityStates.Add(typeof(RedGuyMod.SkillStates.Ravager.FireBeam));
 
             entityStates.Add(typeof(RedGuyMod.SkillStates.Ravager.DashGrab));
             entityStates.Add(typeof(RedGuyMod.SkillStates.Ravager.GrabLaunch));

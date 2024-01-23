@@ -2,9 +2,6 @@
 using Rewired.ComponentControls.Effects;
 using RoR2;
 using RoR2.Projectile;
-using System;
-using System.Collections.Generic;
-using System.Text;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using UnityEngine.Networking;
@@ -14,9 +11,33 @@ namespace RedGuyMod.Modules
 {
     internal static class Projectiles
     {
+        internal static GameObject punchShockwave;
 
         internal static void RegisterProjectiles()
         {
+            punchShockwave = Addressables.LoadAssetAsync<GameObject>("RoR2/Base/Loader/LoaderZapCone.prefab").WaitForCompletion().InstantiateClone("RavagerPunchShockwave", true);
+
+            var p = punchShockwave.GetComponent<ProjectileProximityBeamController>();
+            p.lightningType = RoR2.Orbs.LightningOrb.LightningType.RazorWire;
+            p.damageCoefficient = 1f;
+
+            punchShockwave.transform.Find("Effect/Flash").GetComponent<ParticleSystemRenderer>().material = Addressables.LoadAssetAsync<Material>("RoR2/Base/Common/VFX/matCritImpactShockwave.mat").WaitForCompletion();
+            var c = punchShockwave.transform.Find("Effect/Flash").GetComponent<ParticleSystem>().main;
+            c.startColor = Color.red;
+
+            punchShockwave.transform.Find("Effect/Impact Shockwave").GetComponent<ParticleSystemRenderer>().material = Addressables.LoadAssetAsync<Material>("RoR2/DLC1/Common/Void/matOmniRing1Void.mat").WaitForCompletion();
+
+            punchShockwave.transform.Find("Flash").GetComponent<ParticleSystemRenderer>().material = Addressables.LoadAssetAsync<Material>("RoR2/Base/Imp/matImpPortalEffect.mat").WaitForCompletion();
+
+            punchShockwave.transform.Find("Effect/Sparks, Single").GetComponent<ParticleSystemRenderer>().material = Addressables.LoadAssetAsync<Material>("RoR2/Base/Common/VFX/matBloodHumanLarge.mat").WaitForCompletion();
+
+            punchShockwave.transform.Find("Effect/Lines").GetComponent<ParticleSystemRenderer>().material = Addressables.LoadAssetAsync<Material>("RoR2/DLC1/Common/Void/matOmniHitspark1Void.mat").WaitForCompletion();
+
+            punchShockwave.transform.Find("Effect/Ring").GetComponent<ParticleSystemRenderer>().material = Addressables.LoadAssetAsync<Material>("RoR2/DLC1/Common/Void/matOmniHitspark1Void.mat").WaitForCompletion();
+
+            punchShockwave.transform.Find("Effect/Point Light").GetComponent<Light>().color = Color.red;
+
+            Modules.Prefabs.projectilePrefabs.Add(punchShockwave);
         }
 
         private static void InitializeImpactExplosion(ProjectileImpactExplosion projectileImpactExplosion)

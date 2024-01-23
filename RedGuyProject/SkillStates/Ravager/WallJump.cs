@@ -11,42 +11,93 @@ namespace RedGuyMod.SkillStates.Ravager
         private bool jumpAvailable;
 		private float airTime;
 
+		private bool isAltPassive;
+
+        public override void OnEnter()
+        {
+            base.OnEnter();
+
+			if (this.penis && this.penis.passive)
+            {
+				if (this.penis.passive.isBlink) this.isAltPassive = true;
+				else this.isAltPassive = false;
+            }
+        }
+
         public override void FixedUpdate()
         {
             base.FixedUpdate();
 
-			// heha
-			this.jumpAvailable = true;
-
-			if (this.isGrounded)
-			{
-				this.jumpAvailable = true;
-				this.airTime = 0f;
-			}
-			else this.airTime += Time.fixedDeltaTime;
-
-            if (this.inputBank.jump.justPressed && !this.isGrounded)
+			if (this.isAltPassive)
             {
-				if (this.airTime >= 0.15f)
+				if (this.isGrounded)
 				{
-					if (this.jumpAvailable)
+					this.jumpAvailable = true;
+					this.airTime = 0f;
+					this.penis.wallJumpCounter = 0;
+				}
+				else this.airTime += Time.fixedDeltaTime;
+
+				if (this.inputBank.jump.justPressed && !this.isGrounded)
+				{
+					if (this.airTime >= 0.1f)
 					{
-						if (this.AttemptWallJump())
+						if (this.penis.blinkReady)
 						{
-							if (this.penis && !this.penis.draining) this.jumpAvailable = false;
-
-							EntityStateMachine.FindByCustomName(this.gameObject, "Body").SetInterruptState(new ChargeJump(), InterruptPriority.Any);
-
+							this.penis.blinkReady = false;
+							this.BlinkForward();
 							return;
 						}
 					}
+				}
+			}
+			else
+            {
+				// heha
+				this.jumpAvailable = true;
 
-					if (this.AttemptEnemyStep())
+				if (this.isGrounded)
+				{
+					this.jumpAvailable = true;
+					this.airTime = 0f;
+					this.penis.wallJumpCounter = 0;
+				}
+				else this.airTime += Time.fixedDeltaTime;
+
+				if (this.inputBank.jump.justPressed && !this.isGrounded)
+				{
+					if (this.airTime >= 0.15f)
 					{
-						this.jumpAvailable = true;
-						base.PlayAnimation("Body", "Jump");
-						GenericCharacterMain.ApplyJumpVelocity(base.characterMotor, base.characterBody, 1.5f, 1.5f, false);
-						return;
+						if (this.jumpAvailable)
+						{
+							// hopoo feather interaction
+							if (this.characterBody.HasBuff(Content.Survivors.RedGuy.doubleJumpBuff))
+							{
+								EntityStateMachine.FindByCustomName(this.gameObject, "Body").SetInterruptState(new ChargeJump
+								{
+									hopoo = true
+								}, InterruptPriority.Any);
+
+								return;
+							}
+
+							if (this.AttemptWallJump())
+							{
+								if (this.penis && !this.penis.draining) this.jumpAvailable = false;
+
+								EntityStateMachine.FindByCustomName(this.gameObject, "Body").SetInterruptState(new ChargeJump(), InterruptPriority.Any);
+
+								return;
+							}
+						}
+
+						if (this.AttemptEnemyStep())
+						{
+							this.jumpAvailable = true;
+							base.PlayAnimation("Body", "Jump");
+							GenericCharacterMain.ApplyJumpVelocity(base.characterMotor, base.characterBody, 1.5f, 1.5f, false);
+							return;
+						}
 					}
 				}
 			}
@@ -88,5 +139,11 @@ namespace RedGuyMod.SkillStates.Ravager
 
 			return false;
         }
-    }
+
+		private void BlinkForward()
+		{
+			this.jumpAvailable = false;
+			EntityStateMachine.FindByCustomName(this.gameObject, "Slide").SetInterruptState(new Blink(), InterruptPriority.Any);
+		}
+	}
 }
