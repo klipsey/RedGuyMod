@@ -104,6 +104,8 @@ ___
 ## Changelog
 
 `1.2.3`
+- Finally polished the stupid readme, god why did that take two whole ass hours
+- Slightly increased size of melee hitboxes
 - Twisted Mutation blink distance slightly increased
 - Twisted Mutation blink now refreshes on melee hits and has subtle VFX showing when a blink is available
 - Grabbing enemies with Brutalize now sets their damage stat to 0 to prevent blazing elites from killing you
