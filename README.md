@@ -25,29 +25,50 @@ ___
 # Skills
 
 ## Passive
-The Ravager can jump off walls and charge these jumps to perform great leaps
+The Ravager can jump off walls and charge these jumps to perform great leaps.
+Also, melee hits fill up the Blood Well, healing him and empowering his skills for a short time when filled.
 
-[![](https://github.com/ArcPh1r3/DriverMod/blob/3f2ba4c0dd4ff37efa4f28288620f36525f289f7/Release/FuckShit/passive.gif?raw=true)]()
+[![](https://github.com/ArcPh1r3/RedGuyMod/blob/main/Release/FuckShit/passive.gif?raw=true)]()
 
 ## Primary
-Shoot gun
+Basic melee slash
 
-[![](https://github.com/ArcPh1r3/DriverMod/blob/3f2ba4c0dd4ff37efa4f28288620f36525f289f7/Release/FuckShit/primary.gif?raw=true)]()
+[![](https://github.com/ArcPh1r3/RedGuyMod/blob/main/Release/FuckShit/primary.gif?raw=true)]()
+
+Empowered: Swing much faster
+
+[![](https://github.com/ArcPh1r3/RedGuyMod/blob/main/Release/FuckShit/primary2.gif?raw=true)]()
 
 ## Secondary
-Aim gun and charge a high damage shot
+Lunging AoE slash that stuns
 
-[![](https://github.com/ArcPh1r3/DriverMod/blob/3f2ba4c0dd4ff37efa4f28288620f36525f289f7/Release/FuckShit/secondary.gif?raw=true)]()
+[![](https://github.com/ArcPh1r3/RedGuyMod/blob/main/Release/FuckShit/secondary.gif?raw=true)]()
+
+Empowered: Lunge farther and deal more damage to low health enemies
+
+[![](https://github.com/ArcPh1r3/RedGuyMod/blob/main/Release/FuckShit/secondary2.gif?raw=true)]()
 
 ## Utility
-Slide
+Expunge Blood Well to heal based on the blood consumed
 
-[![](https://github.com/ArcPh1r3/DriverMod/blob/3f2ba4c0dd4ff37efa4f28288620f36525f289f7/Release/FuckShit/utility.gif?raw=true)]()
+[![](https://github.com/ArcPh1r3/RedGuyMod/blob/main/Release/FuckShit/utility.gif?raw=true)]()
+
+Empowered: Unleash a devastating blood explosion, along with healing more
+
+[![](https://github.com/ArcPh1r3/RedGuyMod/blob/main/Release/FuckShit/utility2.gif?raw=true)]()
 
 ## Special
-Stun grenade
+Grab an enemy and slam them into the ground, consuming them and healing if the grab kills
 
-[![](https://github.com/ArcPh1r3/DriverMod/blob/3f2ba4c0dd4ff37efa4f28288620f36525f289f7/Release/FuckShit/special.gif?raw=true)]()
+[![](https://github.com/ArcPh1r3/RedGuyMod/blob/main/Release/FuckShit/special.gif?raw=true)]()
+
+Empowered: Drag them along the ground after landing, dealing heavy damage over time and hitting enemies you pass through
+
+[![](https://github.com/ArcPh1r3/RedGuyMod/blob/main/Release/FuckShit/special2.gif?raw=true)]()
+
+If hitting a boss, instead punch them, firing a shockwave hitting enemies in a cone behind them
+
+[![](https://github.com/ArcPh1r3/RedGuyMod/blob/main/Release/FuckShit/special3.gif?raw=true)]()
 
 ___
 
