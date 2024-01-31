@@ -1,6 +1,6 @@
 {
     "name": "Ravager",
-    "version_number": "1.2.3",
+    "version_number": "1.2.4",
     "website_url": "https://github.com/ArcPh1r3/RedGuyMod",
     "description": "Adds the Ravager, a mobile melee bruiser focused on healing through overwhelming violence.",
     "dependencies": [

@@ -97,6 +97,8 @@ ModelImporter:
     100182: mdlVoidMetal
     100184: meshVoidMetal
     100186: meshVoidWrap
+    100188: meshBodyVoid2
+    100190: meshSwordVoid
     400000: //RootNode
     400002: Armature
     400004: base
@@ -191,6 +193,8 @@ ModelImporter:
     400182: mdlVoidMetal
     400184: meshVoidMetal
     400186: meshVoidWrap
+    400188: meshBodyVoid2
+    400190: meshSwordVoid
     2100000: Material.001
     2100002: matImpBoss
     2100004: Material.002
@@ -201,6 +205,8 @@ ModelImporter:
     2100014: matVoidSurvivorFlesh
     2100016: matVoidSurvivorMetal.001
     2100018: Default-Material
+    2100020: Material.006
+    2100022: Material.007
     2300000: meshBodyAlt
     2300002: meshGunB
     2300004: meshSwordB
@@ -225,6 +231,8 @@ ModelImporter:
     4300026: mdlVoidMetal
     4300028: meshVoidMetal
     4300030: meshVoidWrap
+    4300032: meshBodyVoid2
+    4300034: meshSwordVoid
     7400000: Armature|AimPitch
     7400002: Armature|AimYaw
     7400004: Armature|aPose
@@ -304,6 +312,16 @@ ModelImporter:
     7400152: Armature|PunchHit
     7400154: Armature|PunchHitDown
     7400156: Armature|PunchHitUp
+    7400158: Armature|ThrowSlashMax
+    7400160: Armature|ThrowSlashMaxDown
+    7400162: Armature|ThrowSlashMaxUp
+    7400164: Armature|ChargeBeamMax
+    7400166: Armature|FireBeamLoop
+    7400168: Armature|FireBeamLoopDown
+    7400170: Armature|FireBeamLoopUp
+    7400172: Armature|Dance
+    7400174: Armature|RestEmote
+    7400176: Armature|RestEmoteLoop
     9500000: //RootNode
     10800000: Sun
     10800002: Sun.001
@@ -320,6 +338,9 @@ ModelImporter:
     13700020: meshHeadVoid
     13700022: mdlVoidMetal
     13700024: meshVoidMetal
+    13700026: meshBodyVoid2
+    13700028: meshSwordVoid
+    13700030: meshVoidWrap
     2186277476908879412: ImportLogs
   externalObjects: {}
   materials:

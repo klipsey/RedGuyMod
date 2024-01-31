@@ -45,7 +45,7 @@ namespace RedGuyMod.SkillStates.Ravager
 			this.blinkVector = this.GetBlinkVector();
 			this.CreateBlinkEffect(Util.GetCorePosition(this.gameObject));
 
-			if (NetworkServer.active && this.healthComponent)
+			if (NetworkServer.active && this.healthComponent && !this.penis.draining)
 			{
 				DamageInfo damageInfo = new DamageInfo();
 				damageInfo.damage = this.healthComponent.combinedHealth * this.healthCostFraction;

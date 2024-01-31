@@ -9,13 +9,16 @@ namespace RedGuyMod.SkillStates.Ravager
     public class ThrowSlash : BaseMeleeAttack
     {
         private GameObject swingEffectInstance;
+        private float charge;
 
         public override void OnEnter()
         {
             this.RefreshEmpoweredState();
             this.hitboxName = "SwordBig";
 
-            this.damageCoefficient = Util.Remap(this.characterMotor.velocity.magnitude, 0f, 90f, Slash._damageCoefficient, Slash._damageCoefficient * 4f);
+            this.charge = Mathf.Clamp01(Util.Remap(this.characterMotor.velocity.magnitude, 0f, 60f, 0f, 1f));
+
+            this.damageCoefficient = Util.Remap(this.charge, 0f, 1f, Slash._damageCoefficient, Slash._damageCoefficient * 5f);
             this.pushForce = 200f;
             this.baseDuration = 0.8f;
             this.baseEarlyExitTime = 0.5f;
@@ -36,6 +39,15 @@ namespace RedGuyMod.SkillStates.Ravager
             this.damageType = DamageType.Generic;
 
             this.muzzleString = "SwingMuzzleLeap";
+
+            if (this.charge >= 0.9f)
+            {
+                this.hitStopDuration *= 2.5f;
+                this.swingSoundString = "sfx_ravager_bigswing";
+                this.impactSound = Modules.Assets.bigSlashSoundEvent.index;
+                this.swingEffectPrefab = this.penis.skinDef.bigSwingEffectPrefab;
+                this.damageType = DamageType.Stun1s;
+            }
 
             base.OnEnter();
         }
@@ -97,15 +109,31 @@ namespace RedGuyMod.SkillStates.Ravager
 
         protected override void PlayAttackAnimation()
         {
-            base.PlayAnimation("Gesture, Override", "ThrowSlash", "Slash.playbackRate", this.duration);
+            if (this.charge >= 0.9f)
+            {
+                base.PlayAnimation("Gesture, Override", "BufferEmpty");
+                base.PlayAnimation("FullBody, Override", "ThrowSlashMax", "Slash.playbackRate", this.duration * 2f);
+                base.PlayAnimation("Gesture, Override", "ThrowSlashMax", "Slash.playbackRate", this.duration * 2f);
+            }
+            else base.PlayAnimation("Gesture, Override", "ThrowSlash", "Slash.playbackRate", this.duration);
         }
 
         protected override void SetNextState()
         {
-            this.outer.SetNextState(new Slash
+            if (this.skillLocator.primary.skillDef.skillNameToken == Content.Survivors.RedGuy.primaryNameToken)
             {
-                swingIndex = 0
-            });
+                this.outer.SetNextState(new Slash
+                {
+                    swingIndex = 0
+                });
+            }
+            else
+            {
+                this.outer.SetNextState(new SlashCombo
+                {
+                    swingIndex = 0
+                });
+            }
         }
     }
 }

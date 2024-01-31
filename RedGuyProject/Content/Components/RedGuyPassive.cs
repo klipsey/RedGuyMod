@@ -10,6 +10,10 @@ namespace RedGuyMod.Content.Components
         public SkillDef blinkPassive;
         public GenericSkill passiveSkillSlot;
 
+        public SkillDef bloodWellPassive;
+        public SkillDef bloodWellAltPassive;
+        public GenericSkill bloodPassiveSkillSlot;
+
         public bool isWallJump
         {
             get
@@ -30,6 +34,19 @@ namespace RedGuyMod.Content.Components
                 if (this.blinkPassive && this.passiveSkillSlot)
                 {
                     return this.passiveSkillSlot.skillDef == this.blinkPassive;
+                }
+
+                return false;
+            }
+        }
+
+        public bool isAltBloodWell
+        {
+            get
+            {
+                if (this.bloodWellAltPassive && this.bloodPassiveSkillSlot)
+                {
+                    return this.bloodPassiveSkillSlot.skillDef == this.bloodWellAltPassive;
                 }
 
                 return false;

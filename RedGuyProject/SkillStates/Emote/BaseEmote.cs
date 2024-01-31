@@ -58,12 +58,12 @@ namespace RedGuyMod.SkillStates.Emote
 
             if (this.duration > 0)
             {
-                PlayAnimationOnAnimator(animator, "FullBody, Override", animString, "Emote.playbackRate", animDuration);
+                PlayAnimationOnAnimator(animator, "Emote, Override", animString, "Emote.playbackRate", animDuration);
             }
             else
             {
                 animator.SetFloat("Emote.playbackRate", 1f);
-                PlayAnimationOnAnimator(animator, "FullBody, Override", animString);
+                PlayAnimationOnAnimator(animator, "Emote, Override", animString);
             }
 
             if (!string.IsNullOrEmpty(soundString))
@@ -145,7 +145,7 @@ namespace RedGuyMod.SkillStates.Emote
 
             this.characterBody.hideCrosshair = false;
 
-            base.PlayAnimation("FullBody, Override", "BufferEmpty");
+            base.PlayAnimation("Emote, Override", "BufferEmpty");
             if (this.activePlayID != 0) AkSoundEngine.StopPlayingID(this.activePlayID);
 
             base.cameraTargetParams.RemoveParamsOverride(camOverrideHandle, 0.5f);

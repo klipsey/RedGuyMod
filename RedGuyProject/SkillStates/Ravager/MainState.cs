@@ -4,6 +4,7 @@ using EntityStates;
 using RedGuyMod.Modules;
 using RedGuyMod.SkillStates.Emote;
 using BepInEx.Configuration;
+using RedGuyMod.Content.Components;
 
 namespace RedGuyMod.SkillStates.Ravager
 {
@@ -12,11 +13,14 @@ namespace RedGuyMod.SkillStates.Ravager
 		private Animator animator;
 		public LocalUser localUser;
 
+		private RedGuyController penis;
+
 		public override void OnEnter()
 		{
 			base.OnEnter();
-			this.animator = this.modelAnimator;
-			this.FindLocalUser();
+            this.animator = this.modelAnimator;
+			this.penis = this.GetComponent<RedGuyController>();
+            this.FindLocalUser();
 		}
 
 		public override void FixedUpdate()
@@ -100,7 +104,7 @@ namespace RedGuyMod.SkillStates.Ravager
 
 					if (base.characterMotor.jumpCount >= base.characterBody.baseJumpCount)
 					{
-						this.characterBody.AddTimedBuffAuthority(Content.Survivors.RedGuy.doubleJumpBuff.buffIndex, 0.1f);
+						this.penis.hopoFeatherTimer = 0.1f;
 						hopooFeather = true;
 						horizontalBonus = 1.5f;
 						verticalBonus = 1.5f;

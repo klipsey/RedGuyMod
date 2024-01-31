@@ -6,7 +6,7 @@
         {
             base.OnEnter();
 
-            this.PlayEmote("RestEmote", "", 1.5f);
+            this.PlayEmote("RestEmote", "", 1.2f);
         }
     }
 }

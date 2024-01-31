@@ -31,15 +31,19 @@ namespace RedGuyMod.Modules
 
             #region Skins
             LanguageAPI.Add(prefix + "DEFAULT_SKIN_NAME", "Default");
-            LanguageAPI.Add(prefix + "MONSOON_SKIN_NAME", "Divine");
+            LanguageAPI.Add(prefix + "MONSOON_SKIN_NAME", "Voidtouched");
             LanguageAPI.Add(prefix + "TYPHOON_SKIN_NAME", "");
             LanguageAPI.Add(prefix + "VOID_SKIN_NAME", "Voidborn");
+            LanguageAPI.Add(prefix + "MAHORAGA_SKIN_NAME", "Divine");
             LanguageAPI.Add(prefix + "MINECRAFT_SKIN_NAME", "Minecraft");
             #endregion
 
             #region Passive
             LanguageAPI.Add(prefix + "BLOODWELL_NAME", "Blood Well");
-            LanguageAPI.Add(prefix + "BLOODWELL_DESCRIPTION", $"The Ravager stores up <style=cIsHealth>blood</style> with his strikes, draining when full to heal you for <style=cIsHealing>100% max health</style> and <style=cIsDamage>augment your skills</style> temporarily.");
+            LanguageAPI.Add(prefix + "BLOODWELL_DESCRIPTION", $"The Ravager stores up <style=cIsHealth>blood</style> with his strikes, draining when full to heal you for <style=cIsHealing>40% max health</style> and <style=cIsDamage>empower your skills</style> temporarily.");
+
+            LanguageAPI.Add(prefix + "BLOODWELL2_NAME", "Ichor Canister");
+            LanguageAPI.Add(prefix + "BLOODWELL2_DESCRIPTION", $"The Ravager stores up <style=cIsHealth>blood</style> with his strikes, draining when full to heal you for <style=cIsHealing>100% max health</style> and <style=cIsDamage>empower your skills</style> temporarily. <style=cIsHealth>Drains faster while attacking.</style>");
 
             LanguageAPI.Add(prefix + "PASSIVE_NAME", "Physical Prowess");
             LanguageAPI.Add(prefix + "PASSIVE_DESCRIPTION", $"The Ravager can <style=cIsUtility>jump off walls</style> and <style=cIsHealth>enemies</style>. Wall jumps can be charged for a <style=cIsDamage>mighty leap</style>.");
@@ -57,6 +61,9 @@ namespace RedGuyMod.Modules
             #region Primary
             LanguageAPI.Add(prefix + "PRIMARY_SLASH_NAME", "Hack");
             LanguageAPI.Add(prefix + "PRIMARY_SLASH_DESCRIPTION", $"Swing forward for <style=cIsDamage>{100f * SkillStates.Ravager.Slash._damageCoefficient}% damage</style>. Use while <style=cIsUtility>charging a wall jump</style> to instead enter a <style=cIsDamage>hold stance</style>.");
+
+            LanguageAPI.Add(prefix + "PRIMARY_SLASHCOMBO_NAME", "Dismantle");
+            LanguageAPI.Add(prefix + "PRIMARY_SLASHCOMBO_DESCRIPTION", $"Swing forward for <style=cIsDamage>{100f * SkillStates.Ravager.SlashCombo._damageCoefficient}% damage</style>. Every 3rd hit <style=cIsUtility>stuns</style> and deals <style=cIsDamage>{100f * SkillStates.Ravager.SlashCombo.finisherDamageCoefficient}% damage</style>.");
             #endregion
 
             #region Secondary
@@ -86,14 +93,14 @@ namespace RedGuyMod.Modules
             //LanguageAPI.Add(prefix + "SPECIAL_GRAB_SCEPTER_DESCRIPTION", $"Throw a grenade that <style=cIsUtility>stuns</style> enemies for <style=cIsDamage>{100f * SkillStates.Driver.ThrowGrenade.damageCoefficient}% damage</style>. <style=cIsUtility>You can hold up to two.</style>" + Helpers.ScepterDescription("Throw a molotov that bursts into flames instead."));
 
             LanguageAPI.Add(prefix + "SPECIAL_TRANSFIGURE_NAME", "Brutalize");
-            LanguageAPI.Add(prefix + "SPECIAL_GRAB_DESCRIPTION", $"Lunge and <style=cIsUtility>grab</style> nearby enemies, then slam down for <style=cIsDamage>{100f * SkillStates.Ravager.DashGrab.groundSlamDamageCoefficient}% damage</style>. If this kills, <style=cIsHealth>consume</style> them to restore <style=cIsHealing>15% max health</style>.");
+            LanguageAPI.Add(prefix + "SPECIAL_GRAB_DESCRIPTION", $"Lunge and <style=cIsUtility>grab</style> nearby enemies, then slam down for <style=cIsDamage>{100f * SkillStates.Ravager.DashGrab.groundSlamDamageCoefficient}% damage</style>. If this kills, <style=cIsHealth>consume</style> them to restore <style=cIsHealing>10% max health</style>.");
 
             #endregion
 
             #region Keywords
-            LanguageAPI.Add("KEYWORD_REDGUY_M12", "<style=cKeywordName>Hold Stance</style><style=cSub>While charging a wall jump, enter a <style=cIsUtility>hold stance</style>. Release to swing for up to <style=cIsDamage>4x damage</style> based on velocity.");
+            LanguageAPI.Add("KEYWORD_REDGUY_M12", "<style=cKeywordName>Hold Stance</style><style=cSub>While charging a wall jump, enter a <style=cIsUtility>hold stance</style>. Release to swing for up to <style=cIsDamage>5x damage</style> based on velocity.");
             LanguageAPI.Add("KEYWORD_REDGUY_M1", "<style=cKeywordName>Empowered Effect</style><style=cSub>Swings faster.");
-            LanguageAPI.Add("KEYWORD_REDGUY_M2", "<style=cKeywordName>Empowered Effect</style><style=cSub>Deals more damage to <style=cIsUtility>low health enemies</style>.");
+            LanguageAPI.Add("KEYWORD_REDGUY_M2", "<style=cKeywordName>Empowered Effect</style><style=cSub>Deals more damage to <style=cIsUtility>low health enemies</style> and lunges farther.");
             LanguageAPI.Add("KEYWORD_REDGUY_HEAL", $"<style=cKeywordName>Empowered Effect</style><style=cSub>Explodes for <style=cIsDamage>{100f * SkillStates.Ravager.Heal.maxDamageCoefficient}% damage</style>.");
             LanguageAPI.Add("KEYWORD_REDGUY_BEAM", $"<style=cKeywordName>Empowered Effect</style><style=cSub>Charges much faster.");
             LanguageAPI.Add("KEYWORD_REDGUY_GRAB", "<style=cKeywordName>Empowered Effect</style><style=cSub>Drags enemy along the ground, dealing damage over time.");

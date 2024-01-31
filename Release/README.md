@@ -103,6 +103,9 @@ ___
 
 ## Changelog
 
+`1.2.4`
+- Fixed a gamebreaking bug caused by using Brutalize on an enemy with the Witch's Ring item from Aetherium (thanks yarrowyeen for finding the cause!)
+
 `1.2.3`
 - Finally polished the stupid readme, god why did that take two whole ass hours
 - Slightly increased size of melee hitboxes

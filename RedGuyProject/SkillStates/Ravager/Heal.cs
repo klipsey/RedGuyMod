@@ -99,8 +99,8 @@ namespace RedGuyMod.SkillStates.Ravager
             {
                 if (!this.isGrounded)
                 {
-                    if (this.empowered) this.SmallHop(this.characterMotor, Util.Remap(charge, 0f, 1f, 2f, 8f));
-                    else this.SmallHop(this.characterMotor, 15f);
+                    if (!this.empowered) this.SmallHop(this.characterMotor, Util.Remap(charge, 0f, 1f, 4f, 12f));
+                    else this.SmallHop(this.characterMotor, 16f);
                 }
             }
 

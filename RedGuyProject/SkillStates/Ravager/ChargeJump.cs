@@ -28,6 +28,7 @@ namespace RedGuyMod.SkillStates.Ravager
             base.PlayAnimation("Body", "JumpCharge", "Jump.playbackRate", this.duration);
             base.PlayAnimation("FullBody, Override Soft", "BufferEmpty");
             this.permaCling = Modules.Config.permanentCling.Value;
+            this.penis.isWallClinging = true;
 
             this.x1 = this.FindModelChild("FootChargeL").gameObject.GetComponent<ParticleSystem>();
             this.x2 = this.FindModelChild("FootChargeR").gameObject.GetComponent<ParticleSystem>();
@@ -44,6 +45,7 @@ namespace RedGuyMod.SkillStates.Ravager
         {
             base.OnExit();
             if (!this.success) base.PlayAnimation("Body", "AscendDescend");
+            this.penis.isWallClinging = false;
             this.x1.Stop();
             this.x2.Stop();
             AkSoundEngine.StopPlayingID(this.playID);
@@ -116,7 +118,12 @@ namespace RedGuyMod.SkillStates.Ravager
                         float charge = Mathf.Clamp01(Util.Remap(base.fixedAge, 0f, this.duration, 0f, 1f));
 
                         this.jumpDir = this.GetAimRay().direction;
-                        this.jumpForce = (Util.Remap(charge, 0f, 1f, 1.8f, 4.5f) * this.characterBody.jumpPower);
+
+                        float movespeed = Mathf.Clamp(this.characterBody.moveSpeed, 1f, 18f);
+
+                        this.jumpForce = (Util.Remap(charge, 0f, 1f, 0.17733990147f, 0.37334975369f) * this.characterBody.jumpPower * movespeed);
+
+
                         this.characterMotor.velocity = this.jumpDir * this.jumpForce;
                         this.hasJumped = true;
                         this.jumpTime = 0.25f;

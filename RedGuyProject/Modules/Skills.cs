@@ -30,6 +30,7 @@ namespace RedGuyMod.Modules
             if (passive)
             {
                 passive.passiveSkillSlot = CreateGenericSkillWithSkillFamily(targetPrefab, "Passive");
+                passive.bloodPassiveSkillSlot = CreateGenericSkillWithSkillFamily(targetPrefab, "Passive2");
             }
 
             if ((families & (1 << 0)) != 0) {

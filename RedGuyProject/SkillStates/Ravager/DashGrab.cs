@@ -656,7 +656,7 @@ namespace RedGuyMod.SkillStates.Ravager
 									fireProjectileInfo.position = base.FindModelChild("HandL").position;
 									fireProjectileInfo.rotation = Quaternion.LookRotation(aimRay.direction);
 									fireProjectileInfo.crit = this.RollCrit();
-									fireProjectileInfo.damage = 4f * this.damageStat;
+									fireProjectileInfo.damage = 10f * this.damageStat;
 									fireProjectileInfo.owner = this.gameObject;
 									fireProjectileInfo.projectilePrefab = Modules.Projectiles.punchShockwave;
 									ProjectileManager.instance.FireProjectile(fireProjectileInfo);

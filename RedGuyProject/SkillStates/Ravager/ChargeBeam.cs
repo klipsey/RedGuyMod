@@ -92,7 +92,7 @@ namespace RedGuyMod.SkillStates.Ravager
         {
             base.FixedUpdate();
             this.stopwatch += Time.fixedDeltaTime;
-            if (this.empowered) this.stopwatch += 6f * Time.fixedDeltaTime;
+            if (this.empowered) this.stopwatch += 10f * Time.fixedDeltaTime;
             this.characterBody.outOfCombatStopwatch = 0f;
             this.StartAimMode(0.5f);
             this.characterBody.isSprinting = false;
@@ -109,6 +109,7 @@ namespace RedGuyMod.SkillStates.Ravager
                 {
                     this.isCharged = true;
                     Util.PlaySound("sfx_ravager_beam_maxcharge", this.gameObject);
+                    base.PlayCrossfade("Gesture, Override", "ChargeBeamMax", "Beam.playbackRate", 1f, 0.05f);
                 }
             }
 

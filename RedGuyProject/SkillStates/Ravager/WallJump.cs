@@ -30,6 +30,8 @@ namespace RedGuyMod.SkillStates.Ravager
 
 			if (this.isAltPassive)
             {
+				if (this.penis.draining) this.penis.blinkReady = true;
+
 				if (this.isGrounded)
 				{
 					this.jumpAvailable = true;
@@ -71,7 +73,7 @@ namespace RedGuyMod.SkillStates.Ravager
 						if (this.jumpAvailable)
 						{
 							// hopoo feather interaction
-							if (this.characterBody.HasBuff(Content.Survivors.RedGuy.doubleJumpBuff))
+							if (this.penis.hopoFeatherTimer > 0f)
 							{
 								EntityStateMachine.FindByCustomName(this.gameObject, "Body").SetInterruptState(new ChargeJump
 								{

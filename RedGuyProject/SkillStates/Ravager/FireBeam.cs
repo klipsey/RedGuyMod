@@ -44,7 +44,7 @@ namespace RedGuyMod.SkillStates.Ravager
 		public override void OnEnter()
 		{
 			//this.muzzleflashEffectPrefab = Addressables.LoadAssetAsync<GameObject>("RoR2/DLC1/VoidSurvivor/VoidBlinkVfx.prefab").WaitForCompletion();
-			//this.hitEffectPrefab = Addressables.LoadAssetAsync<GameObject>("RoR2/DLC1/VoidSurvivor/VoidSurvivorSuppressFX.prefab").WaitForCompletion();
+			this.hitEffectPrefab = Addressables.LoadAssetAsync<GameObject>("RoR2/DLC1/VoidSurvivor/VoidSurvivorBeamImpactCorrupt.prefab").WaitForCompletion();
 			this.beamVfxPrefab = Addressables.LoadAssetAsync<GameObject>("RoR2/DLC1/VoidSurvivor/VoidSurvivorBeamCorrupt.prefab").WaitForCompletion();
 
 			//this.beamVfxPrefab.transform.Find("Offset").Find("Mesh, Additive").GetComponent<MeshRenderer>().material = Addressables.LoadAssetAsync<Material>("RoR2/DLC1/VoidRaidCrab/matVoidRaidCrabTripleBeamSphere1.mat").WaitForCompletion();
@@ -52,7 +52,7 @@ namespace RedGuyMod.SkillStates.Ravager
 			base.OnEnter();
 			this.duration = Util.Remap(this.charge, 0f, 1f, this.minDuration, this.maxDuration) / this.attackSpeedStat;
 
-			this.PlayAnimation(this.animationLayerName, this.animationEnterStateName);
+			this.PlayAnimation(this.animationLayerName, "FireBeamLoop");
 
 			this.crosshairOverrideRequest = CrosshairUtils.RequestOverrideForBody(this.characterBody, Modules.Assets.beamCrosshair, CrosshairUtils.OverridePriority.Skill);
 
@@ -73,7 +73,6 @@ namespace RedGuyMod.SkillStates.Ravager
 		public override void FixedUpdate()
 		{
 			base.FixedUpdate();
-			base.PlayAnimation("Gesture, Override", "FireBeam", "Beam.playbackRate", 1f);
 			this.characterBody.SetAimTimer(0.5f);
 			this.characterBody.isSprinting = false;
 			this.characterBody.outOfCombatStopwatch = 0f;
@@ -109,6 +108,8 @@ namespace RedGuyMod.SkillStates.Ravager
 		{
 			if (this.blinkVfxInstance) VfxKillBehavior.KillVfxObject(this.blinkVfxInstance);
 			if (NetworkServer.active) this.characterBody.RemoveBuff(RoR2Content.Buffs.Slow50);
+
+			base.PlayAnimation("Gesture, Override", "FireBeam", "Beam.playbackRate", 1f);
 
 			this.penis.chargeValue = 0f;
 			this.PlayAnimation(this.animationLayerName, this.animationExitStateName);

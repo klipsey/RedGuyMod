@@ -13,9 +13,13 @@ namespace RedGuyMod.Content.Components
         public bool blinkReady;
 
         public float drainRate = 24f;
+        public float altDrainRate = 16f;
         public float maxDecayRate = 360f;
         public float decayGrowth = 10f;
         public float meter = 0f;
+
+        public bool isWallClinging;
+        public float hopoFeatherTimer;
 
         public bool draining;
         private float decay;
@@ -87,9 +91,14 @@ namespace RedGuyMod.Content.Components
         private void FixedUpdate()
         {
             this.decay = Mathf.Clamp(this.decay + (this.decayGrowth * Time.fixedDeltaTime), 0f, this.maxDecayRate);
+            this.hopoFeatherTimer -= Time.fixedDeltaTime;
 
-            if (this.draining) this.decay = this.drainRate;
-            this.meter = Mathf.Clamp(this.meter - (this.decay * Time.fixedDeltaTime), 0f, 100f);
+            if (this.draining)
+            {
+                this.decay = this.drainRate;
+                if (this.passive.isAltBloodWell) this.decay = this.altDrainRate;
+            }
+            if (!this.isWallClinging) this.meter = Mathf.Clamp(this.meter - (this.decay * Time.fixedDeltaTime), 0f, 100f);
 
             if (this.meter <= 0f)
             {
@@ -109,11 +118,11 @@ namespace RedGuyMod.Content.Components
                 }
             }
 
-            if (this.draining)
+            if (this.draining && !this.isWallClinging)
             {
                 float amount = this.iDontEvenKnowAnymore * Time.fixedDeltaTime;
                 this.storedHealth -= amount;
-                if (NetworkServer.active) if (this.storedHealth >= 0f) this.healthComponent.Heal(iDontEvenKnowAnymore * Time.fixedDeltaTime, default(ProcChainMask), false);
+                if (NetworkServer.active) if (this.storedHealth >= 0f) this.healthComponent.Heal(iDontEvenKnowAnymore * Time.fixedDeltaTime, default(ProcChainMask));
             }
 
             if (this.characterBody.characterMotor.isGrounded) this.blinkReady = true;
@@ -174,8 +183,16 @@ namespace RedGuyMod.Content.Components
             this.chargeEffect.Play();
             this.blackElectricityEffect.Play();
 
-            this.storedHealth = this.healthComponent.fullHealth;// * 0.75f;
-            this.iDontEvenKnowAnymore = this.storedHealth / (100f / this.drainRate);
+            if (this.passive.isAltBloodWell)
+            {
+                this.storedHealth = this.healthComponent.fullHealth;// * 0.75f;
+                this.iDontEvenKnowAnymore = this.storedHealth / (100f / this.altDrainRate);
+            }
+            else
+            {
+                this.storedHealth = this.healthComponent.fullHealth * 0.4f;
+                this.iDontEvenKnowAnymore = this.storedHealth / (40f / this.drainRate);
+            }
 
             Util.PlaySound("sfx_ravager_bloodrush", this.gameObject);
             this.playID = Util.PlaySound("sfx_ravager_steam_loop", this.gameObject);

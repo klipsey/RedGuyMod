@@ -103,6 +103,25 @@ ___
 
 ## Changelog
 
+`1.2.5`
+- Added alternate primary: Dismantle - Three hit combo with bonus damage and stun on the third hit
+- Hack damage: 270% > 230%
+- Hack Hold Stance damage multiplier increased from 4x to 5x, special animation added for max damage swings
+- Blood Well activation healing: 100% max hp > 40% max hp
+- Blood Well activation healing now counts as healing instead of regen, letting it benefit from the appropriate items
+- Added alternate passive: Ichor Canister - Heals 100% max hp, but drains faster with attacks. More rewarding but harder to use optimally
+- Physical Prowess wall leaps now scale with movement speed, but base distance has been reduced
+- Brutalize heal on kill: 15% max hp > 10% max hp
+- Brutalize punch shockwave damage: 400% > 1000%
+- Added new mastery skin and moved the current one to cursed config
+- Finally added unique emotes
+- Empowered Nullify charge speed increased
+- Fixed Coagulate hop distance not scaling properly
+- Fixed Hopoo Feather interaction not working for multiplayer clients
+
+`1.2.4`
+- Fixed a gamebreaking bug caused by using Brutalize on an enemy with the Witch's Ring item from Aetherium (thanks yarrowyeen for finding the cause!)
+
 `1.2.3`
 - Finally polished the stupid readme, god why did that take two whole ass hours
 - Slightly increased size of melee hitboxes

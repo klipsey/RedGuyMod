@@ -9,7 +9,7 @@ namespace RedGuyMod.SkillStates.Ravager
 {
     public class Slash : BaseMeleeAttack
     {
-        public static float _damageCoefficient = 2.7f;
+        public static float _damageCoefficient = 2.3f;
         private GameObject swingEffectInstance;
 
         public override void OnEnter()

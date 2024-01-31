@@ -44,7 +44,7 @@ namespace RedGuyMod.Content
                     {
                         this.target.healthComponent.Heal(this.healOverride, default(ProcChainMask));
                     }
-                    else this.target.healthComponent.HealFraction(0.15f, default(ProcChainMask));
+                    else this.target.healthComponent.HealFraction(0.1f, default(ProcChainMask));
 
                     Components.RedGuyController penis = this.target.healthComponent.gameObject.GetComponent<Components.RedGuyController>();
                     if (penis)

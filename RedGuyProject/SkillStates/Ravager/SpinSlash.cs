@@ -211,7 +211,21 @@ namespace RedGuyMod.SkillStates.Ravager
 
         protected override void SetNextState()
         {
-            this.outer.SetNextState(new Slash());
+            if (this.skillLocator.primary.skillDef.skillNameToken == Content.Survivors.RedGuy.primaryNameToken)
+            {
+                this.outer.SetNextState(new Slash
+                {
+                    swingIndex = 0
+                });
+            }
+            else
+            {
+                this.outer.SetNextState(new SlashCombo
+                {
+                    swingIndex = 0
+                });
+            }
+
             base.PlayAnimation("FullBody, Override", "BufferEmpty");
         }
 
