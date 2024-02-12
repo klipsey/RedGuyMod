@@ -2,6 +2,9 @@
 using RoR2;
 using RoR2.Orbs;
 using EntityStates.ImpMonster;
+using UnityEngine.Networking;
+using R2API.Networking;
+using R2API.Networking.Interfaces;
 
 namespace RedGuyMod.Content
 {
@@ -46,23 +49,9 @@ namespace RedGuyMod.Content
                     }
                     else this.target.healthComponent.HealFraction(0.1f, default(ProcChainMask));
 
-                    Components.RedGuyController penis = this.target.healthComponent.gameObject.GetComponent<Components.RedGuyController>();
-                    if (penis)
-                    {
-                        Transform modelTransform = this.target.healthComponent.body.modelLocator.modelTransform;
-                        if (modelTransform && penis.skinDef)
-                        {
-                            TemporaryOverlay temporaryOverlay = modelTransform.gameObject.AddComponent<TemporaryOverlay>();
-                            temporaryOverlay.duration = 1f;
-                            temporaryOverlay.destroyComponentOnEnd = true;
-                            temporaryOverlay.originalMaterial = penis.skinDef.bloodOrbOverlayMaterial;
-                            temporaryOverlay.inspectorCharacterModel = modelTransform.GetComponent<CharacterModel>();
-                            temporaryOverlay.alphaCurve = AnimationCurve.EaseInOut(0f, 1f, 1f, 0f);
-                            temporaryOverlay.animateShaderAlpha = true;
-                        }
-
-                        Util.PlaySound(penis.skinDef.consumeSoundString, this.target.gameObject);
-                    }
+                    NetworkIdentity identity = this.target.healthComponent.gameObject.GetComponent<NetworkIdentity>();
+                    if (!identity) return;
+                    new SyncOrbOverlay(identity.netId, this.target.healthComponent.gameObject).Send(NetworkDestination.Clients);
                 }
             }
         }

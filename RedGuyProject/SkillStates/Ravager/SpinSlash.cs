@@ -8,7 +8,7 @@ namespace RedGuyMod.SkillStates.Ravager
 {
     public class SpinSlash : BaseMeleeAttack
     {
-        public static float _damageCoefficient = 6f;
+        public static float _damageCoefficient = 5f;
 
         private bool hasHopped;
         private SlashType slashType;
@@ -62,7 +62,7 @@ namespace RedGuyMod.SkillStates.Ravager
                 this.muzzleString = "SwingMuzzleDown";
             }
 
-            this.attackStartTime = 0.15f;
+            this.attackStartTime = 0.18f;
             this.attackEndTime = 0.4f;
 
             this.smoothHitstop = true;

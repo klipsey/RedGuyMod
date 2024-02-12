@@ -18,7 +18,7 @@ namespace RedGuyMod.Modules
             punchShockwave = Addressables.LoadAssetAsync<GameObject>("RoR2/Base/Loader/LoaderZapCone.prefab").WaitForCompletion().InstantiateClone("RavagerPunchShockwave", true);
 
             var p = punchShockwave.GetComponent<ProjectileProximityBeamController>();
-            p.lightningType = RoR2.Orbs.LightningOrb.LightningType.RazorWire;
+            p.lightningType = RoR2.Orbs.LightningOrb.LightningType.MageLightning;
             p.damageCoefficient = 1f;
 
             punchShockwave.transform.Find("Effect/Flash").GetComponent<ParticleSystemRenderer>().material = Addressables.LoadAssetAsync<Material>("RoR2/Base/Common/VFX/matCritImpactShockwave.mat").WaitForCompletion();

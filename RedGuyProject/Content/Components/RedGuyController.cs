@@ -8,8 +8,11 @@ using System;
 
 namespace RedGuyMod.Content.Components
 {
-    public class RedGuyController : MonoBehaviour
+    public class RedGuyController : NetworkBehaviour
     {
+        [SyncVar]
+        public int projectilesDeleted = 0;
+
         public bool blinkReady;
 
         public float drainRate = 24f;
@@ -35,7 +38,7 @@ namespace RedGuyMod.Content.Components
         private ParticleSystem blackElectricityEffect;
         private ParticleSystem handElectricityEffect;
         private uint playID;
-        private CharacterBody characterBody;
+        public CharacterBody characterBody { get; private set; }
         private ModelSkinController skinController;
         private ChildLocator childLocator;
 
@@ -139,6 +142,11 @@ namespace RedGuyMod.Content.Components
             if (this.animator) this.animator.SetBool("isEmpowered", this.draining);
         }
 
+        private void OnDestroy()
+        {
+            AkSoundEngine.StopPlayingID(this.playID);
+        }
+
         public void RefreshBlink()
         {
             this.blinkReady = true;
@@ -160,17 +168,23 @@ namespace RedGuyMod.Content.Components
             this.decay = 0f;
 
             this.meter += 10f * multiplier;
-            if (this.healthComponent.combinedHealthFraction <= 0.5f) this.meter += 10f * multiplier;
+            if (this.healthComponent.combinedHealthFraction <= 0.5f) this.meter += 5f * multiplier;
 
+            NetworkIdentity identity = this.GetComponent<NetworkIdentity>();
+            if (!identity)
+            {
+                return;
+            }
+
+            new SyncBloodWell(identity.netId, (ulong)(this.meter * 100f)).Send(NetworkDestination.Clients);
+        }
+
+        public void UpdateGauge()
+        {
             if (this.meter >= 100f)
             {
                 this.ActivateDrain();
             }
-
-            NetworkIdentity identity = this.GetComponent<NetworkIdentity>();
-            if (!identity) return;
-
-            new SyncBloodWell(identity.netId, (ulong)(this.meter * 100f)).Send(NetworkDestination.Server);
         }
 
         public void ActivateDrain()
@@ -190,8 +204,8 @@ namespace RedGuyMod.Content.Components
             }
             else
             {
-                this.storedHealth = this.healthComponent.fullHealth * 0.4f;
-                this.iDontEvenKnowAnymore = this.storedHealth / (40f / this.drainRate);
+                this.storedHealth = (this.healthComponent.fullHealth - this.healthComponent.health) * 0.75f;
+                this.iDontEvenKnowAnymore = this.storedHealth / (100f / this.drainRate);
             }
 
             Util.PlaySound("sfx_ravager_bloodrush", this.gameObject);

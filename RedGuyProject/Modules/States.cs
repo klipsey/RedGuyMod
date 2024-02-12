@@ -9,6 +9,7 @@ namespace RedGuyMod.Modules
 
         public static void RegisterStates()
         {
+            entityStates.Add(typeof(RedGuyMod.SkillStates.ConsumedDeath));
             entityStates.Add(typeof(RedGuyMod.SkillStates.FuckMyAss));
             entityStates.Add(typeof(RedGuyMod.SkillStates.Ravager.SpawnState));
 
@@ -25,8 +26,11 @@ namespace RedGuyMod.Modules
             entityStates.Add(typeof(RedGuyMod.SkillStates.Ravager.ChargeJump));
             entityStates.Add(typeof(RedGuyMod.SkillStates.Ravager.WallJump));
             entityStates.Add(typeof(RedGuyMod.SkillStates.Ravager.Blink));
+            entityStates.Add(typeof(RedGuyMod.SkillStates.Ravager.WallJumpSmall));
+            entityStates.Add(typeof(RedGuyMod.SkillStates.Ravager.WallJumpBig));
 
             entityStates.Add(typeof(RedGuyMod.SkillStates.Ravager.Slash));
+            entityStates.Add(typeof(RedGuyMod.SkillStates.Ravager.SlashCombo));
 
             entityStates.Add(typeof(RedGuyMod.SkillStates.Ravager.SpinSlash));
 
@@ -37,6 +41,7 @@ namespace RedGuyMod.Modules
 
             entityStates.Add(typeof(RedGuyMod.SkillStates.Ravager.DashGrab));
             entityStates.Add(typeof(RedGuyMod.SkillStates.Ravager.GrabLaunch));
+            entityStates.Add(typeof(RedGuyMod.SkillStates.Ravager.PunchRecoil));
             entityStates.Add(typeof(RedGuyMod.SkillStates.Ravager.ChargeSlash));
             entityStates.Add(typeof(RedGuyMod.SkillStates.Ravager.ThrowSlash));
         }

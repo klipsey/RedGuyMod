@@ -1,9 +1,9 @@
 ManifestFileVersion: 0
-CRC: 2337420880
+CRC: 953565995
 Hashes:
   AssetFileHash:
     serializedVersion: 2
-    Hash: 6f45465d4c3d41b27b1f01b794dc94f5
+    Hash: d221e2235376bdf26f95efd47d3c4962
   TypeTreeHash:
     serializedVersion: 2
     Hash: f486804d8030e363181b10babec2be60
@@ -158,6 +158,7 @@ Assets:
 - Assets/Ravager/Animations/RestEmoteLoop.anim
 - Assets/Ravager/FBX/animRedGuy.fbx
 - Assets/Ravager/HUD/Textures/texSniperBulletIndicator.png
+- Assets/Ravager/Icons/texVoidSkin.png
 - Assets/Ravager/Animations/Dance.anim
 - Assets/Ravager/FBX/meshBodyVoid2.mesh
 - Assets/Ravager/Icons/texHealIcon2.png

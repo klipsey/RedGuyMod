@@ -48,7 +48,7 @@ namespace RedGuyMod.SkillStates.Ravager
 
         public override InterruptPriority GetMinimumInterruptPriority()
         {
-            return InterruptPriority.Pain;
+            return InterruptPriority.Skill;
         }
     }
 }

@@ -11,20 +11,22 @@ namespace RedGuyMod.SkillStates.Ravager
         public static float maxDamageCoefficient = 24f;
         public static float minDamageCoefficient = 6f;
 
+        private float amount;
+        private float charge;
+
         public override void OnEnter()
         {
             base.OnEnter();
 
-            float charge = 0f;
-
             if (this.penis)
             {
-                charge = Util.Remap(this.penis.meter, 0f, 100f, 0f, 1f);
-
                 Util.PlaySound(this.penis.skinDef.healSoundString, this.gameObject);
-                this.penis.CalcStoredHealth(this.empowered);
 
-                float amount = this.penis.storedHealth;
+                if (base.isAuthority)
+                {
+                    this.charge = Util.Remap(this.penis.meter, 0f, 100f, 0f, 1f);
+                    this.amount = Util.Remap(this.penis.meter, 0f, 100f, 0f, this.healthComponent.fullHealth * 0.5f);
+                }
                 this.penis.meter = 0f;
                 this.penis.storedHealth = 0f;
 
@@ -41,7 +43,7 @@ namespace RedGuyMod.SkillStates.Ravager
                     }
                 }
 
-                if (amount > 0f)
+                if (this.amount > 0f)
                 {
                     if (this.empowered)
                     {
@@ -99,12 +101,26 @@ namespace RedGuyMod.SkillStates.Ravager
             {
                 if (!this.isGrounded)
                 {
-                    if (!this.empowered) this.SmallHop(this.characterMotor, Util.Remap(charge, 0f, 1f, 4f, 12f));
+                    if (!this.empowered) this.SmallHop(this.characterMotor, Util.Remap(charge, 0f, 1f, 8f, 12f));
                     else this.SmallHop(this.characterMotor, 16f);
                 }
             }
 
             this.outer.SetNextStateToMain();
+        }
+
+        public override void OnSerialize(NetworkWriter writer)
+        {
+            base.OnSerialize(writer);
+            writer.Write(this.amount);
+            writer.Write(this.charge);
+        }
+
+        public override void OnDeserialize(NetworkReader reader)
+        {
+            base.OnDeserialize(reader);
+            this.amount = reader.ReadSingle();
+            this.charge = reader.ReadSingle();
         }
     }
 }

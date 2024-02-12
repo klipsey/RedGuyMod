@@ -40,7 +40,7 @@ namespace RedGuyMod.Modules
 
             #region Passive
             LanguageAPI.Add(prefix + "BLOODWELL_NAME", "Blood Well");
-            LanguageAPI.Add(prefix + "BLOODWELL_DESCRIPTION", $"The Ravager stores up <style=cIsHealth>blood</style> with his strikes, draining when full to heal you for <style=cIsHealing>40% max health</style> and <style=cIsDamage>empower your skills</style> temporarily.");
+            LanguageAPI.Add(prefix + "BLOODWELL_DESCRIPTION", $"The Ravager stores up <style=cIsHealth>blood</style> with his strikes, draining when full to heal you for <style=cIsHealing>75% missing health</style> and <style=cIsDamage>empower your skills</style> temporarily.");
 
             LanguageAPI.Add(prefix + "BLOODWELL2_NAME", "Ichor Canister");
             LanguageAPI.Add(prefix + "BLOODWELL2_DESCRIPTION", $"The Ravager stores up <style=cIsHealth>blood</style> with his strikes, draining when full to heal you for <style=cIsHealing>100% max health</style> and <style=cIsDamage>empower your skills</style> temporarily. <style=cIsHealth>Drains faster while attacking.</style>");
@@ -93,8 +93,10 @@ namespace RedGuyMod.Modules
             //LanguageAPI.Add(prefix + "SPECIAL_GRAB_SCEPTER_DESCRIPTION", $"Throw a grenade that <style=cIsUtility>stuns</style> enemies for <style=cIsDamage>{100f * SkillStates.Driver.ThrowGrenade.damageCoefficient}% damage</style>. <style=cIsUtility>You can hold up to two.</style>" + Helpers.ScepterDescription("Throw a molotov that bursts into flames instead."));
 
             LanguageAPI.Add(prefix + "SPECIAL_TRANSFIGURE_NAME", "Brutalize");
-            LanguageAPI.Add(prefix + "SPECIAL_GRAB_DESCRIPTION", $"Lunge and <style=cIsUtility>grab</style> nearby enemies, then slam down for <style=cIsDamage>{100f * SkillStates.Ravager.DashGrab.groundSlamDamageCoefficient}% damage</style>. If this kills, <style=cIsHealth>consume</style> them to restore <style=cIsHealing>10% max health</style>.");
+            LanguageAPI.Add(prefix + "SPECIAL_TRANSFIGURE_DESCRIPTION", $"Lunge and <style=cIsUtility>grab</style> nearby enemies, then slam down for <style=cIsDamage>{100f * SkillStates.Ravager.DashGrab.groundSlamDamageCoefficient}% damage</style>. If this kills, <style=cIsHealth>consume</style> them to restore <style=cIsHealing>10% max health</style>.");
 
+            LanguageAPI.Add(prefix + "SPECIAL_PUNCH_NAME", "Pummel");
+            LanguageAPI.Add(prefix + "SPECIAL_PUNCH_DESCRIPTION", $"Lunge and <style=cIsUtility>punch</style> an enemy, dealing <style=cIsDamage>{100f * SkillStates.Ravager.DashGrab.groundSlamDamageCoefficient}% damage</style> and firing a <style=cIsUtility>shockwave</style> through them for the same damage. If this kills, <style=cIsHealth>consume</style> them to restore <style=cIsHealing>15% max health</style>.");
             #endregion
 
             #region Keywords
@@ -103,7 +105,7 @@ namespace RedGuyMod.Modules
             LanguageAPI.Add("KEYWORD_REDGUY_M2", "<style=cKeywordName>Empowered Effect</style><style=cSub>Deals more damage to <style=cIsUtility>low health enemies</style> and lunges farther.");
             LanguageAPI.Add("KEYWORD_REDGUY_HEAL", $"<style=cKeywordName>Empowered Effect</style><style=cSub>Explodes for <style=cIsDamage>{100f * SkillStates.Ravager.Heal.maxDamageCoefficient}% damage</style>.");
             LanguageAPI.Add("KEYWORD_REDGUY_BEAM", $"<style=cKeywordName>Empowered Effect</style><style=cSub>Charges much faster.");
-            LanguageAPI.Add("KEYWORD_REDGUY_GRAB", "<style=cKeywordName>Empowered Effect</style><style=cSub>Drags enemy along the ground, dealing damage over time.");
+            LanguageAPI.Add("KEYWORD_REDGUY_GRAB", "<style=cKeywordName>Empowered Effect</style><style=cSub>Can grab bosses. Drags enemies along the ground, dealing damage over time.");
             LanguageAPI.Add("KEYWORD_REDGUY_GRAB2", "<style=cKeywordName>Bosses</style><style=cSub>Against bosses, <style=cIsDamage>punch</style> them instead for the same damage.");
             #endregion
 

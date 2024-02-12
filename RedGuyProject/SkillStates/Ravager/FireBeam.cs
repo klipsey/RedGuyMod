@@ -50,7 +50,7 @@ namespace RedGuyMod.SkillStates.Ravager
 			//this.beamVfxPrefab.transform.Find("Offset").Find("Mesh, Additive").GetComponent<MeshRenderer>().material = Addressables.LoadAssetAsync<Material>("RoR2/DLC1/VoidRaidCrab/matVoidRaidCrabTripleBeamSphere1.mat").WaitForCompletion();
 
 			base.OnEnter();
-			this.duration = Util.Remap(this.charge, 0f, 1f, this.minDuration, this.maxDuration) / this.attackSpeedStat;
+			this.duration = Util.Remap(this.charge, 0f, 1f, this.minDuration, this.maxDuration);// / this.attackSpeedStat;
 
 			this.PlayAnimation(this.animationLayerName, "FireBeamLoop");
 

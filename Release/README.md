@@ -1,6 +1,7 @@
 # Ravager
 - Adds the Ravager, an original new character
 - Fully functional base kit with an unlockable mastery skin
+- Fully multiplayer compatible!
 - Has item displays
 - Full Risk of Options support for all configuration options
 
@@ -87,11 +88,8 @@ Moffein, TheTimeSweeper - Loads of valuable gameplay feedback
 Redacted - Artistic feedback
 
 ## Known Issues
-- Mithrix grab has a certain bug that I won't elaborate on
 - Killing Kjaro and Runald elder lems with Brutalize prevents them from dropping their respective bands
-- Blood Well does not heal when playing as a client in multiplayer
-- By extension Coagulate probably does not work as well
-- Brutalize doesn't destroy corpses for clients in multiplayer (just a visual bug)
+- Grabbing flying bosses results in weird collision issues- the fix has to be hardcoded which will take some time to get around to for all of them
 
 ## Future Plans
 - Proper skins
@@ -102,6 +100,48 @@ Redacted - Artistic feedback
 ___
 
 ## Changelog
+
+`1.3.3`
+- Nullify beam duration no longer scales with attack speed; tick rate still does though (maybe op who knows)
+- Rewrote Brutalize punch logic to fix multiplayer weirdness
+- Added config to disable the boss grab from empowered Brutalize- recommended until the collision issues are fixed, or if you find it grief in multiplayer
+- Fixed Coagulate not playing its animation for multiplayer clients
+
+`1.3.2`
+- Base armor: -10 > 0
+- Fixed Nullify starting off at full charge if it had previously absorbed projectiles
+
+`1.3.1`
+- whoops forgot to remove the network testing hook
+
+`1.3.0`
+
+# Changes
+- Networked EVERYTHING! Every single part of the character should now work properly on every client! Huge thanks to Tsweep and Moffein for helping with this :-)
+- Added alternate primary: Dismantle - Three hit combo with bonus damage and stun on the third hit
+- Physical Prowess wall leaps now scale with movement speed, but base distance has been reduced
+- Added new mastery skin and moved the current one to cursed config
+- Finally added unique emotes
+- Fixed Coagulate hop distance not scaling properly
+
+# Buffs
+- Hack Hold Stance damage multiplier increased from 4x to 5x, special animation added for max damage swings
+- Blood Well activation healing now counts as healing instead of regen, letting it benefit from the appropriate items
+- Blood Well no longer drains while charging a wall jump- should give it a little more niche use in combat
+- Brutalize punch shockwave damage: 400% > 1000%
+- Brutalize new effect: Can grab bosses when empowered
+- Brutalize now empowers Wandering Vagrant orbs when grabbed, greatly increasing blast radius and damage
+- Empowered Nullify charge speed increased
+
+# Nerfs
+- Base armor: 20 > -10
+- Base health regen: 2.5/s > 0.5/s
+- Hack damage: 270% > 230%
+- Cleave damage: 600% > 500%
+- Blood Well activation healing: 100% max hp > 75% missing hp
+- Brutalize heal on kill: 15% max hp > 10% max hp
+- Brutalize drag damage over time: 300%/s > 100%/s
+- Brutalize now deals half damage for each repeated slam on the same enemy (in the same grab)
 
 `1.2.4`
 - Fixed a gamebreaking bug caused by using Brutalize on an enemy with the Witch's Ring item from Aetherium (thanks yarrowyeen for finding the cause!)

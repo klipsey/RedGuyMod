@@ -30,10 +30,17 @@ namespace RedGuyMod.Content
         public void OnReceived()
         {
             GameObject bodyObject = Util.FindNetworkObject(this.netId);
-            if (!bodyObject) return;
+            if (!bodyObject)
+            {
+                return;
+            }
 
             RedGuyMod.Content.Components.RedGuyController penis = bodyObject.GetComponent<RedGuyMod.Content.Components.RedGuyController>();
-            if (penis) penis.meter = this.fill * 0.01f;
+            if (penis)
+            {
+                penis.meter = this.fill * 0.01f;
+                penis.UpdateGauge();
+            }
         }
 
         public void Serialize(NetworkWriter writer)

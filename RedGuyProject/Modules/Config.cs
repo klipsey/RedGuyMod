@@ -22,6 +22,8 @@ namespace RedGuyMod.Modules
         public static ConfigEntry<bool> badass;
         public static ConfigEntry<bool> permanentCling;
         public static ConfigEntry<bool> allySucc;
+        public static ConfigEntry<bool> bossGrab;
+        public static ConfigEntry<bool> cursed;
         public static ConfigEntry<bool> useless;
 
         internal static void ReadConfig()
@@ -55,6 +57,18 @@ false,
 "Allow Ally Projectile Suck",
 true,
 "If set to false, Nullify stops absorbing ally projectiles.");
+
+            bossGrab
+= Config.BindAndOptions("01 - General",
+"Allow Boss Grab",
+true,
+"If set to false, empowered Brutalize will no longer grab bosses.");
+
+            cursed
+= Config.BindAndOptions("01 - General",
+"Cursed",
+false,
+"Enables unfinished, stupid and old content.", true);
 
             useless
 = Config.BindAndOptions("01 - General",

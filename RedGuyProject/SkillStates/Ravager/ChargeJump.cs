@@ -82,11 +82,11 @@ namespace RedGuyMod.SkillStates.Ravager
                 return;
             }
 
-            this.characterMotor.Motor.SetPosition(this.origin);
-            this.characterMotor.velocity = Vector3.zero;
-
             if (base.isAuthority)
             {
+                this.characterMotor.Motor.SetPosition(this.origin);
+                this.characterMotor.velocity = Vector3.zero;
+
                 if (this.inputBank.skill1.down)
                 {
                     EntityStateMachine.FindByCustomName(this.gameObject, "Weapon").SetInterruptState(new ChargeSlash(), InterruptPriority.Skill);
@@ -100,17 +100,12 @@ namespace RedGuyMod.SkillStates.Ravager
                     if (base.fixedAge <= 0.2f)
                     {
                         this.success = true;
-                        base.PlayAnimation("FullBody, Override Soft", "Jump");
                         GenericCharacterMain.ApplyJumpVelocity(base.characterMotor, base.characterBody, 1.6f, 1.5f, false);
-                        this.outer.SetNextStateToMain();
+                        this.outer.SetNextState(new WallJumpSmall());
                     }
                     else
                     {
                         this.success = true;
-                        this.GetModelAnimator().SetFloat("leapDir", this.inputBank.aimDirection.y);
-                        base.PlayAnimation("FullBody, Override Soft", "Leap");
-                        Util.PlaySound("sfx_ravager_leap", this.gameObject);
-                        Util.PlaySound("sfx_ravager_sonido", this.gameObject);
 
                         float recoil = 15f;
                         base.AddRecoil(-1f * recoil, -2f * recoil, -0.5f * recoil, 0.5f * recoil);
@@ -122,7 +117,6 @@ namespace RedGuyMod.SkillStates.Ravager
                         float movespeed = Mathf.Clamp(this.characterBody.moveSpeed, 1f, 18f);
 
                         this.jumpForce = (Util.Remap(charge, 0f, 1f, 0.17733990147f, 0.37334975369f) * this.characterBody.jumpPower * movespeed);
-
 
                         this.characterMotor.velocity = this.jumpDir * this.jumpForce;
                         this.hasJumped = true;
@@ -136,6 +130,12 @@ namespace RedGuyMod.SkillStates.Ravager
                         };
 
                         EffectManager.SpawnEffect(this.penis.skinDef.leapEffectPrefab, effectData, true);
+
+                        this.outer.SetNextState(new WallJumpBig
+                        {
+                            jumpDir = this.jumpDir,
+                            jumpForce = this.jumpForce
+                        });
                     }
                 }
             }

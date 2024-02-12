@@ -27,6 +27,7 @@ namespace RedGuyMod.SkillStates.Ravager
         protected GameObject areaIndicatorInstance { get; set; }
         private uint playId;
         private bool isCharged;
+        private bool ending;
 
         private CrosshairUtils.OverrideRequest crosshairOverrideRequest;
         private bool allySucc;
@@ -34,6 +35,7 @@ namespace RedGuyMod.SkillStates.Ravager
         public override void OnEnter()
         {
             base.OnEnter();
+            if (this.penis) this.penis.projectilesDeleted = 0;
             this.duration = this.baseDuration / this.attackSpeedStat;
             this.camParamsOverrideHandle = Modules.CameraParams.OverrideCameraParams(base.cameraTargetParams, RavagerCameraParams.AIM, 5f);
             this.allySucc = Modules.Config.allySucc.Value;
@@ -58,10 +60,12 @@ namespace RedGuyMod.SkillStates.Ravager
             Util.PlaySound("sfx_ravager_charge_beam", this.gameObject);
             this.playId = Util.PlaySound("sfx_ravager_beam_loop", this.gameObject);
         }
-
+       
         public override void OnExit()
         {
             base.OnExit();
+
+            if (this.charge < 0.5f) base.PlayAnimation("Gesture, Override", "FireBeam", "Beam.playbackRate", 1f);
 
             if (this.areaIndicatorInstance) EntityState.Destroy(this.areaIndicatorInstance.gameObject);
 
@@ -69,15 +73,28 @@ namespace RedGuyMod.SkillStates.Ravager
             if (this.crosshairOverrideRequest != null) this.crosshairOverrideRequest.Dispose();
 
             if (this.chargeEffectInstance) Destroy(this.chargeEffectInstance);
-            if (NetworkServer.active) this.characterBody.RemoveBuff(RoR2Content.Buffs.Slow50);
+
+            if (NetworkServer.active)
+            {
+                this.characterBody.RemoveBuff(RoR2Content.Buffs.Slow50);
+
+                int j = this.characterBody.GetBuffCount(Content.Survivors.RedGuy.projectileEatedBuff);
+                for (int i = 0; i < j; i++)
+                {
+                    this.characterBody.RemoveBuff(Content.Survivors.RedGuy.projectileEatedBuff);
+                }
+            }
+
             AkSoundEngine.StopPlayingID(this.playId);
+
+            this.penis.projectilesDeleted = 0;
         }
 
         private float charge
         {
             get
             {
-                float value = Mathf.Clamp(this.stopwatch, 0f, this.duration);
+                float value = Mathf.Clamp(this.stopwatch + (this.characterBody.GetBuffCount(Content.Survivors.RedGuy.projectileEatedBuff) * 2.25f), 0f, this.duration);
                 return Util.Remap(value, 0f, this.duration, 0f, 1f);
             }
         }
@@ -152,16 +169,22 @@ namespace RedGuyMod.SkillStates.Ravager
         protected virtual void EatProjectile(ProjectileController pc)
         {
             Util.PlaySound("sfx_ravager_beam_consume", pc.gameObject);
-            this.stopwatch += 2.25f;
-            Destroy(pc.gameObject);
-            if (DefenseMatrixOn.tracerEffectPrefab)
+
+            if (NetworkServer.active)
             {
-                EffectData effectData = new EffectData
+                this.characterBody.AddBuff(Content.Survivors.RedGuy.projectileEatedBuff);
+                this.penis.projectilesDeleted++;
+                GameObject.Destroy(pc.gameObject);
+
+                if (DefenseMatrixOn.tracerEffectPrefab)
                 {
-                    origin = this.chargeEffectInstance.transform.position,
-                    start = pc.transform.position
-                };
-                EffectManager.SpawnEffect(DefenseMatrixOn.tracerEffectPrefab, effectData, false);
+                    EffectData effectData = new EffectData
+                    {
+                        origin = this.chargeEffectInstance.transform.position,
+                        start = pc.transform.position
+                    };
+                    EffectManager.SpawnEffect(DefenseMatrixOn.tracerEffectPrefab, effectData, true);
+                }
             }
         }
 
@@ -194,8 +217,6 @@ namespace RedGuyMod.SkillStates.Ravager
 
         protected virtual void FireBeam()
         {
-            base.PlayAnimation("Gesture, Override", "FireBeam", "Beam.playbackRate", 1f);
-
             float storedCharge = this.charge;
 
             float recoilAmplitude = Util.Remap(storedCharge, 0f, 1f, 1f, 16f);// / this.attackSpeedStat;

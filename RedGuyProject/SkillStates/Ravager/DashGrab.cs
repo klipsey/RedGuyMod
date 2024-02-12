@@ -30,18 +30,19 @@ namespace RedGuyMod.SkillStates.Ravager
 		private Vector3 targetMoveVector;
 		private Vector3 targetMoveVectorVelocity;
 		private bool wasGrounded;
-
 		public static float upForce = 800f;
 		public static float launchForce = 1200f;
 		public static float turnSmoothTime = 0.01f;
 		public static float turnSpeed = 20f;
 		public static float dragMaxSpeedCoefficient = 5f;
+		private bool canGrabBoss;
 
-		private float dragDamageCoefficient = 3f;
+		private float dragDamageCoefficient = 1f;
 		private float dragDamageInterval = 0.1f;
 		private float dragDamageStopwatch;
 		private float dragStopwatch;
-		private float dragDuration = 2.5f;
+		private float baseDragDuration = 2.5f;
+		private float dragDuration;
 		private float dragMaxSpeedTime = 0.8f;
 		private float maxAirTime = 0.67f;
 		private float smallHopVelocity = 15f;
@@ -71,6 +72,15 @@ namespace RedGuyMod.SkillStates.Ravager
 		private bool releaseEnemies;
 		private CameraParamsOverrideHandle camParamsOverrideHandle;
 		private CameraParamsOverrideHandle camParamsOverrideHandle2;
+		private bool s1;
+
+		protected virtual bool forcePunch
+        {
+			get
+            {
+				return false;
+            }
+        }
 
 		private enum SubState
 		{
@@ -91,6 +101,8 @@ namespace RedGuyMod.SkillStates.Ravager
 			this.aimDirection.y = Mathf.Clamp(this.aimDirection.y, -0.75f, 0.75f);
 			this.stopwatch = 0f;
 			this.grabController = new List<GrabController>();
+			this.dragDuration = this.baseDragDuration;
+			this.canGrabBoss = Modules.Config.bossGrab.Value;
 
 			//this.fireEffect = UnityEngine.Object.Instantiate<GameObject>(Modules.Assets.grabFireEffect, base.FindModelChild("HandL2"));
 			base.PlayAnimation("FullBody, Override Soft", "BufferEmpty");
@@ -254,6 +266,10 @@ namespace RedGuyMod.SkillStates.Ravager
                                     }
                                 }
 
+								float dmg = c * DashGrab.groundSlamDamageCoefficient * this.damageStat;
+								if (this.s1) c *= 0.5f;
+								this.s1 = true;
+
 								BlastAttack.Result result = new BlastAttack
 								{
 									attacker = base.gameObject,
@@ -265,7 +281,7 @@ namespace RedGuyMod.SkillStates.Ravager
 									procCoefficient = 1f,
 									bonusForce = DashGrab.upForce * Vector3.up,
 									baseForce = DashGrab.launchForce,
-									baseDamage = c * DashGrab.groundSlamDamageCoefficient * this.damageStat,
+									baseDamage = dmg,
 									falloffModel = BlastAttack.FalloffModel.SweetSpot,
 									radius = this.groundSlamRadius,
 									position = attackPosition,
@@ -574,7 +590,19 @@ namespace RedGuyMod.SkillStates.Ravager
 				{
 					if (hurtBox.healthComponent && hurtBox.healthComponent.body)
 					{
-						if (!hurtBox.healthComponent.body.isChampion || (hurtBox.healthComponent.gameObject.name.Contains("Brother") && hurtBox.healthComponent.gameObject.name.Contains("Body")))
+						bool canGrab = this.forcePunch;
+
+						if (this.canGrabBoss)
+                        {
+							if (hurtBox.healthComponent.body.isChampion && !this.empowered) canGrab = false;
+							if (hurtBox.healthComponent.body.isChampion && this.empowered) this.dragDuration *= 0.5f;
+						}
+						else
+                        {
+							if (hurtBox.healthComponent.body.isChampion) canGrab = false;
+						}
+
+						if (canGrab)
 						{
 							Vector3 between = hurtBox.healthComponent.transform.position - base.transform.position;
 							Vector3 v = between / 4f;
@@ -601,8 +629,8 @@ namespace RedGuyMod.SkillStates.Ravager
 								team2.teamIndex = playerTeam;
 
 								hurtBox.healthComponent.gameObject.GetComponent<ProjectileController>().owner = this.gameObject;
-								hurtBox.healthComponent.gameObject.GetComponent<ProjectileDamage>().damage *= 3f;
-								hurtBox.healthComponent.gameObject.GetComponent<ProjectileImpactExplosion>().blastRadius *= 1.5f;
+								hurtBox.healthComponent.gameObject.GetComponent<ProjectileDamage>().damage *= 5f;
+								hurtBox.healthComponent.gameObject.GetComponent<ProjectileImpactExplosion>().blastRadius *= 3f;
                             }
 
 							if (!this.hasGrabbed)
@@ -617,7 +645,7 @@ namespace RedGuyMod.SkillStates.Ravager
 							if (hurtBox.healthComponent.body.isChampion)
                             {
 								// PUNCH
-								if (NetworkServer.active)
+								/*if (NetworkServer.active)
 								{
 									DamageInfo info = new DamageInfo
 									{
@@ -626,7 +654,7 @@ namespace RedGuyMod.SkillStates.Ravager
 										damage = DashGrab.groundSlamDamageCoefficient * this.damageStat,
 										damageColorIndex = DamageColorIndex.Default,
 										damageType = DamageType.Stun1s,
-										force = aimRay.direction * 14000f,
+										force = aimRay.direction * 24000f,
 										inflictor = this.gameObject,
 										position = hurtBox.transform.position,
 										procChainMask = default(ProcChainMask),
@@ -639,7 +667,7 @@ namespace RedGuyMod.SkillStates.Ravager
                                     {
 
                                     }
-								}
+								}*/
 
 								EffectManager.SpawnEffect(Modules.Assets.bloodBombEffect, new EffectData
 								{
@@ -651,9 +679,39 @@ namespace RedGuyMod.SkillStates.Ravager
 
 								if (base.isAuthority)
 								{
-									//shockwave
+									float dmg = DashGrab.groundSlamDamageCoefficient * this.damageStat;
+									if (this.empowered) dmg *= 2f;
+
+									if (NetworkServer.active)
+                                    {
+										hurtBox.healthComponent.body.AddTimedBuff(Content.Survivors.RedGuy.grabbedBuff, 0.25f);
+                                    }
+
+									// damage
+									BlastAttack.Result result = new BlastAttack
+									{
+										attacker = base.gameObject,
+										procChainMask = default(ProcChainMask),
+										impactEffect = EffectIndex.Invalid,
+										losType = BlastAttack.LoSType.None,
+										damageColorIndex = DamageColorIndex.Default,
+										damageType = DamageType.Stun1s,
+										procCoefficient = 1f,
+										bonusForce = Vector3.zero,
+										baseForce = 24000f,
+										baseDamage = dmg,
+										falloffModel = BlastAttack.FalloffModel.None,
+										radius = 0.4f,
+										position = hurtBox.transform.position,
+										attackerFiltering = AttackerFiltering.NeverHitSelf,
+										teamIndex = base.GetTeam(),
+										inflictor = base.gameObject,
+										crit = base.RollCrit()
+									}.Fire();
+
+									// shockwave
 									FireProjectileInfo fireProjectileInfo = default(FireProjectileInfo);
-									fireProjectileInfo.position = base.FindModelChild("HandL").position;
+									fireProjectileInfo.position = hurtBox.transform.position;
 									fireProjectileInfo.rotation = Quaternion.LookRotation(aimRay.direction);
 									fireProjectileInfo.crit = this.RollCrit();
 									fireProjectileInfo.damage = 10f * this.damageStat;
