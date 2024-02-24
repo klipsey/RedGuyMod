@@ -99,6 +99,7 @@ ModelImporter:
     100186: meshVoidWrap
     100188: meshBodyVoid2
     100190: meshSwordVoid
+    100192: meshFist
     400000: //RootNode
     400002: Armature
     400004: base
@@ -195,6 +196,7 @@ ModelImporter:
     400186: meshVoidWrap
     400188: meshBodyVoid2
     400190: meshSwordVoid
+    400192: meshFist
     2100000: Material.001
     2100002: matImpBoss
     2100004: Material.002
@@ -211,10 +213,12 @@ ModelImporter:
     2300002: meshGunB
     2300004: meshSwordB
     2300006: meshVoidWrap
+    2300008: meshFist
     3300000: meshBodyAlt
     3300002: meshGunB
     3300004: meshSwordB
     3300006: meshVoidWrap
+    3300008: meshFist
     4300000: meshBodyAlt
     4300002: meshImpWrap
     4300004: meshSwordAlt
@@ -233,6 +237,7 @@ ModelImporter:
     4300030: meshVoidWrap
     4300032: meshBodyVoid2
     4300034: meshSwordVoid
+    4300036: meshFist
     7400000: Armature|AimPitch
     7400002: Armature|AimYaw
     7400004: Armature|aPose
@@ -322,6 +327,13 @@ ModelImporter:
     7400172: Armature|Dance
     7400174: Armature|RestEmote
     7400176: Armature|RestEmoteLoop
+    7400178: Armature|DashPunch
+    7400180: Armature|DashPunchDown
+    7400182: Armature|DashPunchUp
+    7400184: Armature|HeavyLanding
+    7400186: Armature|JumpChargeHopoo
+    7400188: Armature|DashPunchStart
+    7400190: Armature|JumpEnemy
     9500000: //RootNode
     10800000: Sun
     10800002: Sun.001

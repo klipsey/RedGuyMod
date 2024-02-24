@@ -1,6 +1,7 @@
 ﻿using R2API;
 using Rewired.ComponentControls.Effects;
 using RoR2;
+using RoR2.EntityLogic;
 using RoR2.Projectile;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
@@ -12,6 +13,7 @@ namespace RedGuyMod.Modules
     internal static class Projectiles
     {
         internal static GameObject punchShockwave;
+        internal static GameObject punchBarrage;
 
         internal static void RegisterProjectiles()
         {
@@ -38,6 +40,16 @@ namespace RedGuyMod.Modules
             punchShockwave.transform.Find("Effect/Point Light").GetComponent<Light>().color = Color.red;
 
             Modules.Prefabs.projectilePrefabs.Add(punchShockwave);
+
+
+            punchBarrage = Addressables.LoadAssetAsync<GameObject>("RoR2/Base/Loader/LoaderZapCone.prefab").WaitForCompletion().InstantiateClone("RavagerPunchBarrage", true);
+
+            MainPlugin.Destroy(punchBarrage.GetComponent<ProjectileProximityBeamController>());
+            MainPlugin.Destroy(punchBarrage.GetComponent<DelayedEvent>());
+            MainPlugin.Destroy(punchBarrage.GetComponent<StartEvent>());
+            punchBarrage.AddComponent<Content.Components.RedGuyPunchBarrage>();
+
+            Modules.Prefabs.projectilePrefabs.Add(punchBarrage);
         }
 
         private static void InitializeImpactExplosion(ProjectileImpactExplosion projectileImpactExplosion)

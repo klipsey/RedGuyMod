@@ -32,6 +32,7 @@ namespace RedGuyMod.SkillStates.Ravager
 		private bool wasGrounded;
 		public static float upForce = 800f;
 		public static float launchForce = 1200f;
+		public static float throwForce = 12000f;
 		public static float turnSmoothTime = 0.01f;
 		public static float turnSpeed = 20f;
 		public static float dragMaxSpeedCoefficient = 5f;
@@ -53,6 +54,7 @@ namespace RedGuyMod.SkillStates.Ravager
 		protected GameObject hitEffectPrefab;
 		protected NetworkSoundEventIndex impactSound;
 		public static float groundSlamDamageCoefficient = 10f;
+		public static float punchDamageCoefficient = 12.5f;
 		private float chargeDamageCoefficient = 8f;
 		private float chargeImpactForce = 2000f;
 		private Vector3 bonusForce = Vector3.up * 2000f;
@@ -71,8 +73,11 @@ namespace RedGuyMod.SkillStates.Ravager
 		private bool c2;
 		private bool releaseEnemies;
 		private CameraParamsOverrideHandle camParamsOverrideHandle;
-		private CameraParamsOverrideHandle camParamsOverrideHandle2;
+		//private CameraParamsOverrideHandle camParamsOverrideHandle2;
 		private bool s1;
+		private int slamCount;
+
+		public static event Action<int> onSlamCountIncremented;
 
 		protected virtual bool forcePunch
         {
@@ -82,6 +87,30 @@ namespace RedGuyMod.SkillStates.Ravager
             }
         }
 
+		protected virtual bool forceThrow
+		{
+			get
+			{
+				return false;
+			}
+		}
+
+		protected virtual string startAnimString
+        {
+			get
+            {
+				return "DashGrabStart";
+            }
+        }
+
+		protected virtual string dashAnimString
+		{
+			get
+			{
+				return "DashGrab";
+			}
+		}
+
 		private enum SubState
 		{
 			Windup,
@@ -89,8 +118,7 @@ namespace RedGuyMod.SkillStates.Ravager
 			MissedGrab,
 			AirGrabbed,
 			Dragging,
-			DragLaunch,
-			Exit
+			Throwing
 		}
 
 		public override void OnEnter()
@@ -103,13 +131,16 @@ namespace RedGuyMod.SkillStates.Ravager
 			this.grabController = new List<GrabController>();
 			this.dragDuration = this.baseDragDuration;
 			this.canGrabBoss = Modules.Config.bossGrab.Value;
+			this.penis.skibidi = true;
 
 			//this.fireEffect = UnityEngine.Object.Instantiate<GameObject>(Modules.Assets.grabFireEffect, base.FindModelChild("HandL2"));
 			base.PlayAnimation("FullBody, Override Soft", "BufferEmpty");
-			base.PlayAnimation("FullBody, Override", "DashGrabStart", "Grab.playbackRate", this.windupDuration);
-			Util.PlaySound("sfx_ravager_shine", this.gameObject);
+			base.PlayAnimation("FullBody, Override", this.startAnimString, "Grab.playbackRate", this.windupDuration);
 
-			if (this.characterBody && NetworkServer.active) base.characterBody.bodyFlags |= CharacterBody.BodyFlags.IgnoreFallDamage;
+			if (this.forcePunch && this.empowered) Util.PlaySound("sfx_ravager_ready_punch", this.gameObject);
+			else Util.PlaySound("sfx_ravager_shine", this.gameObject);
+
+			//if (this.characterBody && NetworkServer.active) base.characterBody.bodyFlags |= CharacterBody.BodyFlags.IgnoreFallDamage;
 
 			Transform modelTransform = base.GetModelTransform();
 			HitBoxGroup hitBoxGroup = null;
@@ -171,7 +202,7 @@ namespace RedGuyMod.SkillStates.Ravager
 				{
 					this.stopwatch = 0f;
 					this.subState = DashGrab.SubState.DashGrab;
-					base.PlayAnimation("FullBody, Override", "DashGrab", "Grab.playbackRate", this.grabDuration * 1.25f);
+					base.PlayAnimation("FullBody, Override", this.dashAnimString, "Grab.playbackRate", this.grabDuration * 1.25f);
 					Util.PlaySound("sfx_ravager_lunge", this.gameObject);
 				}
 
@@ -186,17 +217,30 @@ namespace RedGuyMod.SkillStates.Ravager
 					float num = this.dashSpeedCurve.Evaluate(this.stopwatch / this.grabDuration);
 					base.characterMotor.rootMotion += this.aimDirection * (num * this.moveSpeedStat * Time.fixedDeltaTime);
 					base.characterMotor.velocity.y = 0f;
+
 					if (!this.hasGrabbed)
 					{
 						this.AttemptGrab(this.grabRadius);
 					}
+
 					if (this.hasGrabbed)
 					{
 						this.stopwatch = 0f;
-						this.subState = DashGrab.SubState.AirGrabbed;
 
-						this.c1 = true;
-						this.camParamsOverrideHandle = Modules.CameraParams.OverrideCameraParams(base.cameraTargetParams, RavagerCameraParams.SLAM, 2f);
+						if (this.forceThrow)
+                        {
+							this.subState = DashGrab.SubState.Throwing;
+
+							this.c1 = true;
+							this.camParamsOverrideHandle = Modules.CameraParams.OverrideCameraParams(base.cameraTargetParams, RavagerCameraParams.SLAM, 2f);
+						}
+						else
+                        {
+							this.subState = DashGrab.SubState.AirGrabbed;
+
+							this.c1 = true;
+							this.camParamsOverrideHandle = Modules.CameraParams.OverrideCameraParams(base.cameraTargetParams, RavagerCameraParams.SLAM, 2f);
+						}
 					}
 					else
 					{
@@ -253,6 +297,8 @@ namespace RedGuyMod.SkillStates.Ravager
 									scale = this.groundSlamRadius * c,
 									networkSoundEventIndex = Modules.Assets.explosionSoundEvent.index
 								}, true);
+
+								this.IterateSlamCount();
 
 								//Util.PlaySound("sfx_ravager_ground_impact", this.gameObject);
 
@@ -432,9 +478,29 @@ namespace RedGuyMod.SkillStates.Ravager
 
 							}
 						}
+						else if (this.subState == SubState.Throwing)
+                        {
+							if (!this.c1)
+                            {
+								this.c1 = true;
+								base.PlayAnimation("FullBody, Override", "GrabThrow", "Grab.playbackRate", 1.5f);
+                            }
+
+							if (this.stopwatch >= 1.2f * 0.5f)
+                            {
+								base.SmallHop(base.characterMotor, this.smallHopVelocity);
+
+								this.TryReleaseGrab();
+							}
+
+							if (this.stopwatch >= 1.2f)
+                            {
+								this.outer.SetNextStateToMain();
+								return;
+                            }
+                        }
 						else
 						{
-
 							this.releaseEnemies = true;
 							base.characterMotor.velocity = Vector3.zero; ////////delet
 							base.characterMotor.moveDirection = Vector3.zero;
@@ -496,7 +562,7 @@ namespace RedGuyMod.SkillStates.Ravager
 			this.penis.inGrab = false;
 
 			if (this.c1) this.cameraTargetParams.RemoveParamsOverride(this.camParamsOverrideHandle);
-			if (this.c2) this.cameraTargetParams.RemoveParamsOverride(this.camParamsOverrideHandle2);
+			//if (this.c2) this.cameraTargetParams.RemoveParamsOverride(this.camParamsOverrideHandle2);
 			if (this.dragEffect) EntityState.Destroy(this.dragEffect);
 			if (this.fireEffect) EntityState.Destroy(this.fireEffect);
 
@@ -509,20 +575,20 @@ namespace RedGuyMod.SkillStates.Ravager
 			base.modelLocator.normalizeToFloor = false;
 			this.animator.SetBool("dragGround", false);
 
+			this.TryReleaseGrab();
+
+			if (NetworkServer.active)
+			{
+				//base.characterBody.bodyFlags &= ~CharacterBody.BodyFlags.IgnoreFallDamage;
+			}
+		}
+
+		private void TryReleaseGrab()
+        {
 			if (this.grabController.Count > 0)
 			{
-				if (this.releaseEnemies)
-				{
-					foreach (GrabController grabController in this.grabController)
-					{
-						if (grabController)
-						{
-							grabController.Release();
-						}
-					}
-				}
-				else
-				{
+				if (this.forceThrow)
+                {
 					foreach (GrabController grabController in this.grabController)
 					{
 						if (grabController)
@@ -530,16 +596,35 @@ namespace RedGuyMod.SkillStates.Ravager
 							grabController.Launch(base.characterMotor.moveDirection.normalized * DashGrab.launchForce + Vector3.up * DashGrab.upForce);
 						}
 					}
+				}
+				else
+                {
+					if (this.releaseEnemies)
+					{
+						foreach (GrabController grabController in this.grabController)
+						{
+							if (grabController)
+							{
+								grabController.Release();
+							}
+						}
+					}
+					else
+					{
+						foreach (GrabController grabController in this.grabController)
+						{
+							if (grabController)
+							{
+								grabController.Launch(this.GetAimRay().direction * DashGrab.throwForce);
+							}
+						}
 
-					this.DamageTargets();
+						this.DamageTargets();
+					}
 				}
 			}
-
-			if (NetworkServer.active)
-			{
-				base.characterBody.bodyFlags &= ~CharacterBody.BodyFlags.IgnoreFallDamage;
-			}
 		}
+
 		protected virtual void ForceFlinch(CharacterBody body)
 		{
 			if (Util.HasEffectiveAuthority(body.gameObject))
@@ -590,7 +675,7 @@ namespace RedGuyMod.SkillStates.Ravager
 				{
 					if (hurtBox.healthComponent && hurtBox.healthComponent.body)
 					{
-						bool canGrab = this.forcePunch;
+						bool canGrab = !this.forcePunch;
 
 						if (this.canGrabBoss)
                         {
@@ -637,12 +722,13 @@ namespace RedGuyMod.SkillStates.Ravager
                             {
 								Util.PlaySound("sfx_ravager_grab", base.gameObject);
 								base.SmallHop(base.characterMotor, this.smallHopVelocity);
+								this.penis.RefreshBlink();
 							}
 							this.hasGrabbed = true;
 						}
 						else
                         {
-							if (hurtBox.healthComponent.body.isChampion)
+							if (hurtBox.healthComponent.body.isChampion || this.forcePunch)
                             {
 								// PUNCH
 								/*if (NetworkServer.active)
@@ -675,17 +761,24 @@ namespace RedGuyMod.SkillStates.Ravager
 									scale = 2f
 								}, false);
 
-								Util.PlaySound("sfx_ravager_kick", this.gameObject);
+								if (this.empowered) Util.PlaySound("sfx_ravager_punch_empowered", this.gameObject);
+								else Util.PlaySound("sfx_ravager_punch", this.gameObject);
+
+								if (Modules.Assets.bodyPunchSounds.ContainsKey(hurtBox.healthComponent.gameObject.name))
+								{
+									Util.PlaySound(Modules.Assets.bodyPunchSounds[hurtBox.healthComponent.gameObject.name], hurtBox.gameObject);
+								}
+								else Util.PlaySound("sfx_ravager_punch_generic", hurtBox.gameObject);
+
+								hurtBox.healthComponent.gameObject.AddComponent<ConsumeTracker>().attackerBody = this.characterBody;
 
 								if (base.isAuthority)
 								{
-									float dmg = DashGrab.groundSlamDamageCoefficient * this.damageStat;
-									if (this.empowered) dmg *= 2f;
+									float dmg = DashGrab.punchDamageCoefficient * this.damageStat;
+									//if (this.empowered) dmg *= 2f;
 
-									if (NetworkServer.active)
-                                    {
-										hurtBox.healthComponent.body.AddTimedBuff(Content.Survivors.RedGuy.grabbedBuff, 0.25f);
-                                    }
+									float force = 4000f;
+									if (hurtBox.healthComponent.body.isChampion) force = 24000f;
 
 									// damage
 									BlastAttack.Result result = new BlastAttack
@@ -697,8 +790,8 @@ namespace RedGuyMod.SkillStates.Ravager
 										damageColorIndex = DamageColorIndex.Default,
 										damageType = DamageType.Stun1s,
 										procCoefficient = 1f,
-										bonusForce = Vector3.zero,
-										baseForce = 24000f,
+										bonusForce = this.GetAimRay().direction.normalized * force,
+										baseForce = 0f,
 										baseDamage = dmg,
 										falloffModel = BlastAttack.FalloffModel.None,
 										radius = 0.4f,
@@ -719,6 +812,21 @@ namespace RedGuyMod.SkillStates.Ravager
 									fireProjectileInfo.projectilePrefab = Modules.Projectiles.punchShockwave;
 									ProjectileManager.instance.FireProjectile(fireProjectileInfo);
 
+									// barrage
+									if (this.empowered)
+                                    {
+										this.penis.punchTarget = hurtBox.transform;
+
+										fireProjectileInfo = default(FireProjectileInfo);
+										fireProjectileInfo.position = hurtBox.transform.position;
+										fireProjectileInfo.rotation = Quaternion.LookRotation(aimRay.direction);
+										fireProjectileInfo.crit = this.RollCrit();
+										fireProjectileInfo.damage = 1.2f * this.damageStat;
+										fireProjectileInfo.owner = this.gameObject;
+										fireProjectileInfo.projectilePrefab = Modules.Projectiles.punchBarrage;
+										ProjectileManager.instance.FireProjectile(fireProjectileInfo);
+									}
+
 									this.outer.SetNextState(new PunchRecoil());
 								}
 
@@ -728,6 +836,15 @@ namespace RedGuyMod.SkillStates.Ravager
 					}
 				}
 			}
+		}
+
+		private void IterateSlamCount()
+        {
+			this.slamCount++;
+
+			Action<int> action = onSlamCountIncremented;
+			if (action == null) return;
+			action(this.slamCount);
 		}
 
 		public override InterruptPriority GetMinimumInterruptPriority()

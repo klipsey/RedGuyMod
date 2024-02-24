@@ -28,9 +28,10 @@ namespace RedGuyMod.SkillStates.Ravager
 
             if (base.isAuthority)
             {
+                this.characterMotor.Motor.ForceUnground();
                 this.characterMotor.velocity = this.jumpDir * this.jumpForce;
 
-                if (this.isGrounded && !this.isSliding)
+                if (this.isGrounded && !this.isSliding && base.fixedAge >= 0.1f)
                 {
                     base.PlayAnimation("Body", "Sprint");
                     base.PlayAnimation("FullBody, Override Soft", "Slide");

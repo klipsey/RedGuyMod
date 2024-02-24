@@ -1,9 +1,9 @@
 ManifestFileVersion: 0
-CRC: 953565995
+CRC: 982250287
 Hashes:
   AssetFileHash:
     serializedVersion: 2
-    Hash: d221e2235376bdf26f95efd47d3c4962
+    Hash: b57e1cf6f16c157bf2163a22325209e6
   TypeTreeHash:
     serializedVersion: 2
     Hash: f486804d8030e363181b10babec2be60
@@ -70,6 +70,7 @@ Assets:
 - Assets/Ravager/Icons/texBlinkIcon.png
 - Assets/Ravager/FBX/meshImpWrap.mesh
 - Assets/Ravager/Textures/texBodyVoidEmission.png
+- Assets/Ravager/VFX/texChargeSphere.png
 - Assets/Ravager/Icons/texBeamIcon.png
 - Assets/Ravager/Animations/MenuIdle.anim
 - Assets/Ravager/FBX/meshBody.mesh
@@ -88,6 +89,7 @@ Assets:
 - Assets/Ravager/Textures/texSwordVoid.png
 - Assets/Ravager/Animations/Idle.anim
 - Assets/Ravager/Animations/DefaultPose.anim
+- Assets/Ravager/VFX/PunchEffect.prefab
 - Assets/Ravager/Textures/texBodyAlt.png
 - Assets/Ravager/Icons/texSpinSlashIcon2.png
 - Assets/Ravager/HUD/Textures/texWhite.png
@@ -97,7 +99,9 @@ Assets:
 - Assets/Ravager/Icons/texSpinSlashIcon.png
 - Assets/Ravager/Animations/LightImpact.anim
 - Assets/Ravager/Icons/texGrabIconScepter.png
+- Assets/Ravager/VFX/ChargeSphere.prefab
 - Assets/Ravager/Icons/texSlashIcon2.png
+- Assets/Ravager/Icons/texPunchIcon.png
 - Assets/Ravager/Textures/texSword.png
 - Assets/Ravager/Icons/texMonsoonSkin.png
 - Assets/Ravager/FBX/meshDivineWheel.mesh
@@ -119,6 +123,7 @@ Assets:
 - Assets/Ravager/Animations/animRedGuy.controller
 - Assets/Ravager/HUD/WeaponChargeBar.prefab
 - Assets/Ravager/Animations/RestIdle.anim
+- Assets/Ravager/Icons/texPunchIcon2.png
 - Assets/Ravager/Animations/animRedGuyCSS.controller
 - Assets/Ravager/Animations/FireBeamLoop.anim
 - Assets/Ravager/Animations/Spike1Idle.anim
@@ -147,6 +152,7 @@ Assets:
 - Assets/Ravager/Animations/SpikesActive.anim
 - Assets/Ravager/Materials/matBody.mat
 - Assets/Ravager/Animations/DescendFast.anim
+- Assets/Ravager/Materials/matChargeSphere.mat
 - Assets/Ravager/Icons/texCancelIcon.png
 - Assets/Ravager/Animations/SprintSlow.anim
 - Assets/Ravager/Icons/texSlashIcon.png

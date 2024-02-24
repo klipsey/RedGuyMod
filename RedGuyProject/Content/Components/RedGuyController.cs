@@ -42,8 +42,10 @@ namespace RedGuyMod.Content.Components
         private ModelSkinController skinController;
         private ChildLocator childLocator;
 
+        public Transform punchTarget;
         public float chargeValue;
 
+        public bool skibidi;
         public bool inGrab;
 
         private RavagerSkinDef cachedSkinDef;
@@ -53,6 +55,8 @@ namespace RedGuyMod.Content.Components
         public static event Action<bool> onStageCompleted;
 
         private bool wasBloodWellFilled;
+
+        //public RavagerSkinDef testSkinDef;
 
         public RavagerSkinDef skinDef
         {
@@ -223,12 +227,18 @@ namespace RedGuyMod.Content.Components
             if (modelTransform)
             {
                 TemporaryOverlay temporaryOverlay = modelTransform.gameObject.AddComponent<TemporaryOverlay>();
-                temporaryOverlay.duration = 1f;
-                temporaryOverlay.destroyComponentOnEnd = true;
-                temporaryOverlay.originalMaterial = Addressables.LoadAssetAsync<Material>("RoR2/Base/Common/matOnFire.mat").WaitForCompletion();
+                temporaryOverlay.duration = 100f;
+                temporaryOverlay.destroyComponentOnEnd = false;
+                temporaryOverlay.originalMaterial = this.skinDef.bloodRushOverlayMaterial;
                 temporaryOverlay.inspectorCharacterModel = modelTransform.GetComponent<CharacterModel>();
-                temporaryOverlay.alphaCurve = AnimationCurve.EaseInOut(0f, 1f, 1f, 0f);
+                temporaryOverlay.alphaCurve = AnimationCurve.EaseInOut(0f, 1f, 0.5f, 1f);
                 temporaryOverlay.animateShaderAlpha = true;
+
+                var overlay = modelTransform.gameObject.AddComponent<RavagerOverlayTracker>();
+                overlay.body = this.characterBody;
+                overlay.penis = this;
+                overlay.overlay = temporaryOverlay;
+                overlay.modelTransform = modelTransform;
             }
         }
 

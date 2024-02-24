@@ -25,6 +25,7 @@ namespace RedGuyMod.SkillStates.Ravager
         public override void OnEnter()
         {
             this.RefreshEmpoweredState();
+            this.penis.skibidi = true;
 
             this.slashType = SlashType.Ground;
             if (!this.isGrounded)
@@ -124,6 +125,7 @@ namespace RedGuyMod.SkillStates.Ravager
 
         protected override void PlaySwingEffect()
         {
+            this.characterBody.isSprinting = true;
             Util.PlaySound(this.swingSoundString, this.gameObject);
             if (this.swingEffectPrefab)
             {

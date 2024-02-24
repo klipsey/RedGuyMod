@@ -48,7 +48,8 @@ namespace RedGuyMod.SkillStates.Ravager
 
         public override InterruptPriority GetMinimumInterruptPriority()
         {
-            return InterruptPriority.Skill;
+            if (base.fixedAge >= (this.duration * 0.15f)) return InterruptPriority.Any;
+            else return InterruptPriority.Skill;
         }
     }
 }

@@ -40,7 +40,7 @@ namespace RedGuyMod.SkillStates.Ravager
 				}
 				else this.airTime += Time.fixedDeltaTime;
 
-				if (this.inputBank.jump.justPressed && !this.isGrounded)
+				if (this.inputBank.jump.justPressed && !this.isGrounded && this.penis.hopoFeatherTimer <= 0f)
 				{
 					if (this.airTime >= 0.1f)
 					{
@@ -96,7 +96,8 @@ namespace RedGuyMod.SkillStates.Ravager
 						if (this.AttemptEnemyStep())
 						{
 							this.jumpAvailable = true;
-							base.PlayAnimation("Body", "Jump");
+							base.PlayAnimation("Body", "JumpEnemy");
+							Util.PlaySound("sfx_ravager_enemystep", this.gameObject);
 							GenericCharacterMain.ApplyJumpVelocity(base.characterMotor, base.characterBody, 1.5f, 1.5f, false);
 							return;
 						}
@@ -137,7 +138,7 @@ namespace RedGuyMod.SkillStates.Ravager
 
 		private bool AttemptWallJump()
         {
-			if (Physics.CheckSphere(this.transform.position + (Vector3.up * 0.85f), 1.9f, LayerIndex.world.mask, QueryTriggerInteraction.Collide)) return true;
+			if (Physics.CheckSphere(this.transform.position + (Vector3.up * 0.35f), 2.1f, LayerIndex.world.mask, QueryTriggerInteraction.Collide)) return true;
 
 			return false;
         }

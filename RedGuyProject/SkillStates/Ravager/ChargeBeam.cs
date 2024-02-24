@@ -40,7 +40,7 @@ namespace RedGuyMod.SkillStates.Ravager
             this.camParamsOverrideHandle = Modules.CameraParams.OverrideCameraParams(base.cameraTargetParams, RavagerCameraParams.AIM, 5f);
             this.allySucc = Modules.Config.allySucc.Value;
 
-            base.PlayCrossfade("Gesture, Override", "ChargeBeam", "Beam.playbackRate", this.duration * 0.25f, 0.05f);
+            base.PlayCrossfade("Gesture, Override", "ChargeBeam", "Beam.playbackRate", this.duration * 0.15f, 0.05f);
 
             this.chargeEffectInstance = GameObject.Instantiate(Modules.Assets.beamChargeEffect);
             this.chargeEffectInstance.transform.parent = this.FindModelChild("HandL");
@@ -94,7 +94,7 @@ namespace RedGuyMod.SkillStates.Ravager
         {
             get
             {
-                float value = Mathf.Clamp(this.stopwatch + (this.characterBody.GetBuffCount(Content.Survivors.RedGuy.projectileEatedBuff) * 2.25f), 0f, this.duration);
+                float value = Mathf.Clamp(this.stopwatch + (this.characterBody.GetBuffCount(Content.Survivors.RedGuy.projectileEatedBuff) * 1.25f), 0f, this.duration);
                 return Util.Remap(value, 0f, this.duration, 0f, 1f);
             }
         }
@@ -174,6 +174,19 @@ namespace RedGuyMod.SkillStates.Ravager
             {
                 this.characterBody.AddBuff(Content.Survivors.RedGuy.projectileEatedBuff);
                 this.penis.projectilesDeleted++;
+
+                if (base.fixedAge <= 0.5f)
+                {
+                    this.characterBody.AddBuff(Content.Survivors.RedGuy.projectileEatedBuff);
+                    this.penis.projectilesDeleted++;
+
+                    this.characterBody.AddBuff(Content.Survivors.RedGuy.projectileEatedBuff);
+                    this.penis.projectilesDeleted++;
+
+                    this.characterBody.AddBuff(Content.Survivors.RedGuy.projectileEatedBuff);
+                    this.penis.projectilesDeleted++;
+                }
+
                 GameObject.Destroy(pc.gameObject);
 
                 if (DefenseMatrixOn.tracerEffectPrefab)

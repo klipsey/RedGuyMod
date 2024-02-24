@@ -20,15 +20,23 @@ namespace RedGuyMod.SkillStates.Ravager
         private bool isSliding;
         private uint playID;
         private bool permaCling;
+        private Animator animator;
+        private bool snapped;
 
         public override void OnEnter()
         {
             base.OnEnter();
             this.origin = this.transform.position;
-            base.PlayAnimation("Body", "JumpCharge", "Jump.playbackRate", this.duration);
             base.PlayAnimation("FullBody, Override Soft", "BufferEmpty");
             this.permaCling = Modules.Config.permanentCling.Value;
             this.penis.isWallClinging = true;
+            this.penis.skibidi = true;
+            this.animator = this.GetModelAnimator();
+
+            this.SnapToGround();
+
+            if (this.hopoo) base.PlayAnimation("Body", "JumpChargeHopoo", "Jump.playbackRate", this.duration);
+            else base.PlayAnimation("Body", "JumpCharge", "Jump.playbackRate", this.duration);
 
             this.x1 = this.FindModelChild("FootChargeL").gameObject.GetComponent<ParticleSystem>();
             this.x2 = this.FindModelChild("FootChargeR").gameObject.GetComponent<ParticleSystem>();
@@ -40,11 +48,21 @@ namespace RedGuyMod.SkillStates.Ravager
 
             this.penis.IncrementWallJump();
         }
+        
+        private void SnapToGround()
+        {
+            RaycastHit raycastHit;
+            if (Physics.Raycast(this.origin, Vector3.down, out raycastHit, 3f, LayerIndex.world.mask))
+            {
+                //this.origin = raycastHit.point + new Vector3(0f, -0.35f, 0f);
+                this.snapped = true;
+            }
+        }
 
         public override void OnExit()
         {
             base.OnExit();
-            if (!this.success) base.PlayAnimation("Body", "AscendDescend");
+            base.PlayAnimation("Body", "AscendDescend");
             this.penis.isWallClinging = false;
             this.x1.Stop();
             this.x2.Stop();
@@ -59,6 +77,12 @@ namespace RedGuyMod.SkillStates.Ravager
         public override void FixedUpdate()
         {
             base.FixedUpdate();
+            
+            if (this.animator)
+            {
+                if (this.isGrounded || this.snapped) this.animator.SetFloat("airBlend", 0f);
+                else this.animator.SetFloat("airBlend", 1f);
+            }
 
             if (this.hasJumped)
             {
@@ -92,7 +116,7 @@ namespace RedGuyMod.SkillStates.Ravager
                     EntityStateMachine.FindByCustomName(this.gameObject, "Weapon").SetInterruptState(new ChargeSlash(), InterruptPriority.Skill);
                 }
                 
-                if ((base.fixedAge >= this.duration && !this.permaCling) || !this.inputBank.jump.down || (!this.hopoo && this.isGrounded))
+                if ((base.fixedAge >= this.duration && !this.permaCling) || !this.inputBank.jump.down)
                 {
                     this.x1.Stop();
                     this.x2.Stop();
@@ -106,6 +130,8 @@ namespace RedGuyMod.SkillStates.Ravager
                     else
                     {
                         this.success = true;
+
+                        this.characterBody.isSprinting = true;
 
                         float recoil = 15f;
                         base.AddRecoil(-1f * recoil, -2f * recoil, -0.5f * recoil, 0.5f * recoil);
@@ -130,6 +156,14 @@ namespace RedGuyMod.SkillStates.Ravager
                         };
 
                         EffectManager.SpawnEffect(this.penis.skinDef.leapEffectPrefab, effectData, true);
+
+                        if (this.hopoo)
+                        {
+                            EffectManager.SpawnEffect(LegacyResourcesAPI.Load<GameObject>("Prefabs/Effects/FeatherEffect"), new EffectData
+                            {
+                                origin = base.characterBody.footPosition
+                            }, true);
+                        }
 
                         this.outer.SetNextState(new WallJumpBig
                         {

@@ -4,7 +4,7 @@ using EntityStates;
 
 namespace RedGuyMod.SkillStates.Ravager
 {
-    public class ChargeSlash : BaseSkillState
+    public class ChargeSlash : BaseRavagerSkillState
     {
         public override void OnEnter()
         {
@@ -20,10 +20,13 @@ namespace RedGuyMod.SkillStates.Ravager
 
             if (base.isAuthority)
             {
-                if ((!this.inputBank.skill1.down && base.fixedAge >= 0.1f) || this.isGrounded)
+                if ((!this.inputBank.skill1.down && base.fixedAge >= 0.1f) || (this.isGrounded && base.fixedAge >= 1.25f))
                 {
-                    this.outer.SetNextState(new ThrowSlash());
-                    return;
+                    if (!this.penis.isWallClinging)
+                    {
+                        this.outer.SetNextState(new ThrowSlash());
+                        return;
+                    }
                 }
             }
         }

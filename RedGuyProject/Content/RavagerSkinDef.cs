@@ -17,6 +17,7 @@ public class RavagerSkinDef : ScriptableObject
     public GameObject bloodBombEffectPrefab;
     public GameObject bloodRushActivationEffectPrefab;
     public Material bloodOrbOverlayMaterial;
+    public Material bloodRushOverlayMaterial;
 
     public string consumeSoundString = "";
     public string healSoundString = "";

@@ -45,6 +45,9 @@ namespace RedGuyMod.Modules
             LanguageAPI.Add(prefix + "BLOODWELL2_NAME", "Ichor Canister");
             LanguageAPI.Add(prefix + "BLOODWELL2_DESCRIPTION", $"The Ravager stores up <style=cIsHealth>blood</style> with his strikes, draining when full to heal you for <style=cIsHealing>100% max health</style> and <style=cIsDamage>empower your skills</style> temporarily. <style=cIsHealth>Drains faster while attacking.</style>");
 
+            LanguageAPI.Add(prefix + "PARASITE_NAME", "The Parasite");
+            LanguageAPI.Add(prefix + "PARASITE_DESCRIPTION", $"<style=cIsHealth>It hungers....</style>");
+
             LanguageAPI.Add(prefix + "PASSIVE_NAME", "Physical Prowess");
             LanguageAPI.Add(prefix + "PASSIVE_DESCRIPTION", $"The Ravager can <style=cIsUtility>jump off walls</style> and <style=cIsHealth>enemies</style>. Wall jumps can be charged for a <style=cIsDamage>mighty leap</style>.");
             
@@ -87,16 +90,16 @@ namespace RedGuyMod.Modules
 
             #region Special
             LanguageAPI.Add(prefix + "SPECIAL_GRAB_NAME", "Brutalize");
-            LanguageAPI.Add(prefix + "SPECIAL_GRAB_DESCRIPTION", $"Lunge and <style=cIsUtility>grab</style> nearby enemies, then slam down for <style=cIsDamage>{100f * SkillStates.Ravager.DashGrab.groundSlamDamageCoefficient}% damage</style>. If this kills, <style=cIsHealth>consume</style> them to restore <style=cIsHealing>15% max health</style>.");
+            LanguageAPI.Add(prefix + "SPECIAL_GRAB_DESCRIPTION", $"Lunge and <style=cIsUtility>grab</style> nearby enemies, then slam down for <style=cIsDamage>{100f * SkillStates.Ravager.DashGrab.groundSlamDamageCoefficient}% damage</style>. If this kills, <style=cIsHealth>consume</style> them to restore <style=cIsHealing>10% max health</style>.");
 
-            LanguageAPI.Add(prefix + "SPECIAL_GRAB_SCEPTER_NAME", "Vicious Assault");
+            //LanguageAPI.Add(prefix + "SPECIAL_GRAB_SCEPTER_NAME", "Vicious Assault");
             //LanguageAPI.Add(prefix + "SPECIAL_GRAB_SCEPTER_DESCRIPTION", $"Throw a grenade that <style=cIsUtility>stuns</style> enemies for <style=cIsDamage>{100f * SkillStates.Driver.ThrowGrenade.damageCoefficient}% damage</style>. <style=cIsUtility>You can hold up to two.</style>" + Helpers.ScepterDescription("Throw a molotov that bursts into flames instead."));
 
-            LanguageAPI.Add(prefix + "SPECIAL_TRANSFIGURE_NAME", "Brutalize");
-            LanguageAPI.Add(prefix + "SPECIAL_TRANSFIGURE_DESCRIPTION", $"Lunge and <style=cIsUtility>grab</style> nearby enemies, then slam down for <style=cIsDamage>{100f * SkillStates.Ravager.DashGrab.groundSlamDamageCoefficient}% damage</style>. If this kills, <style=cIsHealth>consume</style> them to restore <style=cIsHealing>10% max health</style>.");
-
             LanguageAPI.Add(prefix + "SPECIAL_PUNCH_NAME", "Pummel");
-            LanguageAPI.Add(prefix + "SPECIAL_PUNCH_DESCRIPTION", $"Lunge and <style=cIsUtility>punch</style> an enemy, dealing <style=cIsDamage>{100f * SkillStates.Ravager.DashGrab.groundSlamDamageCoefficient}% damage</style> and firing a <style=cIsUtility>shockwave</style> through them for the same damage. If this kills, <style=cIsHealth>consume</style> them to restore <style=cIsHealing>15% max health</style>.");
+            LanguageAPI.Add(prefix + "SPECIAL_PUNCH_DESCRIPTION", $"Lunge and <style=cIsUtility>punch</style>, dealing <style=cIsDamage>{100f * SkillStates.Ravager.DashGrab.punchDamageCoefficient}% damage</style> with a <style=cIsUtility>shockwave</style> through them for the same damage. If this kills, <style=cIsHealth>consume</style> them to restore <style=cIsHealing>10% max health</style>.");
+
+            LanguageAPI.Add(prefix + "SPECIAL_THROW_NAME", "Hurl");
+            LanguageAPI.Add(prefix + "SPECIAL_THROW_DESCRIPTION", $"Lunge and <style=cIsUtility>grab</style> nearby enemies, then throw them for <style=cIsDamage>{100f * SkillStates.Ravager.DashGrab.groundSlamDamageCoefficient}% damage</style> on impact. If this kills, <style=cIsHealth>consume</style> them to restore <style=cIsHealing>10% max health</style>.");
             #endregion
 
             #region Keywords
@@ -107,6 +110,7 @@ namespace RedGuyMod.Modules
             LanguageAPI.Add("KEYWORD_REDGUY_BEAM", $"<style=cKeywordName>Empowered Effect</style><style=cSub>Charges much faster.");
             LanguageAPI.Add("KEYWORD_REDGUY_GRAB", "<style=cKeywordName>Empowered Effect</style><style=cSub>Can grab bosses. Drags enemies along the ground, dealing damage over time.");
             LanguageAPI.Add("KEYWORD_REDGUY_GRAB2", "<style=cKeywordName>Bosses</style><style=cSub>Against bosses, <style=cIsDamage>punch</style> them instead for the same damage.");
+            LanguageAPI.Add("KEYWORD_REDGUY_PUNCH", "<style=cKeywordName>Empowered Effect</style><style=cSub>Unleashes a barrage of punches, dealing heavy damage.");
             #endregion
 
             #region Achievements
@@ -121,11 +125,14 @@ namespace RedGuyMod.Modules
             LanguageAPI.Add(prefix + "TYPHOON_UNLOCKABLE_UNLOCKABLE_NAME", "Ravager: Grand Mastery");
             LanguageAPI.Add(prefix + "TYPHOON_UNLOCKABLE_ACHIEVEMENT_NAME", "Ravager: Grand Mastery");
             LanguageAPI.Add(prefix + "TYPHOON_UNLOCKABLE_ACHIEVEMENT_DESC", "As Ravager, beat the game or obliterate on Typhoon or Eclipse.\n<color=#8888>(Counts any difficulty Typhoon or higher)</color>");
-            //Ravager: Hungry
-            //As Ravager, consume 8 enemies with one grab.
-            LanguageAPI.Add(prefix + "THROW_UNLOCKABLE_UNLOCKABLE_NAME", "Ravager: In a Trail of Fire");
-            LanguageAPI.Add(prefix + "THROW_UNLOCKABLE_ACHIEVEMENT_NAME", "Ravager: In a Trail of Fire");
-            LanguageAPI.Add(prefix + "THROW_UNLOCKABLE_ACHIEVEMENT_DESC", "As Ravager, slam an enemy into the ground 5+ times in one grab.");
+
+            LanguageAPI.Add(prefix + "PUNCH_UNLOCKABLE_UNLOCKABLE_NAME", "Ravager: In a Trail of Fire");
+            LanguageAPI.Add(prefix + "PUNCH_UNLOCKABLE_ACHIEVEMENT_NAME", "Ravager: In a Trail of Fire");
+            LanguageAPI.Add(prefix + "PUNCH_UNLOCKABLE_ACHIEVEMENT_DESC", "As Ravager, slam an enemy into the ground 3+ times in one grab.");
+
+            LanguageAPI.Add(prefix + "THROW_UNLOCKABLE_UNLOCKABLE_NAME", "Ravager: Hungry Fella");
+            LanguageAPI.Add(prefix + "THROW_UNLOCKABLE_ACHIEVEMENT_NAME", "Ravager: Hungry Fella");
+            LanguageAPI.Add(prefix + "THROW_UNLOCKABLE_ACHIEVEMENT_DESC", "As Ravager, consume 8 or more enemies at once.");
 
             LanguageAPI.Add(prefix + "BEAM_UNLOCKABLE_UNLOCKABLE_NAME", "Ravager: Calm as an Ocean");
             LanguageAPI.Add(prefix + "BEAM_UNLOCKABLE_ACHIEVEMENT_NAME", "Ravager: Calm as an Ocean");

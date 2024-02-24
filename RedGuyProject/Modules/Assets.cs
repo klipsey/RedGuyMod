@@ -48,6 +48,8 @@ namespace RedGuyMod.Modules
         internal static GameObject bloodBombEffect;
         internal static GameObject cssEffect;
 
+        internal static GameObject punchImpactEffect;
+
         internal static GameObject genericBloodExplosionEffect;
         internal static GameObject largeBloodExplosionEffect;
         internal static GameObject gupBloodExplosionEffect;
@@ -64,16 +66,21 @@ namespace RedGuyMod.Modules
 
         internal static GameObject consumeOrb;
         internal static GameObject consumeOrbMastery;
+        internal static GameObject consumeOrbVoid;
 
         internal static GameObject beamChargeEffect;
 
         internal static GameObject groundDragEffect;
+        internal static GameObject groundImpactEffect;
+        internal static GameObject heavyGroundImpactEffect;
 
         internal static NetworkSoundEventDef slashSoundEvent;
         internal static NetworkSoundEventDef bigSlashSoundEvent;
         internal static NetworkSoundEventDef explosionSoundEvent;
 
         internal static Dictionary<string, GameObject> bloodExplosionOverrides = new Dictionary<string, GameObject>();
+        internal static Dictionary<string, string> bodyPunchSounds = new Dictionary<string, string>();
+
         internal static void PopulateAssets()
         {
             if (mainAssetBundle == null)
@@ -334,33 +341,96 @@ namespace RedGuyMod.Modules
             bigSlashSoundEvent = CreateNetworkSoundEventDef("sfx_ravager_bigslash");
             explosionSoundEvent = CreateNetworkSoundEventDef("sfx_ravager_impact_ground");
 
+            punchImpactEffect = Addressables.LoadAssetAsync<GameObject>("RoR2/Base/Loader/OmniImpactVFXLoader.prefab").WaitForCompletion().InstantiateClone("RavagerPunchImpact", true);
+            punchImpactEffect.GetComponent<EffectComponent>().applyScale = true;
+
+            punchImpactEffect.transform.Find("Flash, Hard").gameObject.SetActive(false);
+            punchImpactEffect.transform.Find("Scaled Hitspark 1 (Random Color)").GetComponent<ParticleSystemRenderer>().material = Addressables.LoadAssetAsync<Material>("RoR2/DLC1/Common/Void/matOmniHitspark1Void.mat").WaitForCompletion();
+            punchImpactEffect.transform.Find("Scaled Hitspark 3 (Random Color)").GetComponent<ParticleSystemRenderer>().material = Addressables.LoadAssetAsync<Material>("RoR2/Base/KillEliteFrenzy/matOmniHitspark3Frenzy.mat").WaitForCompletion();
+            punchImpactEffect.transform.Find("ScaledSmokeRing, Mesh").GetComponent<ParticleSystemRenderer>().material = Addressables.LoadAssetAsync<Material>("RoR2/Base/FireBallDash/matDustOpaque.mat").WaitForCompletion();
+
+            punchImpactEffect.transform.Find("Impact Shockwave").GetComponent<ParticleSystemRenderer>().material = Addressables.LoadAssetAsync<Material>("RoR2/DLC1/Common/Void/matOmniRing1Void.mat").WaitForCompletion();
+
+            GameObject fistEffect = GameObject.Instantiate(mainAssetBundle.LoadAsset<GameObject>("PunchEffect"));
+            fistEffect.transform.parent = punchImpactEffect.transform;
+            fistEffect.transform.localPosition = Vector3.zero;
+            fistEffect.transform.localRotation = Quaternion.identity;
+            fistEffect.GetComponentInChildren<ParticleSystemRenderer>().material = CreateMaterial("matBody", 5f);
+
+            AddNewEffectDef(punchImpactEffect);
+
+            groundImpactEffect = Addressables.LoadAssetAsync<GameObject>("RoR2/Base/SurvivorPod/PodGroundImpact.prefab").WaitForCompletion().InstantiateClone("RavagerGroundImpact", true);
+
+            groundImpactEffect.transform.Find("Particles/Flash").transform.localScale = Vector3.one * 0.5f;
+            groundImpactEffect.transform.Find("Particles/Dust").transform.localScale = Vector3.one * 0.25f;
+            groundImpactEffect.transform.Find("Particles/Dust, Directional").transform.localScale = new Vector3(0.5f, 0.3f, 0.5f);
+            groundImpactEffect.transform.Find("Particles/Point Light").gameObject.SetActive(false);
+
+            AddNewEffectDef(groundImpactEffect);
+
+            heavyGroundImpactEffect = Addressables.LoadAssetAsync<GameObject>("RoR2/Base/SurvivorPod/PodGroundImpact.prefab").WaitForCompletion().InstantiateClone("RavagerHeavyGroundImpact", true);
+
+            heavyGroundImpactEffect.transform.Find("Particles/Flash").transform.localScale = Vector3.one * 0.75f;
+            heavyGroundImpactEffect.transform.Find("Particles/Dust").transform.localScale = Vector3.one * 0.5f;
+            heavyGroundImpactEffect.transform.Find("Particles/Dust, Directional").transform.localScale = new Vector3(0.75f, 0.6f, 0.75f);
+            heavyGroundImpactEffect.transform.Find("Particles/Point Light").gameObject.SetActive(false);
+
+            AddNewEffectDef(heavyGroundImpactEffect);
 
             CreateOrb();
 
             bloodExplosionOverrides = new Dictionary<string, GameObject>()
-        {
-            {"GolemBody(Clone)", golemBloodExplosionEffect },
-            {"TitanBody(Clone)", golemBloodExplosionEffect },
-            {"GupBody(Clone)", gupBloodExplosionEffect },
-            {"GeepBody(Clone)", gupBloodExplosionEffect },
-            {"GipBody(Clone)", gupBloodExplosionEffect },
-            {"ClayBruiserBody(Clone)", clayBloodExplosionEffect },
-            {"ClayGrenadierBody(Clone)", clayBloodExplosionEffect },
-            {"MoffeinClayManBody(Clone)", clayBloodExplosionEffect },
-            {"AcidLarvaBody(Clone)", insectBloodExplosionEffect },
-            {"LunarConstructBody(Clone)", lunarGolemBloodExplosionEffect },
-            {"LunarWispBody(Clone)", lunarGolemBloodExplosionEffect },
-            {"LunarGolemBody(Clone)", lunarGolemBloodExplosionEffect },
-            {"LunarExploderBody(Clone)", lunarGolemBloodExplosionEffect },
-            {"BellBody(Clone)", golemBloodExplosionEffect },
-            {"BodyBrassMonolith(Clone)", golemBloodExplosionEffect },
-            {"WispBody(Clone)", fireBloodExplosionEffect },
-            {"GreaterWispBody(Clone)", greenFireBloodExplosionEffect },
-            {"MoffeinAncientWispBody(Clone)", purpleFireBloodExplosionEffect },
-            {"RoboBallMiniBody(Clone)", golemBloodExplosionEffect },
-            {"NewtBody(Clone)", lunarGolemBloodExplosionEffect },
-            {"AffixEarthHealerBody(Clone)", healingBloodExplosionEffect }
-        };
+            {
+                {"GolemBody(Clone)", golemBloodExplosionEffect },
+                {"TitanBody(Clone)", golemBloodExplosionEffect },
+                {"GupBody(Clone)", gupBloodExplosionEffect },
+                {"GeepBody(Clone)", gupBloodExplosionEffect },
+                {"GipBody(Clone)", gupBloodExplosionEffect },
+                {"ClayBruiserBody(Clone)", clayBloodExplosionEffect },
+                {"ClayGrenadierBody(Clone)", clayBloodExplosionEffect },
+                {"MoffeinClayManBody(Clone)", clayBloodExplosionEffect },
+                {"AcidLarvaBody(Clone)", insectBloodExplosionEffect },
+                {"LunarConstructBody(Clone)", lunarGolemBloodExplosionEffect },
+                {"LunarWispBody(Clone)", lunarGolemBloodExplosionEffect },
+                {"LunarGolemBody(Clone)", lunarGolemBloodExplosionEffect },
+                {"LunarExploderBody(Clone)", lunarGolemBloodExplosionEffect },
+                {"BellBody(Clone)", golemBloodExplosionEffect },
+                {"BodyBrassMonolith(Clone)", golemBloodExplosionEffect },
+                {"WispBody(Clone)", fireBloodExplosionEffect },
+                {"GreaterWispBody(Clone)", greenFireBloodExplosionEffect },
+                {"MoffeinAncientWispBody(Clone)", purpleFireBloodExplosionEffect },
+                {"RoboBallMiniBody(Clone)", golemBloodExplosionEffect },
+                {"RoboBallBossBody(Clone)", golemBloodExplosionEffect },
+                {"SuperRoboBallBossBody(Clone)", golemBloodExplosionEffect },
+                {"NewtBody(Clone)", lunarGolemBloodExplosionEffect },
+                {"AffixEarthHealerBody(Clone)", healingBloodExplosionEffect }
+            };
+
+            bodyPunchSounds = new Dictionary<string, string>()
+            {
+                {"GolemBody(Clone)", "sfx_ravager_punch_rock" },
+                {"TitanBody(Clone)", "sfx_ravager_punch_rock" },
+                {"TitanGoldBody(Clone)", "sfx_ravager_punch_rock" },
+                {"LunarConstructBody(Clone)", "sfx_ravager_punch_rock" },
+                {"LunarWispBody(Clone)", "sfx_ravager_punch_rock" },
+                {"LunarGolemBody(Clone)", "sfx_ravager_punch_rock" },
+                {"LunarExploderBody(Clone)", "sfx_ravager_punch_rock" },
+                {"RoboBallMiniBody(Clone)", "sfx_ravager_punch_metal" },
+                {"RoboBallBossBody(Clone)", "sfx_ravager_punch_metal" },
+                {"SuperRoboBallBossBody(Clone)", "sfx_ravager_punch_metal" },
+                {"BellBody(Clone)", "sfx_ravager_punch_metal" },
+                {"BodyBrassMonolith(Clone)", "sfx_ravager_punch_metal" },
+                {"BeetleBody(Clone)", "sfx_ravager_punch_bug" },
+                {"BeetleGuardBody(Clone)", "sfx_ravager_punch_bug" },
+                {"BeetleGuardAllyBody(Clone)", "sfx_ravager_punch_bug" },
+                {"BeetleQueen2Body(Clone)", "sfx_ravager_punch_bug" },
+                {"AcidLarvaBody(Clone)", "sfx_ravager_punch_bug" },
+                {"GupBody(Clone)", "sfx_ravager_punch_goo" },
+                {"GeepBody(Clone)", "sfx_ravager_punch_goo_small" },
+                {"GipBody(Clone)", "sfx_ravager_punch_goo_small" },
+                {"JellyfishBody(Clone)", "sfx_ravager_punch_jelly" },
+                {"VagrantBody(Clone)", "sfx_ravager_punch_jelly" },
+            };
 
             drainTextEffect = CreateTextPopupEffect("RavagerDrainTextEffect", "BLOOD RUSH!");
             drainTextEffect.transform.localScale *= 2.5f;
@@ -379,6 +449,27 @@ namespace RedGuyMod.Modules
 
             beamChargeEffect.transform.Find("Base (1)").GetComponent<ParticleSystemRenderer>().material = Addressables.LoadAssetAsync<Material>("RoR2/DLC1/VoidSurvivor/matVoidSurvivorLightningCorrupted.mat").WaitForCompletion();
             beamChargeEffect.transform.Find("Base (1)").localScale = Vector3.one * 1.5f;
+
+            GameObject shotgunTracer = RoR2.LegacyResourcesAPI.Load<GameObject>("Prefabs/Effects/Tracers/TracerCommandoShotgun");
+
+            Material redTrailMat = null;
+
+            foreach (LineRenderer i in shotgunTracer.GetComponentsInChildren<LineRenderer>())
+            {
+                if (i)
+                {
+                    redTrailMat = UnityEngine.Object.Instantiate<Material>(i.material);
+                    redTrailMat.SetColor("_TintColor", Color.red);
+                }
+            }
+
+            GameObject beamSphereEffect = GameObject.Instantiate(mainAssetBundle.LoadAsset<GameObject>("ChargeSphere"));
+            beamSphereEffect.transform.parent = beamChargeEffect.transform;
+            beamSphereEffect.transform.localPosition = Vector3.zero;
+            beamSphereEffect.transform.localRotation = Quaternion.identity;
+            beamSphereEffect.transform.localScale = Vector3.one * 0.7f;
+            beamSphereEffect.GetComponent<MeshRenderer>().material = CreateMaterial("matChargeSphere", 15f, Color.red);
+            beamSphereEffect.GetComponentInChildren<ParticleSystemRenderer>().trailMaterial = redTrailMat;
         }
 
         private static GameObject CreateBloodExplosionEffect(string effectName, Material bloodMat, float scale = 1f)
@@ -467,6 +558,24 @@ namespace RedGuyMod.Modules
             //consumeOrb.GetComponent<OrbEffect>().endEffect = Modules.Assets.slowStartPickupEffect;
 
             Modules.Assets.AddNewEffectDef(consumeOrbMastery);
+
+            consumeOrbVoid = PrefabAPI.InstantiateClone(Resources.Load<GameObject>("Prefabs/Effects/OrbEffects/InfusionOrbEffect"), "RavagerConsumeOrbVoidEffect", true);
+            if (!consumeOrbVoid.GetComponent<NetworkIdentity>()) consumeOrbVoid.AddComponent<NetworkIdentity>();
+
+            trail = consumeOrbVoid.transform.Find("TrailParent").Find("Trail").GetComponent<TrailRenderer>();
+            trail.widthMultiplier = 0.35f;
+            trail.material = Addressables.LoadAssetAsync<Material>("RoR2/DLC1/VoidRaidCrab/matVoidRaidCrabTrail2.mat").WaitForCompletion();
+
+            consumeOrbVoid.transform.Find("VFX").Find("Core").GetComponent<ParticleSystemRenderer>().material = Addressables.LoadAssetAsync<Material>("RoR2/DLC1/VoidSurvivor/matVoidSurvivorBlasterCore.mat").WaitForCompletion();
+            consumeOrbVoid.transform.Find("VFX").localScale = Vector3.one * 0.5f;
+
+            consumeOrbVoid.transform.Find("VFX").Find("Core").localScale = Vector3.one * 7f;
+
+            consumeOrbVoid.transform.Find("VFX").Find("PulseGlow").GetComponent<ParticleSystemRenderer>().material = Addressables.LoadAssetAsync<Material>("RoR2/DLC1/VoidSurvivor/matVoidSurvivorBlasterFire.mat").WaitForCompletion();
+
+            //consumeOrb.GetComponent<OrbEffect>().endEffect = Modules.Assets.slowStartPickupEffect;
+
+            Modules.Assets.AddNewEffectDef(consumeOrbVoid);
         }
 
         internal static GameObject CreateTextPopupEffect(string prefabName, string token, string soundName = "")
@@ -625,7 +734,7 @@ namespace RedGuyMod.Modules
 
         public static Material CreateMaterial(string materialName, float emission)
         {
-            return Assets.CreateMaterial(materialName, emission, Color.black);
+            return Assets.CreateMaterial(materialName, emission, Color.white);
         }
 
         public static Material CreateMaterial(string materialName, float emission, Color emissionColor)

@@ -52,6 +52,7 @@ namespace RedGuyMod.Content.Survivors
 
         internal static UnlockableDef blinkUnlockableDef;
         internal static UnlockableDef beamUnlockableDef;
+        internal static UnlockableDef punchUnlockableDef;
 
         // skill overrides
         internal static SkillDef confirmSkillDef;
@@ -77,6 +78,7 @@ namespace RedGuyMod.Content.Survivors
 
                 blinkUnlockableDef = R2API.UnlockableAPI.AddUnlockable<Modules.Achievements.RavagerWallJumpAchievement>();
                 beamUnlockableDef = R2API.UnlockableAPI.AddUnlockable<Modules.Achievements.RavagerBeamAchievement>();
+                punchUnlockableDef = R2API.UnlockableAPI.AddUnlockable<Modules.Achievements.RavagerPunchAchievement>();
 
                 //if (!forceUnlock.Value) characterUnlockableDef = R2API.UnlockableAPI.AddUnlockable<Achievements.DriverUnlockAchievement>();
 
@@ -135,7 +137,7 @@ namespace RedGuyMod.Content.Survivors
 
             CharacterBody body = newPrefab.GetComponent<CharacterBody>();
             body.preferredInitialStateType = new EntityStates.SerializableEntityStateType(typeof(RedGuyMod.SkillStates.Ravager.SpawnState));
-            //body.bodyFlags = CharacterBody.BodyFlags.IgnoreFallDamage;
+            body.bodyFlags |= CharacterBody.BodyFlags.IgnoreFallDamage;
             //body.bodyFlags |= CharacterBody.BodyFlags.SprintAnyDirection;
             //body.sprintingSpeedMultiplier = 1.75f;
 
@@ -178,6 +180,7 @@ namespace RedGuyMod.Content.Survivors
             EntityStateMachine passiveController = newPrefab.AddComponent<EntityStateMachine>();
             passiveController.initialStateType = new EntityStates.SerializableEntityStateType(typeof(SkillStates.Ravager.WallJump));
             passiveController.mainStateType = new EntityStates.SerializableEntityStateType(typeof(SkillStates.Ravager.WallJump));
+            passiveController.customName = "Passive";
 
             //var state = isPlayer ? typeof(EntityStates.SpawnTeleporterState) : typeof(SpawnState);
             //newPrefab.GetComponent<EntityStateMachine>().initialStateType = new EntityStates.SerializableEntityStateType(state);
@@ -407,7 +410,7 @@ namespace RedGuyMod.Content.Survivors
             string prefix = MainPlugin.developerPrefix;
             SkillLocator skillLocator = prefab.GetComponent<SkillLocator>();
 
-            skillLocator.passiveSkill.enabled = true;
+            skillLocator.passiveSkill.enabled = false;
             skillLocator.passiveSkill.skillNameToken = prefix + "_RAVAGER_BODY_BLOODWELL_NAME";
             skillLocator.passiveSkill.skillDescriptionToken = prefix + "_RAVAGER_BODY_BLOODWELL_DESCRIPTION";
             skillLocator.passiveSkill.icon = Modules.Assets.mainAssetBundle.LoadAsset<Sprite>("texBloodWellIcon");
@@ -629,7 +632,7 @@ namespace RedGuyMod.Content.Survivors
                 resetCooldownTimerOnUse = false,
                 isCombatSkill = true,
                 mustKeyPress = false,
-                cancelSprintingOnActivation = true,
+                cancelSprintingOnActivation = false,
                 rechargeStock = 1,
                 requiredStock = 1,
                 stockToConsume = 1,
@@ -661,7 +664,7 @@ namespace RedGuyMod.Content.Survivors
                 interruptPriority = EntityStates.InterruptPriority.Skill,
                 resetCooldownTimerOnUse = true,
                 isCombatSkill = false,
-                mustKeyPress = false,
+                mustKeyPress = true,
                 cancelSprintingOnActivation = false,
                 rechargeStock = 1,
                 requiredStock = 1,
@@ -737,7 +740,67 @@ namespace RedGuyMod.Content.Survivors
                 }
             });
 
-            Modules.Skills.AddSpecialSkills(prefab, grabSkillDef);
+            RavagerSkillDef punchSkillDef = Modules.Skills.CreateSkillDef(new SkillDefInfo
+            {
+                skillName = prefix + "_RAVAGER_BODY_SPECIAL_PUNCH_NAME",
+                skillNameToken = prefix + "_RAVAGER_BODY_SPECIAL_PUNCH_NAME",
+                skillDescriptionToken = prefix + "_RAVAGER_BODY_SPECIAL_PUNCH_DESCRIPTION",
+                baseIcon = Modules.Assets.mainAssetBundle.LoadAsset<Sprite>("texPunchIcon"),
+                empoweredIcon = Modules.Assets.mainAssetBundle.LoadAsset<Sprite>("texPunchIcon2"),
+                activationState = new EntityStates.SerializableEntityStateType(typeof(SkillStates.Ravager.DashPunch)),
+                activationStateMachineName = "Weapon",
+                baseMaxStock = 1,
+                baseRechargeInterval = 10f,
+                beginSkillCooldownOnSkillEnd = false,
+                canceledFromSprinting = false,
+                forceSprintDuringState = false,
+                fullRestockOnAssign = true,
+                interruptPriority = EntityStates.InterruptPriority.PrioritySkill,
+                resetCooldownTimerOnUse = false,
+                isCombatSkill = true,
+                mustKeyPress = false,
+                cancelSprintingOnActivation = true,
+                rechargeStock = 1,
+                requiredStock = 1,
+                stockToConsume = 1,
+                keywordTokens = new string[]
+    {
+                    "KEYWORD_REDGUY_PUNCH"
+    }
+            });
+
+            RavagerSkillDef throwSkillDef = Modules.Skills.CreateSkillDef(new SkillDefInfo
+            {
+                skillName = prefix + "_RAVAGER_BODY_SPECIAL_THROW_NAME",
+                skillNameToken = prefix + "_RAVAGER_BODY_SPECIAL_THROW_NAME",
+                skillDescriptionToken = prefix + "_RAVAGER_BODY_SPECIAL_THROW_DESCRIPTION",
+                baseIcon = Modules.Assets.mainAssetBundle.LoadAsset<Sprite>("texGrabIcon"),
+                empoweredIcon = Modules.Assets.mainAssetBundle.LoadAsset<Sprite>("texGrabIcon2"),
+                activationState = new EntityStates.SerializableEntityStateType(typeof(SkillStates.Ravager.DashThrow)),
+                activationStateMachineName = "Weapon",
+                baseMaxStock = 1,
+                baseRechargeInterval = 10f,
+                beginSkillCooldownOnSkillEnd = false,
+                canceledFromSprinting = false,
+                forceSprintDuringState = false,
+                fullRestockOnAssign = true,
+                interruptPriority = EntityStates.InterruptPriority.PrioritySkill,
+                resetCooldownTimerOnUse = false,
+                isCombatSkill = true,
+                mustKeyPress = false,
+                cancelSprintingOnActivation = true,
+                rechargeStock = 1,
+                requiredStock = 1,
+                stockToConsume = 1,
+                keywordTokens = new string[]
+{
+                    "KEYWORD_REDGUY_THROW"
+}
+            });
+
+            Modules.Skills.AddSpecialSkills(prefab, grabSkillDef, punchSkillDef/*, throwSkillDef*/);
+
+            Modules.Skills.AddUnlockablesToFamily(skillLocator.special.skillFamily, null, punchUnlockableDef);
             #endregion
         }
 
@@ -878,10 +941,11 @@ namespace RedGuyMod.Content.Survivors
                 voidSkinDef.bigSwingEffectPrefab = Modules.Assets.bigSwingEffectVoid;
                 voidSkinDef.leapEffectPrefab = Modules.Assets.leapEffectVoid;
                 voidSkinDef.slashEffectPrefab = Modules.Assets.slashImpactEffect;
-                voidSkinDef.bloodOrbEffectPrefab = Modules.Assets.consumeOrb;
-                voidSkinDef.bloodBombEffectPrefab = Modules.Assets.bloodBombEffect;
-                voidSkinDef.bloodRushActivationEffectPrefab = Addressables.LoadAssetAsync<GameObject>("RoR2/Base/ImpBoss/ImpBossBlink.prefab").WaitForCompletion();
-                voidSkinDef.bloodOrbOverlayMaterial = Addressables.LoadAssetAsync<Material>("RoR2/Base/Imp/matImpBossDissolve.mat").WaitForCompletion();
+                voidSkinDef.bloodOrbEffectPrefab = Modules.Assets.consumeOrbVoid;
+                voidSkinDef.bloodBombEffectPrefab = Addressables.LoadAssetAsync<GameObject>("RoR2/DLC1/VoidSurvivor/VoidSurvivorCorruptDeathMuzzleflash.prefab").WaitForCompletion();
+                voidSkinDef.bloodRushActivationEffectPrefab = Addressables.LoadAssetAsync<GameObject>("RoR2/DLC1/VoidSurvivor/VoidSurvivorCorruptDeathMuzzleflash.prefab").WaitForCompletion();
+                voidSkinDef.bloodOrbOverlayMaterial = Addressables.LoadAssetAsync<Material>("RoR2/DLC1/VoidSurvivor/matVoidSurvivorBlasterSphereOverlay1.mat").WaitForCompletion();
+                voidSkinDef.bloodRushOverlayMaterial = Addressables.LoadAssetAsync<Material>("RoR2/DLC1/VoidSurvivor/matVoidSurvivorCorruptOverlay.mat").WaitForCompletion();
                 voidSkinDef.consumeSoundString = "sfx_ravager_consume";
                 voidSkinDef.healSoundString = "sfx_ravager_steam";
                 voidSkinDef.electricityMat = Addressables.LoadAssetAsync<Material>("RoR2/DLC1/ChainLightningVoid/matLightningVoid.mat").WaitForCompletion();
@@ -900,6 +964,7 @@ namespace RedGuyMod.Content.Survivors
                 mahoragaSkinDef.bloodBombEffectPrefab = Addressables.LoadAssetAsync<GameObject>("RoR2/DLC1/MajorAndMinorConstruct/OmniExplosionVFXMajorConstruct.prefab").WaitForCompletion();
                 mahoragaSkinDef.bloodRushActivationEffectPrefab = Addressables.LoadAssetAsync<GameObject>("RoR2/Base/LunarGolem/MuzzleflashLunarGolemTwinShot.prefab").WaitForCompletion();
                 mahoragaSkinDef.bloodOrbOverlayMaterial = Addressables.LoadAssetAsync<Material>("RoR2/Base/Huntress/matHuntressFlashExpanded.mat").WaitForCompletion();
+                mahoragaSkinDef.bloodRushOverlayMaterial = Addressables.LoadAssetAsync<Material>("RoR2/Base/Grandparent/matGrandParentSunChannelStartBeam.mat").WaitForCompletion();
                 mahoragaSkinDef.consumeSoundString = "sfx_ravager_consume_alt";
                 mahoragaSkinDef.healSoundString = "sfx_ravager_wheel";
                 mahoragaSkinDef.electricityMat = Addressables.LoadAssetAsync<Material>("RoR2/Junk/GrandParent/matGrandparentTeleportFlash.mat").WaitForCompletion();
@@ -923,6 +988,7 @@ namespace RedGuyMod.Content.Survivors
             defaultSkinDef.bloodBombEffectPrefab = Modules.Assets.bloodBombEffect;
             defaultSkinDef.bloodRushActivationEffectPrefab = Addressables.LoadAssetAsync<GameObject>("RoR2/Base/ImpBoss/ImpBossBlink.prefab").WaitForCompletion();
             defaultSkinDef.bloodOrbOverlayMaterial = Addressables.LoadAssetAsync<Material>("RoR2/Base/Imp/matImpDissolve.mat").WaitForCompletion();
+            defaultSkinDef.bloodRushOverlayMaterial = Modules.Assets.bloodOverlayMat;
             defaultSkinDef.consumeSoundString = "sfx_ravager_consume";
             defaultSkinDef.healSoundString = "sfx_ravager_steam";
             defaultSkinDef.electricityMat = Addressables.LoadAssetAsync<Material>("RoR2/DLC1/Railgunner/matRailgunImpact.mat").WaitForCompletion();
@@ -937,10 +1003,11 @@ namespace RedGuyMod.Content.Survivors
             masterySkinDef.bigSwingEffectPrefab = Modules.Assets.bigSwingEffectVoid;
             masterySkinDef.leapEffectPrefab = Modules.Assets.leapEffectVoid;
             masterySkinDef.slashEffectPrefab = Modules.Assets.slashImpactEffect;
-            masterySkinDef.bloodOrbEffectPrefab = Modules.Assets.consumeOrb;
-            masterySkinDef.bloodBombEffectPrefab = Modules.Assets.bloodBombEffect;
-            masterySkinDef.bloodRushActivationEffectPrefab = Addressables.LoadAssetAsync<GameObject>("RoR2/Base/ImpBoss/ImpBossBlink.prefab").WaitForCompletion();
-            masterySkinDef.bloodOrbOverlayMaterial = Addressables.LoadAssetAsync<Material>("RoR2/Base/Imp/matImpBossDissolve.mat").WaitForCompletion();
+            masterySkinDef.bloodOrbEffectPrefab = Modules.Assets.consumeOrbVoid;
+            masterySkinDef.bloodBombEffectPrefab = Addressables.LoadAssetAsync<GameObject>("RoR2/DLC1/VoidSurvivor/VoidSurvivorCorruptDeathMuzzleflash.prefab").WaitForCompletion();
+            masterySkinDef.bloodRushActivationEffectPrefab = Addressables.LoadAssetAsync<GameObject>("RoR2/DLC1/VoidSurvivor/VoidSurvivorCorruptDeathMuzzleflash.prefab").WaitForCompletion();
+            masterySkinDef.bloodOrbOverlayMaterial = Addressables.LoadAssetAsync<Material>("RoR2/DLC1/VoidSurvivor/matVoidSurvivorBlasterSphereOverlay1.mat").WaitForCompletion();
+            masterySkinDef.bloodRushOverlayMaterial = Addressables.LoadAssetAsync<Material>("RoR2/DLC1/VoidSurvivor/matVoidSurvivorCorruptOverlay.mat").WaitForCompletion();
             masterySkinDef.consumeSoundString = "sfx_ravager_consume";
             masterySkinDef.healSoundString = "sfx_ravager_steam";
             masterySkinDef.electricityMat = Addressables.LoadAssetAsync<Material>("RoR2/DLC1/ChainLightningVoid/matLightningVoid.mat").WaitForCompletion();
@@ -1470,18 +1537,36 @@ localScale = new Vector3(0.13457F, 0.19557F, 0.19557F)
                     if (damageReport.victim && damageReport.victimBody && damageReport.victimBody.healthComponent && damageReport.victimBody.healthComponent.health <= 0f)
                     {
                         GrabTracker tracker = damageReport.victim.gameObject.GetComponent<GrabTracker>();
-                        if (tracker)
+                        ConsumeTracker tracker2 = damageReport.victim.gameObject.GetComponent<ConsumeTracker>();
+
+                        if (tracker || tracker2)
                         {
+                            CharacterBody targetBody = damageReport.attackerBody;
+
+                            if (tracker) targetBody = tracker.attackerBody;
+                            if (tracker2) targetBody = tracker2.attackerBody;
+
                             ConsumeOrb orb = new ConsumeOrb();
                             orb.origin = damageReport.victim.transform.position;
-                            orb.target = Util.FindBodyMainHurtBox(damageReport.attackerBody);
+                            orb.target = Util.FindBodyMainHurtBox(targetBody);
                             OrbManager.instance.AddOrb(orb);
+
+                            Vector3 effectPos = damageReport.victim.transform.position;
+                            // snap to ground here
+                            if (tracker)
+                            {
+                                RaycastHit raycastHit;
+                                if (Physics.Raycast(effectPos, Vector3.down, out raycastHit, 10f, LayerIndex.world.mask))
+                                {
+                                    effectPos = raycastHit.point;
+                                }
+                            }
 
                             if (Modules.Assets.bloodExplosionOverrides.ContainsKey(damageReport.victim.name))
                             {
                                 EffectManager.SpawnEffect(Modules.Assets.bloodExplosionOverrides[damageReport.victim.name], new EffectData
                                 {
-                                    origin = damageReport.victim.transform.position,
+                                    origin = effectPos,
                                     rotation = Quaternion.identity,
                                     color = Color.white
                                 }, true);
@@ -1495,7 +1580,7 @@ localScale = new Vector3(0.13457F, 0.19557F, 0.19557F)
                                     {
                                         EffectManager.SpawnEffect(Modules.Assets.genericBloodExplosionEffect, new EffectData
                                         {
-                                            origin = damageReport.victim.transform.position,
+                                            origin = effectPos,
                                             rotation = Quaternion.identity,
                                             color = surfaceDefProvider.surfaceDef.approximateColor
                                         }, true);
@@ -1504,7 +1589,7 @@ localScale = new Vector3(0.13457F, 0.19557F, 0.19557F)
                                     {
                                         EffectManager.SpawnEffect(Modules.Assets.largeBloodExplosionEffect, new EffectData
                                         {
-                                            origin = damageReport.victim.transform.position,
+                                            origin = effectPos,
                                             rotation = Quaternion.identity,
                                             color = Color.white
                                         }, true);
@@ -1514,7 +1599,7 @@ localScale = new Vector3(0.13457F, 0.19557F, 0.19557F)
                                 {
                                     EffectManager.SpawnEffect(Modules.Assets.largeBloodExplosionEffect, new EffectData
                                     {
-                                        origin = damageReport.victim.transform.position,
+                                        origin = effectPos,
                                         rotation = Quaternion.identity,
                                         color = Color.white
                                     }, true);

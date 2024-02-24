@@ -40,6 +40,7 @@ namespace RedGuyMod.Modules
             entityStates.Add(typeof(RedGuyMod.SkillStates.Ravager.FireBeam));
 
             entityStates.Add(typeof(RedGuyMod.SkillStates.Ravager.DashGrab));
+            entityStates.Add(typeof(RedGuyMod.SkillStates.Ravager.DashPunch));
             entityStates.Add(typeof(RedGuyMod.SkillStates.Ravager.GrabLaunch));
             entityStates.Add(typeof(RedGuyMod.SkillStates.Ravager.PunchRecoil));
             entityStates.Add(typeof(RedGuyMod.SkillStates.Ravager.ChargeSlash));

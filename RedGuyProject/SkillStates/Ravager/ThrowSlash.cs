@@ -43,6 +43,7 @@ namespace RedGuyMod.SkillStates.Ravager
             if (this.charge >= 0.9f)
             {
                 this.hitStopDuration *= 2.5f;
+                this.attackEndTime = 0.7f;
                 this.swingSoundString = "sfx_ravager_bigswing";
                 this.impactSound = Modules.Assets.bigSlashSoundEvent.index;
                 this.swingEffectPrefab = this.penis.skinDef.bigSwingEffectPrefab;
@@ -55,7 +56,7 @@ namespace RedGuyMod.SkillStates.Ravager
         protected override void OnHitEnemyAuthority(int amount)
         {
             base.OnHitEnemyAuthority(amount);
-            if (this.penis) this.penis.FillGauge(0.5f + (amount * 0.5f));
+            if (this.penis) this.penis.FillGauge(0.5f + (amount * 0.5f) + Util.Remap(this.charge, 0f, 1f, 0f, 3f));
         }
 
         protected override void FireAttack()

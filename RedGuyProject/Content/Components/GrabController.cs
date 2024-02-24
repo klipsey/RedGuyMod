@@ -66,6 +66,33 @@ namespace RedGuyMod.Content.Components
 						transform.gameObject.layer = LayerIndex.noCollision.intVal;
 					}
 				}
+
+				// vagrant
+				transform = base.transform.Find("Model Base/mdlVagrant/VagrantArmature/DetatchedHull/Hull.003/StandableSurfacePosition/StandableSurface");
+				if (transform)
+				{
+					this.extraLayer2 = transform.gameObject.layer;
+					transform.gameObject.layer = LayerIndex.noCollision.intVal;
+				}
+
+				// scu
+				transform = base.transform.Find("Model Base/mdlRoboBallBoss/RoboBallBossArmature/ROOT/StandableSurfacePosition/StandableSurface");
+				if (transform)
+				{
+					this.extraLayer2 = transform.gameObject.layer;
+					transform.gameObject.layer = LayerIndex.noCollision.intVal;
+				}
+
+				// xi
+				if (this.gameObject.name == "MegaConstructBody(Clone)")
+				{
+					transform = this.GetComponent<ModelLocator>().modelTransform.Find("MegaConstructArmature/ROOT/base/body.1/StandableSurface/StandableSurface");
+					if (transform)
+					{
+						this.extraLayer2 = transform.gameObject.layer;
+						transform.gameObject.layer = LayerIndex.noCollision.intVal;
+					}
+				}
 			}
 			base.gameObject.layer = LayerIndex.noCollision.intVal;
 			if (this.direction)
@@ -169,6 +196,36 @@ namespace RedGuyMod.Content.Components
 					if (this.gameObject.name == "LunarWispBody(Clone)")
 					{
 						transform = this.GetComponent<ModelLocator>().modelTransform.Find("StandableSurface/StandableSurface");
+						if (transform)
+						{
+							transform.gameObject.layer = this.extraLayer2;
+						}
+					}
+
+					// vagrant
+					if (this.gameObject.name == "Vagrant(Clone)")
+					{
+						transform = base.transform.Find("Model Base/mdlVagrant/VagrantArmature/DetatchedHull/Hull.003/StandableSurfacePosition/StandableSurface");
+						if (transform)
+						{
+							transform.gameObject.layer = this.extraLayer2;
+						}
+					}
+
+					// scu / awu
+					if (this.gameObject.name == "RoboBallBossBody(Clone)" || this.gameObject.name == "SuperRoboBallBossBody(Clone)")
+					{
+						transform = base.transform.Find("Model Base/mdlRoboBallBoss/RoboBallBossArmature/ROOT/StandableSurfacePosition/StandableSurface");
+						if (transform)
+						{
+							transform.gameObject.layer = this.extraLayer2;
+						}
+					}
+
+					// xi
+					if (this.gameObject.name == "MegaConstructBody(Clone)")
+					{
+						transform = this.GetComponent<ModelLocator>().modelTransform.Find("MegaConstructArmature/ROOT/base/body.1/StandableSurface/StandableSurface");
 						if (transform)
 						{
 							transform.gameObject.layer = this.extraLayer2;

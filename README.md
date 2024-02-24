@@ -89,7 +89,6 @@ Redacted - Artistic feedback
 
 ## Known Issues
 - Killing Kjaro and Runald elder lems with Brutalize prevents them from dropping their respective bands
-- Grabbing flying bosses results in weird collision issues- the fix has to be hardcoded which will take some time to get around to for all of them
 
 ## Future Plans
 - Proper skins
@@ -100,6 +99,55 @@ Redacted - Artistic feedback
 ___
 
 ## Changelog
+
+`1.3.12`
+- Reduced frequency of ground impacts and made skills cancel it properly
+
+`1.3.11`
+- forgot to remove a line of debugging code
+
+`1.3.10`
+- Cleave now forces a sprint (making it agile was screwing with my muscle memory)
+- Fixed animation bug
+
+`1.3.9`
+- i swear it works this time
+
+`1.3.8`
+- 1.3.7 was not playtested
+
+`1.3.7`
+- The newly added landing impact can now be cancelled into a charged jump
+
+`1.3.6`
+- Added fall damage immunity, replaced it with an impact animation
+- Physical Prowess no longer cancels itself when used on the ground
+- Increased range of Physical Prowess walljump check, moved closer to the ground to make ground jumps easier
+- Cleave no longer cancels sprint
+- Nullify charge gained per projectile severely lowered
+- Eating up projectiles in the first 0.5s after starting Nullify now grants 5x the value
+- ^less effective for passively charging up, but more rewarding on well timed counters
+- Pummel unlock requirement changed from 5 slams to 3
+- Pummel base damage: 1000% > 1250%
+- ^Brutalize goes up to 1500% based on fall distance, so this is just addressing that damage disparity
+- Pummel now applies heavy force to its target, guaranteeing most things get hit by the following shockwave
+- Empowered Pummel new effect: no longer doubles damage, but instead hits the enemy with a barrage of punches
+- Updated default skin model once again
+- Various forms of visual and audio polish
+- Fixed incorrect healing amount in special descriptions
+
+`1.3.5`
+- Physical Prowess leaps now force a sprint- this removes the necessity to be sprinting beforehand to get full value out of the leap
+- Fixed Blood Rush overlay expiring near instantly
+
+`1.3.4`
+- Added new unlockable alt special
+- Empowered punch now deals double damage
+- Twisted Mutation now refreshes when grabbing something with Brutalize- means you can blink, grab, blink again for more style points
+- Updated some VFX for the void skins
+- Fixed issues resulting from grabbing flying bosses with Brutalize
+- Fixed Hopoo Feather doing nothing with Twisted Mutation- now consumes the extra jumps before using up the blink
+- Fixed duplicate passive in character select
 
 `1.3.3`
 - Nullify beam duration no longer scales with attack speed; tick rate still does though (maybe op who knows)

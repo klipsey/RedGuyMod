@@ -5,6 +5,7 @@ using RedGuyMod.Modules;
 using RedGuyMod.SkillStates.Emote;
 using BepInEx.Configuration;
 using RedGuyMod.Content.Components;
+using UnityEngine.AddressableAssets;
 
 namespace RedGuyMod.SkillStates.Ravager
 {
@@ -14,6 +15,9 @@ namespace RedGuyMod.SkillStates.Ravager
 		public LocalUser localUser;
 
 		private RedGuyController penis;
+		private float landingTimer;
+		private float _lastYSpeed;
+		private bool wasGrounded2;
 
 		public override void OnEnter()
 		{
@@ -25,7 +29,29 @@ namespace RedGuyMod.SkillStates.Ravager
 
 		public override void FixedUpdate()
 		{
+			if (!this.isGrounded && this.characterMotor.velocity.y <= -0.2f) this._lastYSpeed = this.characterMotor.velocity.y;
+
+			if (this.isGrounded && !this.wasGrounded2)
+			{
+				this.Landing(this._lastYSpeed);
+			}
+
+			//Chat.AddMessage(this._lastYSpeed.ToString() + " || " + this.lastYSpeed.ToString());
+
+			this.wasGrounded2 = this.isGrounded;
+
 			base.FixedUpdate();
+			this.landingTimer -= Time.fixedDeltaTime;
+
+			if (this.penis.skibidi)
+            {
+				this.penis.skibidi = false;
+				if (this.landingTimer > 0f)
+                {
+					this.landingTimer = 0f;
+					base.PlayAnimation("FullBody, Override Soft", "BufferEmpty");
+				}
+            }
 
 			if (this.animator)
 			{
@@ -89,8 +115,74 @@ namespace RedGuyMod.SkillStates.Ravager
 			}
 		}
 
+        public override void HandleMovements()
+        {
+            base.HandleMovements();
+
+			if (this.landingTimer > 0f)
+			{
+				this.characterMotor.moveDirection = Vector3.zero;
+				this.characterDirection.moveVector = this.characterDirection.forward;
+			}
+		}
+
+		private void Landing(float speed)
+        {
+			if (speed <= -65f && !this.penis.inGrab)
+            {
+				this.HeaviestLanding();
+			}
+
+			if (speed <= -30.5f && !this.penis.inGrab) this.HeavyLanding();
+        }
+
+		private void HeavyLanding()
+        {
+			base.PlayAnimation("FullBody, Override Soft", "HeavyLanding", "Landing.playbackRate", 1.1f);
+			this.landingTimer = 1f;
+			this.characterMotor.velocity = Vector3.zero;
+			Util.PlaySound("sfx_ravager_landing", this.gameObject);
+			this._lastYSpeed = 0f;
+
+			EffectManager.SpawnEffect(Modules.Assets.groundImpactEffect, new EffectData
+			{
+				origin = this.transform.position,
+				rotation = Quaternion.identity,
+				scale = 1f
+			}, true);
+		}
+
+		private void HeaviestLanding()
+		{
+			base.PlayAnimation("FullBody, Override Soft", "HeavyLanding", "Landing.playbackRate", 2.2f);
+			this.landingTimer = 2f;
+			this.characterMotor.velocity = Vector3.zero;
+			Util.PlaySound("sfx_ravager_landing", this.gameObject);
+			Util.PlaySound("sfx_ravager_ground_impact", this.gameObject);
+			this._lastYSpeed = 0f;
+
+			EffectManager.SpawnEffect(Modules.Assets.heavyGroundImpactEffect, new EffectData
+			{
+				origin = this.transform.position,
+				rotation = Quaternion.identity,
+				scale = 1f
+			}, true);
+		}
+
 		public override void ProcessJump()
 		{
+			if (this.landingTimer > 0f && this.jumpInputReceived)
+			{
+				if (this.penis.passive.isWallJump)
+                {
+					EntityStateMachine.FindByCustomName(this.gameObject, "Passive").SetInterruptState(new ChargeJump(), InterruptPriority.Skill);
+					this.jumpInputReceived = false;
+					return;
+                }
+				this.jumpInputReceived = false;
+				return;
+			}
+
 			if (this.hasCharacterMotor)
 			{
 				bool hopooFeather = false;
@@ -149,10 +241,10 @@ namespace RedGuyMod.SkillStates.Ravager
 
 					if (hopooFeather)
 					{
-						EffectManager.SpawnEffect(LegacyResourcesAPI.Load<GameObject>("Prefabs/Effects/FeatherEffect"), new EffectData
+						/*EffectManager.SpawnEffect(LegacyResourcesAPI.Load<GameObject>("Prefabs/Effects/FeatherEffect"), new EffectData
 						{
 							origin = base.characterBody.footPosition
-						}, true);
+						}, true);*/
 					}
 					else if (base.characterMotor.jumpCount > 0)
 					{
