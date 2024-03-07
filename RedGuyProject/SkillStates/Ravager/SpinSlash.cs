@@ -76,7 +76,7 @@ namespace RedGuyMod.SkillStates.Ravager
             this.hitHopVelocity = 0f;
 
             this.damageType = DamageType.Stun1s;
-            if (this.empowered) this.damageType |= DamageType.BonusToLowHealth;
+            if (this.empowered && this.slashType != SlashType.Ground) this.damageType |= DamageType.BonusToLowHealth;
 
             Util.PlaySound("sfx_ravager_foley_01", this.gameObject);
 
@@ -97,6 +97,12 @@ namespace RedGuyMod.SkillStates.Ravager
             {
                 this.penis.FillGauge(1f + (amount * 0.5f));
                 this.penis.RefreshBlink();
+
+                if (this.empowered && this.slashType == SlashType.Ground)
+                {
+                    this.characterMotor.velocity += this.characterDirection.forward * 50f;
+                    this.attack.damage *= 1.5f;
+                }
             }
         }
 

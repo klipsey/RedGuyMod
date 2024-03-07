@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using EntityStates;
 using EntityStates.Commando;
+using RedGuyMod.Content;
 using RedGuyMod.Content.Components;
 using RoR2;
 using RoR2.Audio;
@@ -655,13 +656,14 @@ namespace RedGuyMod.SkillStates.Ravager
 		{
 			Ray aimRay = base.GetAimRay();
 
-			BullseyeSearch bullseyeSearch = new BullseyeSearch
+			BullseyeSearch2 bullseyeSearch = new BullseyeSearch2
 			{
 				teamMaskFilter = TeamMask.GetEnemyTeams(base.GetTeam()),
 				filterByLoS = false,
 				searchOrigin = base.transform.position,
 				searchDirection = UnityEngine.Random.onUnitSphere,
-				sortMode = BullseyeSearch.SortMode.Distance,
+				sortMode = BullseyeSearch2.SortMode.Distance,
+				onlyBullseyes = false,
 				maxDistanceFilter = grabRadius,
 				maxAngleFilter = 360f
 			};
@@ -728,6 +730,45 @@ namespace RedGuyMod.SkillStates.Ravager
 						}
 						else
                         {
+							if (!this.forcePunch && hurtBox.healthComponent.body.isChampion)
+                            {
+								base.PlayCrossfade("FullBody, Override", "Cling", 0.1f);
+								Util.PlaySound("sfx_ravager_grab", base.gameObject);
+
+								HurtBox targetHurtbox = hurtBox;
+								float dist = Mathf.Infinity;
+								foreach (HurtBox i in hurtBox.healthComponent.gameObject.GetComponentsInChildren<HurtBox>())
+                                {
+									float d = Vector3.Distance(this.transform.position, i.transform.position);
+									if (d < dist)
+                                    {
+										dist = d;
+										targetHurtbox = i;
+                                    }
+                                }
+
+								if (base.isAuthority)
+                                {
+									Vector3 offset = (this.transform.position - targetHurtbox.transform.position).normalized * this.penis.offsetDistance;
+
+									GameObject anchor = new GameObject();
+
+									anchor.transform.parent = targetHurtbox.transform;
+									anchor.transform.position = targetHurtbox.transform.position + offset;
+
+									EntityStateMachine.FindByCustomName(this.gameObject, "Body").SetNextState(new Cling
+									{
+										targetHurtbox = targetHurtbox,
+										offset = offset,
+										anchor = anchor
+									});
+
+									this.outer.SetNextStateToMain();
+                                }
+
+								return;
+							}
+
 							if (hurtBox.healthComponent.body.isChampion || this.forcePunch)
                             {
 								// PUNCH
@@ -788,7 +829,7 @@ namespace RedGuyMod.SkillStates.Ravager
 										impactEffect = EffectIndex.Invalid,
 										losType = BlastAttack.LoSType.None,
 										damageColorIndex = DamageColorIndex.Default,
-										damageType = DamageType.Stun1s,
+										damageType = DamageType.Stun1s | DamageType.NonLethal,
 										procCoefficient = 1f,
 										bonusForce = this.GetAimRay().direction.normalized * force,
 										baseForce = 0f,
@@ -804,7 +845,7 @@ namespace RedGuyMod.SkillStates.Ravager
 
 									// shockwave
 									FireProjectileInfo fireProjectileInfo = default(FireProjectileInfo);
-									fireProjectileInfo.position = hurtBox.transform.position;
+									fireProjectileInfo.position = hurtBox.transform.position + (aimRay.direction * -4f);
 									fireProjectileInfo.rotation = Quaternion.LookRotation(aimRay.direction);
 									fireProjectileInfo.crit = this.RollCrit();
 									fireProjectileInfo.damage = 10f * this.damageStat;

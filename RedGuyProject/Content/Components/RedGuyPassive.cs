@@ -8,6 +8,7 @@ namespace RedGuyMod.Content.Components
     {
         public SkillDef wallJumpPassive;
         public SkillDef blinkPassive;
+        public SkillDef legacyBlinkPassive;
         public GenericSkill passiveSkillSlot;
 
         public SkillDef bloodWellPassive;
@@ -34,6 +35,19 @@ namespace RedGuyMod.Content.Components
                 if (this.blinkPassive && this.passiveSkillSlot)
                 {
                     return this.passiveSkillSlot.skillDef == this.blinkPassive;
+                }
+
+                return false;
+            }
+        }
+
+        public bool isLegacyBlink
+        {
+            get
+            {
+                if (this.legacyBlinkPassive && this.passiveSkillSlot)
+                {
+                    return this.passiveSkillSlot.skillDef == this.legacyBlinkPassive;
                 }
 
                 return false;

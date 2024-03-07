@@ -100,6 +100,29 @@ ___
 
 ## Changelog
 
+`1.3.14`
+- Twisted Mutation reworked- now a charging blink similar to default passive, still requires no terrain, still refreshes on hit
+- Legacy version is available via cursed config, also lowered health cost from 10% to 5%
+- Holding secondary while releasing Nullify now makes it do an AoE blast instead
+- Added animations to indicate this and the primary mechanic
+- Grounded empowered Cleave no longer deals bonus damage to low health targets- instead, each enemy hit refreshes the lunge and boosts the damage to the next target by 50% (stacking)
+- Pummel is now non-lethal
+- The shockwave following Pummel is now guaranteed to hit its primary target
+- Brutalize no longer punches bosses, now clings onto them allowing you to slash them and recast for a powerful flourish
+- ^m1 slashes for default m1 damage, m2 slower stabs for 600%, util defends, r slashes and jumps off for 1000%
+- Readded ground impact, fixed inconsistency and made it much harder to trigger
+- Lowered enemy step detection radius, but now can jump off any hurtbox
+- ^previously only counted bullseyes, meaning bosses were incredibly inconsistent, this is fixed
+- Moved Ravager directly behind Void Fiend in the CSS
+- Fixed certain alt skins using the void skin VFX set instead of the default
+
+`1.3.13`
+- Removed ground impact until further notice
+- Changed mastery skin again, added an alternate due to request
+- Updated Voidborn skin- still looks awful but maybe a little bit less so?
+- Releasing Nullify above half charge now uses the quick blast instead of the beam if you're holding M1- thanks to tsuyoikenko for this
+- Fixed the stupid vanilla lobby skin bug
+
 `1.3.12`
 - Reduced frequency of ground impacts and made skills cancel it properly
 

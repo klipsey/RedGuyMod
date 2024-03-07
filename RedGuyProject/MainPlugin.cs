@@ -6,6 +6,7 @@ using System.Security;
 using System.Security.Permissions;
 using UnityEngine;
 using R2API.Networking;
+using System.Collections.Generic;
 
 [module: UnverifiableCode]
 [assembly: SecurityPermission(SecurityAction.RequestMinimum, SkipVerification = true)]
@@ -35,7 +36,7 @@ namespace RedGuyMod
     {
         public const string MODUID = "com.rob.Ravager";
         public const string MODNAME = "Ravager";
-        public const string MODVERSION = "1.3.12";
+        public const string MODVERSION = "1.3.14";
 
         public const string developerPrefix = "ROB";
 
@@ -45,6 +46,8 @@ namespace RedGuyMod
         public static bool scepterInstalled => BepInEx.Bootstrap.Chainloader.PluginInfos.ContainsKey("com.DestroyedClone.AncientScepter");
         public static bool rooInstalled => BepInEx.Bootstrap.Chainloader.PluginInfos.ContainsKey("com.rune580.riskofoptions");
         public static bool litInstalled => BepInEx.Bootstrap.Chainloader.PluginInfos.ContainsKey("com.ContactLight.LostInTransit");
+
+        public static List<HurtBox> hurtboxesList = new List<HurtBox>();
 
         private void Awake()
         {
@@ -84,6 +87,20 @@ namespace RedGuyMod
             //On.RoR2.Networking.NetworkManagerSystemSteam.OnClientConnect += (s, u, t) => { };
             On.RoR2.CharacterModel.UpdateOverlays += CharacterModel_UpdateOverlays;
             On.RoR2.CharacterBody.RecalculateStats += CharacterBody_RecalculateStats;
+            On.RoR2.HurtBox.OnEnable += HurtBox_OnEnable;
+            On.RoR2.HurtBox.OnDisable += HurtBox_OnDisable;
+        }
+
+        private void HurtBox_OnEnable(On.RoR2.HurtBox.orig_OnEnable orig, HurtBox self)
+        {
+            orig(self);
+            hurtboxesList.Add(self);
+        }
+
+        private void HurtBox_OnDisable(On.RoR2.HurtBox.orig_OnDisable orig, HurtBox self)
+        {
+            orig(self);
+            hurtboxesList.Remove(self);
         }
 
         private void CharacterBody_RecalculateStats(On.RoR2.CharacterBody.orig_RecalculateStats orig, CharacterBody self)
@@ -95,6 +112,11 @@ namespace RedGuyMod
                 if (self.HasBuff(Content.Survivors.RedGuy.grabbedBuff))
                 {
                     self.damage = 0f;
+                }
+
+                if (self.HasBuff(Content.Survivors.RedGuy.clingDefendBuff))
+                {
+                    self.armor += 500f;
                 }
             }
         }

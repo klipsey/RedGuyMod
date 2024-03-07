@@ -9,14 +9,13 @@ namespace RedGuyMod.SkillStates.Ravager
         public float duration = 0.65f;
         public bool hopoo = false;
 
-        private bool success;
         private Vector3 origin;
         private ParticleSystem x1;
         private ParticleSystem x2;
-        private float jumpTime;
+        protected float jumpTime;
         private bool hasJumped;
-        private Vector3 jumpDir;
-        private float jumpForce;
+        protected Vector3 jumpDir;
+        protected float jumpForce;
         private bool isSliding;
         private uint playID;
         private bool permaCling;
@@ -34,9 +33,7 @@ namespace RedGuyMod.SkillStates.Ravager
             this.animator = this.GetModelAnimator();
 
             this.SnapToGround();
-
-            if (this.hopoo) base.PlayAnimation("Body", "JumpChargeHopoo", "Jump.playbackRate", this.duration);
-            else base.PlayAnimation("Body", "JumpCharge", "Jump.playbackRate", this.duration);
+            this.PlayAnim();
 
             this.x1 = this.FindModelChild("FootChargeL").gameObject.GetComponent<ParticleSystem>();
             this.x2 = this.FindModelChild("FootChargeR").gameObject.GetComponent<ParticleSystem>();
@@ -57,6 +54,12 @@ namespace RedGuyMod.SkillStates.Ravager
                 //this.origin = raycastHit.point + new Vector3(0f, -0.35f, 0f);
                 this.snapped = true;
             }
+        }
+
+        protected virtual void PlayAnim()
+        {
+            if (this.hopoo) base.PlayCrossfade("Body", "JumpChargeHopoo", "Jump.playbackRate", this.duration, 0.1f);
+            else base.PlayCrossfade("Body", "JumpCharge", "Jump.playbackRate", this.duration, 0.1f);
         }
 
         public override void OnExit()
@@ -123,14 +126,11 @@ namespace RedGuyMod.SkillStates.Ravager
 
                     if (base.fixedAge <= 0.2f)
                     {
-                        this.success = true;
                         GenericCharacterMain.ApplyJumpVelocity(base.characterMotor, base.characterBody, 1.6f, 1.5f, false);
                         this.outer.SetNextState(new WallJumpSmall());
                     }
                     else
                     {
-                        this.success = true;
-
                         this.characterBody.isSprinting = true;
 
                         float recoil = 15f;
@@ -146,16 +146,7 @@ namespace RedGuyMod.SkillStates.Ravager
 
                         this.characterMotor.velocity = this.jumpDir * this.jumpForce;
                         this.hasJumped = true;
-                        this.jumpTime = 0.25f;
-
-                        EffectData effectData = new EffectData
-                        {
-                            origin = this.transform.position + (Vector3.up * 0.75f),
-                            rotation = Util.QuaternionSafeLookRotation(this.GetAimRay().direction),
-                            scale = 1f
-                        };
-
-                        EffectManager.SpawnEffect(this.penis.skinDef.leapEffectPrefab, effectData, true);
+                        this.SetJumpTime();
 
                         if (this.hopoo)
                         {
@@ -165,14 +156,33 @@ namespace RedGuyMod.SkillStates.Ravager
                             }, true);
                         }
 
-                        this.outer.SetNextState(new WallJumpBig
-                        {
-                            jumpDir = this.jumpDir,
-                            jumpForce = this.jumpForce
-                        });
+                        this.NextState();
                     }
                 }
             }
+        }
+
+        protected virtual void SetJumpTime()
+        {
+            this.jumpTime = 0.25f;
+
+            EffectData effectData = new EffectData
+            {
+                origin = this.transform.position + (Vector3.up * 0.75f),
+                rotation = Util.QuaternionSafeLookRotation(this.GetAimRay().direction),
+                scale = 1f
+            };
+
+            EffectManager.SpawnEffect(this.penis.skinDef.leapEffectPrefab, effectData, true);
+        }
+
+        protected virtual void NextState()
+        {
+            this.outer.SetNextState(new WallJumpBig
+            {
+                jumpDir = this.jumpDir,
+                jumpForce = this.jumpForce
+            });
         }
     }
 }

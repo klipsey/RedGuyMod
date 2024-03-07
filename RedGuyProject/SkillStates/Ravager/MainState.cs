@@ -29,14 +29,13 @@ namespace RedGuyMod.SkillStates.Ravager
 
 		public override void FixedUpdate()
 		{
-			if (!this.isGrounded && this.characterMotor.velocity.y <= -0.2f) this._lastYSpeed = this.characterMotor.velocity.y;
+			if (!this.isGrounded && this.characterMotor.velocity.y <= -5f) this._lastYSpeed = this.characterMotor.velocity.y;
 
 			if (this.isGrounded && !this.wasGrounded2)
 			{
+				//Chat.AddMessage(this._lastYSpeed.ToString());
 				this.Landing(this._lastYSpeed);
 			}
-
-			//Chat.AddMessage(this._lastYSpeed.ToString() + " || " + this.lastYSpeed.ToString());
 
 			this.wasGrounded2 = this.isGrounded;
 
@@ -128,12 +127,12 @@ namespace RedGuyMod.SkillStates.Ravager
 
 		private void Landing(float speed)
         {
-			if (speed <= -65f && !this.penis.inGrab)
+			if (speed <= -100f && !this.penis.inGrab)
             {
 				this.HeaviestLanding();
 			}
 
-			if (speed <= -30.5f && !this.penis.inGrab) this.HeavyLanding();
+			if (speed <= -60f && !this.penis.inGrab) this.HeavyLanding();
         }
 
 		private void HeavyLanding()
@@ -150,6 +149,28 @@ namespace RedGuyMod.SkillStates.Ravager
 				rotation = Quaternion.identity,
 				scale = 1f
 			}, true);
+
+			// damage
+			BlastAttack.Result result = new BlastAttack
+			{
+				attacker = this.gameObject,
+				procChainMask = default(ProcChainMask),
+				impactEffect = EffectIndex.Invalid,
+				losType = BlastAttack.LoSType.None,
+				damageColorIndex = DamageColorIndex.Default,
+				damageType = DamageType.Stun1s | DamageType.NonLethal,
+				procCoefficient = 1f,
+				bonusForce = Vector3.up * 800f,
+				baseForce = 0f,
+				baseDamage = 0f,
+				falloffModel = BlastAttack.FalloffModel.None,
+				radius = 4f,
+				position = this.transform.position,
+				attackerFiltering = AttackerFiltering.NeverHitSelf,
+				teamIndex = this.GetTeam(),
+				inflictor = this.gameObject,
+				crit = false
+			}.Fire();
 		}
 
 		private void HeaviestLanding()
@@ -167,6 +188,28 @@ namespace RedGuyMod.SkillStates.Ravager
 				rotation = Quaternion.identity,
 				scale = 1f
 			}, true);
+
+			// damage
+			BlastAttack.Result result = new BlastAttack
+			{
+				attacker = this.gameObject,
+				procChainMask = default(ProcChainMask),
+				impactEffect = EffectIndex.Invalid,
+				losType = BlastAttack.LoSType.None,
+				damageColorIndex = DamageColorIndex.Default,
+				damageType = DamageType.Stun1s | DamageType.NonLethal,
+				procCoefficient = 1f,
+				bonusForce = Vector3.up * 2000f,
+				baseForce = 0f,
+				baseDamage = 0f,
+				falloffModel = BlastAttack.FalloffModel.None,
+				radius = 8f,
+				position = this.transform.position,
+				attackerFiltering = AttackerFiltering.NeverHitSelf,
+				teamIndex = this.GetTeam(),
+				inflictor = this.gameObject,
+				crit = false
+			}.Fire();
 		}
 
 		public override void ProcessJump()

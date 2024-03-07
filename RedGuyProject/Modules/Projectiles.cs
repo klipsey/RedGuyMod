@@ -39,6 +39,24 @@ namespace RedGuyMod.Modules
 
             punchShockwave.transform.Find("Effect/Point Light").GetComponent<Light>().color = Color.red;
 
+            // new shockwave :-D
+            /*punchShockwave.GetComponent<ProjectileProximityBeamController>().attackFireCount = 0;
+
+            Content.Components.PunchShockwave shockwave = punchShockwave.AddComponent<Content.Components.PunchShockwave>();
+            shockwave.attackFireCount = 12;
+            shockwave.attackInterval = 3f;
+            shockwave.listClearInterval = 3f;
+            shockwave.attackRange = 50f;
+            shockwave.minAngleFilter = 0f;
+            shockwave.maxAngleFilter = 60f;
+            shockwave.procCoefficient = 1f;
+            shockwave.damageCoefficient = 1f;
+            shockwave.bounces = 0;
+            shockwave.inheritDamageType = false;*/
+            // ended up biting off way more than i can chew.
+            // i don't want to make a new lightning trail, new impact effect, all the materials associated with that. then find out what code
+            // even creates the lightning to being with. fuck this i give up
+
             Modules.Prefabs.projectilePrefabs.Add(punchShockwave);
 
 

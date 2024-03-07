@@ -27,7 +27,8 @@ namespace RedGuyMod.SkillStates.Ravager
         protected GameObject areaIndicatorInstance { get; set; }
         private uint playId;
         private bool isCharged;
-        private bool ending;
+        private Animator animator;
+        private float fuckMyAss;
 
         private CrosshairUtils.OverrideRequest crosshairOverrideRequest;
         private bool allySucc;
@@ -39,6 +40,7 @@ namespace RedGuyMod.SkillStates.Ravager
             this.duration = this.baseDuration / this.attackSpeedStat;
             this.camParamsOverrideHandle = Modules.CameraParams.OverrideCameraParams(base.cameraTargetParams, RavagerCameraParams.AIM, 5f);
             this.allySucc = Modules.Config.allySucc.Value;
+            this.animator = this.GetModelAnimator();
 
             base.PlayCrossfade("Gesture, Override", "ChargeBeam", "Beam.playbackRate", this.duration * 0.15f, 0.05f);
 
@@ -49,10 +51,10 @@ namespace RedGuyMod.SkillStates.Ravager
 
             if (NetworkServer.active) this.characterBody.AddBuff(RoR2Content.Buffs.Slow50);
 
-            if (EntityStates.Huntress.ArrowRain.areaIndicatorPrefab)
+            if (EntityStates.Huntress.ArrowRain.areaIndicatorPrefab && base.isAuthority)
             {
-                //this.areaIndicatorInstance = UnityEngine.Object.Instantiate<GameObject>(EntityStates.Huntress.ArrowRain.areaIndicatorPrefab);
-                //this.areaIndicatorInstance.transform.localScale = Vector3.zero;
+                this.areaIndicatorInstance = UnityEngine.Object.Instantiate<GameObject>(EntityStates.Huntress.ArrowRain.areaIndicatorPrefab);
+                this.areaIndicatorInstance.transform.localScale = Vector3.zero;
             }
 
             this.crosshairOverrideRequest = CrosshairUtils.RequestOverrideForBody(this.characterBody, Modules.Assets.beamCrosshair, CrosshairUtils.OverridePriority.Skill);
@@ -114,6 +116,22 @@ namespace RedGuyMod.SkillStates.Ravager
             this.StartAimMode(0.5f);
             this.characterBody.isSprinting = false;
 
+            if (this.animator)
+            {
+                float beamType = 0f;
+                if (this.inputBank.skill2.down)
+                {
+                    beamType = -1f;
+                }
+                else if (this.inputBank.skill1.down)
+                {
+                    beamType = 1f;
+                }
+
+                this.fuckMyAss = Mathf.Lerp(this.fuckMyAss, beamType, Time.fixedDeltaTime * 8f);
+                this.animator.SetFloat("beamType", this.fuckMyAss);
+            }
+
             if (this.areaIndicatorInstance)
             {
                 float size = Util.Remap(this.charge, 0f, 1f, this.minRadius, this.maxRadius);
@@ -163,6 +181,8 @@ namespace RedGuyMod.SkillStates.Ravager
                     this.areaIndicatorInstance.transform.position = aimRay.GetPoint(maxDistance);
                     this.areaIndicatorInstance.transform.up = -aimRay.direction;
                 }
+
+                if (base.isAuthority) this.areaIndicatorInstance.SetActive(this.inputBank.skill2.down);
             }
         }
 
@@ -241,7 +261,59 @@ namespace RedGuyMod.SkillStates.Ravager
             else EffectManager.SimpleMuzzleFlash(Addressables.LoadAssetAsync<GameObject>("RoR2/Base/Golem/MuzzleflashGolem.prefab").WaitForCompletion(), gameObject, "HandL", true);
             Util.PlaySound("sfx_ravager_blast", this.gameObject);
 
-            if (storedCharge >= 0.5f)
+            if (this.inputBank.skill2.down)
+            {
+                base.PlayAnimation("Gesture, Override", "FireBeam", "Beam.playbackRate", 1f);
+
+                if (base.isAuthority)
+{
+    float damage = Util.Remap(storedCharge, 0f, 1f, ChargeBeam.minDamageCoefficient, ChargeBeam.maxDamageCoefficient) * this.damageStat;
+    float radius = Util.Remap(storedCharge, 0f, 1f, this.minRadius, this.maxRadius);
+
+    BlastAttack blastAttack = new BlastAttack();
+    blastAttack.radius = radius;
+    blastAttack.procCoefficient = 1f;
+    blastAttack.position = this.areaIndicatorInstance.transform.position;
+    blastAttack.attacker = this.gameObject;
+    blastAttack.crit = this.RollCrit();
+    blastAttack.baseDamage = damage;
+    blastAttack.falloffModel = BlastAttack.FalloffModel.None;
+    blastAttack.baseForce = Util.Remap(storedCharge, 0f, 1f, 10f, 8000f);
+    blastAttack.teamIndex = this.teamComponent.teamIndex;
+    blastAttack.damageType = DamageType.Stun1s;
+    blastAttack.attackerFiltering = AttackerFiltering.NeverHitSelf;
+
+    blastAttack.Fire();
+}
+
+                // effect
+
+                Transform modelTransform = this.GetModelTransform();
+                if (modelTransform)
+                {
+                    ChildLocator component = modelTransform.GetComponent<ChildLocator>();
+                    if (component)
+                    {
+                        int childIndex = component.FindChildIndex("HandL");
+                        if (EntityStates.GolemMonster.FireLaser.tracerEffectPrefab)
+                        {
+                            EffectData effectData = new EffectData
+                            {
+                                origin = this.areaIndicatorInstance.transform.position,
+                                start = this.GetAimRay().origin
+                            };
+                            effectData.SetChildLocatorTransformReference(base.gameObject, childIndex);
+                            EffectManager.SpawnEffect(EntityStates.GolemMonster.FireLaser.tracerEffectPrefab, effectData, true);
+                            EffectManager.SpawnEffect(EntityStates.GolemMonster.FireLaser.hitEffectPrefab, effectData, true);
+                        }
+                    }
+                }
+
+                this.outer.SetNextStateToMain();
+                return;
+            }
+
+            if (storedCharge >= 0.5f && !this.inputBank.skill1.down)
             {
                 this.outer.SetNextState(new FireBeam
                 {
@@ -256,6 +328,11 @@ namespace RedGuyMod.SkillStates.Ravager
 
                 tracer = Addressables.LoadAssetAsync<GameObject>("RoR2/DLC1/Railgunner/TracerRailgunSuper.prefab").WaitForCompletion();
                 impact = Addressables.LoadAssetAsync<GameObject>("RoR2/Base/Golem/ExplosionGolem.prefab").WaitForCompletion();
+
+                if (storedCharge >= 0.5f)
+                {
+                    tracer.transform.GetChild(4).GetChild(3).localScale = Vector3.one * 6f;
+                }
 
                 float damage = Util.Remap(storedCharge, 0f, 1f, ChargeBeam.minDamageCoefficient, ChargeBeam.maxDamageCoefficient) * this.damageStat;
 

@@ -32,6 +32,7 @@ namespace RedGuyMod.Modules
             #region Skins
             LanguageAPI.Add(prefix + "DEFAULT_SKIN_NAME", "Default");
             LanguageAPI.Add(prefix + "MONSOON_SKIN_NAME", "Voidtouched");
+            LanguageAPI.Add(prefix + "MONSOON_ALTERNATE_SKIN_NAME", "Voidtouched EX");
             LanguageAPI.Add(prefix + "TYPHOON_SKIN_NAME", "");
             LanguageAPI.Add(prefix + "VOID_SKIN_NAME", "Voidborn");
             LanguageAPI.Add(prefix + "MAHORAGA_SKIN_NAME", "Divine");
@@ -52,7 +53,10 @@ namespace RedGuyMod.Modules
             LanguageAPI.Add(prefix + "PASSIVE_DESCRIPTION", $"The Ravager can <style=cIsUtility>jump off walls</style> and <style=cIsHealth>enemies</style>. Wall jumps can be charged for a <style=cIsDamage>mighty leap</style>.");
             
             LanguageAPI.Add(prefix + "PASSIVE2_NAME", "Twisted Mutation");
-            LanguageAPI.Add(prefix + "PASSIVE2_DESCRIPTION", $"<style=cIsHealth>Costs 10% current health.</style> Jump in midair to <style=cIsUtility>blink forward</style>, once per jump. Landing <style=cIsDamage>melee hits</style> refreshes this ability.");
+            LanguageAPI.Add(prefix + "PASSIVE2_DESCRIPTION", $"Jump in midair to charge up a <style=cIsUtility>forward blink</style>, once per jump. Landing <style=cIsDamage>melee hits</style> refreshes this ability.");
+
+            LanguageAPI.Add(prefix + "PASSIVE3_NAME", "Twisted Mutation (Legacy)");
+            LanguageAPI.Add(prefix + "PASSIVE3_DESCRIPTION", $"<style=cIsHealth>Costs 5% current health.</style> Jump in midair to <style=cIsUtility>blink forward</style>, once per jump. Landing <style=cIsDamage>melee hits</style> refreshes this ability.");
 
             LanguageAPI.Add(prefix + "CONFIRM_NAME", "Confirm");
             LanguageAPI.Add(prefix + "CONFIRM_DESCRIPTION", "Proceed with the current skill.");
@@ -105,17 +109,18 @@ namespace RedGuyMod.Modules
             #region Keywords
             LanguageAPI.Add("KEYWORD_REDGUY_M12", "<style=cKeywordName>Hold Stance</style><style=cSub>While charging a wall jump, enter a <style=cIsUtility>hold stance</style>. Release to swing for up to <style=cIsDamage>5x damage</style> based on velocity.");
             LanguageAPI.Add("KEYWORD_REDGUY_M1", "<style=cKeywordName>Empowered Effect</style><style=cSub>Swings faster.");
-            LanguageAPI.Add("KEYWORD_REDGUY_M2", "<style=cKeywordName>Empowered Effect</style><style=cSub>Deals more damage to <style=cIsUtility>low health enemies</style> and lunges farther.");
+            LanguageAPI.Add("KEYWORD_REDGUY_M2", "<style=cKeywordName>Empowered Effect (Ground)</style><style=cSub>Successful hits <style=cIsUtility>lunge farther</style> and <style=cIsDamage>boost damage by 50%</style>, stacking.");
+            LanguageAPI.Add("KEYWORD_REDGUY_M2B", "<style=cKeywordName>Empowered Effect (Air)</style><style=cSub>Deals more damage to <style=cIsUtility>low health enemies</style> and lunges farther.");
             LanguageAPI.Add("KEYWORD_REDGUY_HEAL", $"<style=cKeywordName>Empowered Effect</style><style=cSub>Explodes for <style=cIsDamage>{100f * SkillStates.Ravager.Heal.maxDamageCoefficient}% damage</style>.");
             LanguageAPI.Add("KEYWORD_REDGUY_BEAM", $"<style=cKeywordName>Empowered Effect</style><style=cSub>Charges much faster.");
             LanguageAPI.Add("KEYWORD_REDGUY_GRAB", "<style=cKeywordName>Empowered Effect</style><style=cSub>Can grab bosses. Drags enemies along the ground, dealing damage over time.");
-            LanguageAPI.Add("KEYWORD_REDGUY_GRAB2", "<style=cKeywordName>Bosses</style><style=cSub>Against bosses, <style=cIsDamage>punch</style> them instead for the same damage.");
+            LanguageAPI.Add("KEYWORD_REDGUY_GRAB2", "<style=cKeywordName>Bosses</style><style=cSub>Against bosses, <style=cIsDamage>cling</style> onto them instead and go goblin mode.");
             LanguageAPI.Add("KEYWORD_REDGUY_PUNCH", "<style=cKeywordName>Empowered Effect</style><style=cSub>Unleashes a barrage of punches, dealing heavy damage.");
             #endregion
 
             #region Achievements
-            LanguageAPI.Add(prefix + "UNLOCKABLE_UNLOCKABLE_NAME", "The One Who Left It All Behind");
-            LanguageAPI.Add(prefix + "UNLOCKABLE_ACHIEVEMENT_NAME", "The One Who Left It All Behind");
+            LanguageAPI.Add(prefix + "UNLOCKABLE_UNLOCKABLE_NAME", "A Dream of Armageddon");
+            LanguageAPI.Add(prefix + "UNLOCKABLE_ACHIEVEMENT_NAME", "A Dream of Armageddon");
             LanguageAPI.Add(prefix + "UNLOCKABLE_ACHIEVEMENT_DESC", "Apply 50 stacks of Bleed on one enemy.");
 
             LanguageAPI.Add(prefix + "MONSOONUNLOCKABLE_UNLOCKABLE_NAME", "Ravager: Mastery");

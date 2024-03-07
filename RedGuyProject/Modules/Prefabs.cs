@@ -39,7 +39,7 @@ namespace RedGuyMod.Modules
             survivorDef.descriptionToken = fullDescString;
             survivorDef.outroFlavorToken = fullOutroString;
             survivorDef.mainEndingEscapeFailureFlavorToken = fullFailureString;
-            survivorDef.desiredSortPosition = 15.00001f;
+            survivorDef.desiredSortPosition = 14.99f;
             survivorDef.unlockableDef = unlockableDef;
             survivorDef.cachedName = fullNameString;
 

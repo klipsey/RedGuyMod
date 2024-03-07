@@ -1,9 +1,9 @@
 ManifestFileVersion: 0
-CRC: 982250287
+CRC: 4230550996
 Hashes:
   AssetFileHash:
     serializedVersion: 2
-    Hash: b57e1cf6f16c157bf2163a22325209e6
+    Hash: 11c0f0c5104cc4b392213510b2f02997
   TypeTreeHash:
     serializedVersion: 2
     Hash: f486804d8030e363181b10babec2be60
@@ -121,7 +121,9 @@ Assets:
 - Assets/Ravager/Animations/SprintDrag.anim
 - Assets/Ravager/Icons/texRavagerIcon.png
 - Assets/Ravager/Animations/animRedGuy.controller
+- Assets/Ravager/FBX/ClingIdle.anim
 - Assets/Ravager/HUD/WeaponChargeBar.prefab
+- Assets/Ravager/FBX/meshVoidWrap2.mesh
 - Assets/Ravager/Animations/RestIdle.anim
 - Assets/Ravager/Icons/texPunchIcon2.png
 - Assets/Ravager/Animations/animRedGuyCSS.controller

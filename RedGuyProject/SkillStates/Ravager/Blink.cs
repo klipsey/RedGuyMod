@@ -10,7 +10,7 @@ namespace RedGuyMod.SkillStates.Ravager
 	{
 		public float duration = 0.15f;
 		public float speedCoefficient = 10f;
-		public float healthCostFraction = 0.1f;
+		public float healthCostFraction = 0.05f;
 
 		private Transform modelTransform;
 		private float stopwatch;

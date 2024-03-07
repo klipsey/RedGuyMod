@@ -33,6 +33,8 @@ namespace RedGuyMod.Content.Components
 
         public int wallJumpCounter;
 
+        public float offsetDistance = 3.5f;
+
         private ParticleSystem steamEffect;
         private ParticleSystem chargeEffect;
         private ParticleSystem blackElectricityEffect;
@@ -105,7 +107,12 @@ namespace RedGuyMod.Content.Components
                 this.decay = this.drainRate;
                 if (this.passive.isAltBloodWell) this.decay = this.altDrainRate;
             }
-            if (!this.isWallClinging) this.meter = Mathf.Clamp(this.meter - (this.decay * Time.fixedDeltaTime), 0f, 100f);
+
+            bool shouldDrain = true;
+
+            if (!this.passive.isBlink && this.isWallClinging) shouldDrain = false;
+
+            if (shouldDrain) this.meter = Mathf.Clamp(this.meter - (this.decay * Time.fixedDeltaTime), 0f, 100f);
 
             if (this.meter <= 0f)
             {

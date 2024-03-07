@@ -43,6 +43,7 @@ namespace RedGuyMod.Content.Survivors
         // buff
         internal static BuffDef grabbedBuff;
         internal static BuffDef projectileEatedBuff;
+        internal static BuffDef clingDefendBuff;
 
         // achievements
         internal static UnlockableDef characterUnlockableDef;
@@ -57,6 +58,11 @@ namespace RedGuyMod.Content.Survivors
         // skill overrides
         internal static SkillDef confirmSkillDef;
         internal static SkillDef cancelSkillDef;
+
+        internal static SkillDef clingSlashSkillDef;
+        internal static SkillDef clingStabSkillDef;
+        internal static SkillDef clingDefendSkillDef;
+        internal static SkillDef clingFlourishSkillDef;
 
         internal static string bodyNameToken;
         internal static string primaryNameToken;
@@ -94,7 +100,8 @@ namespace RedGuyMod.Content.Survivors
                 umbraMaster = CreateMaster(characterPrefab, "RobRavagerMonsterMaster");
 
                 grabbedBuff = Modules.Buffs.AddNewBuff("RavagerGrabbed", null, Color.white, false, false, true);
-                projectileEatedBuff = Modules.Buffs.AddNewBuff("RavagerGrabbed", null, Color.white, true, false, true);
+                projectileEatedBuff = Modules.Buffs.AddNewBuff("RavagerProjectileEated", null, Color.white, true, false, true);
+                clingDefendBuff = Modules.Buffs.AddNewBuff("RavagerClingDefend", null, Color.white, false, false, true);
             }
 
             Hook();
@@ -568,18 +575,57 @@ namespace RedGuyMod.Content.Survivors
                 stockToConsume = 1
             });
 
-           Modules.Skills.AddPassiveSkills(passive.bloodPassiveSkillSlot.skillFamily, new SkillDef[]{
+            passive.legacyBlinkPassive = Modules.Skills.CreateSkillDef(new SkillDefInfo
+            {
+                skillName = prefix + "_RAVAGER_BODY_PASSIVE3_NAME",
+                skillNameToken = prefix + "_RAVAGER_BODY_PASSIVE3_NAME",
+                skillDescriptionToken = prefix + "_RAVAGER_BODY_PASSIVE3_DESCRIPTION",
+                baseIcon = Modules.Assets.mainAssetBundle.LoadAsset<Sprite>("texBlinkIcon"),
+                empoweredIcon = Modules.Assets.mainAssetBundle.LoadAsset<Sprite>("texBlinkIcon"),
+                activationState = new EntityStates.SerializableEntityStateType(typeof(EntityStates.Idle)),
+                activationStateMachineName = "",
+                baseMaxStock = 1,
+                baseRechargeInterval = 0f,
+                beginSkillCooldownOnSkillEnd = false,
+                canceledFromSprinting = false,
+                forceSprintDuringState = false,
+                fullRestockOnAssign = true,
+                interruptPriority = EntityStates.InterruptPriority.Any,
+                resetCooldownTimerOnUse = false,
+                isCombatSkill = false,
+                mustKeyPress = false,
+                cancelSprintingOnActivation = false,
+                rechargeStock = 1,
+                requiredStock = 2,
+                stockToConsume = 1
+            });
+
+            Modules.Skills.AddPassiveSkills(passive.bloodPassiveSkillSlot.skillFamily, new SkillDef[]{
                 passive.bloodWellPassive//,
                 //passive.bloodWellAltPassive
             });
 
-            Modules.Skills.AddPassiveSkills(passive.passiveSkillSlot.skillFamily, new SkillDef[]{
-                passive.wallJumpPassive,
-                passive.blinkPassive
-            });
+            if (Modules.Config.cursed.Value)
+            {
+                Modules.Skills.AddPassiveSkills(passive.passiveSkillSlot.skillFamily, new SkillDef[]{
+                    passive.wallJumpPassive,
+                    passive.blinkPassive,
+                    passive.legacyBlinkPassive
+                });
 
-            Modules.Skills.AddUnlockablesToFamily(passive.passiveSkillSlot.skillFamily,
+                Modules.Skills.AddUnlockablesToFamily(passive.passiveSkillSlot.skillFamily,
+                null, blinkUnlockableDef, blinkUnlockableDef);
+            }
+            else
+            {
+                Modules.Skills.AddPassiveSkills(passive.passiveSkillSlot.skillFamily, new SkillDef[]{
+                    passive.wallJumpPassive,
+                    passive.blinkPassive
+                });
+
+                Modules.Skills.AddUnlockablesToFamily(passive.passiveSkillSlot.skillFamily,
                 null, blinkUnlockableDef);
+            }
             #endregion
 
             #region Primary
@@ -609,7 +655,33 @@ namespace RedGuyMod.Content.Survivors
 
             Modules.Skills.AddPrimarySkills(prefab,
                 primary,
-                primary2);                                                                                                                                                                                                                                                                      //Modules.Skills.CreatePrimarySkillDef(new EntityStates.SerializableEntityStateType(typeof(SkillStates.Driver.Revolver.Shoot)), "Weapon", prefix + "_DRIVER_BODY_PRIMARY_PISTOL_NAME", prefix + "_DRIVER_BODY_PRIMARY_PISTOL_DESCRIPTION", Modules.Assets.mainAssetBundle.LoadAsset<Sprite>("texPistolIcon"), false));
+                primary2);
+
+            clingSlashSkillDef = Modules.Skills.CreatePrimarySkillDef(new EntityStates.SerializableEntityStateType(typeof(SkillStates.Ravager.ClingSlash)),
+                "Weapon",
+                primaryNameToken,
+                prefix + "_RAVAGER_BODY_PRIMARY_SLASH_DESCRIPTION",
+                Modules.Assets.mainAssetBundle.LoadAsset<Sprite>("texSlashIcon"), Modules.Assets.mainAssetBundle.LoadAsset<Sprite>("texSlashIcon2"), true);
+
+            clingStabSkillDef = Modules.Skills.CreatePrimarySkillDef(new EntityStates.SerializableEntityStateType(typeof(SkillStates.Ravager.ClingStab)),
+    "Weapon",
+    primaryNameToken,
+    prefix + "_RAVAGER_BODY_PRIMARY_SLASH_DESCRIPTION",
+    Modules.Assets.mainAssetBundle.LoadAsset<Sprite>("texSlashIcon"), Modules.Assets.mainAssetBundle.LoadAsset<Sprite>("texSlashIcon2"), true);
+
+            clingDefendSkillDef = Modules.Skills.CreatePrimarySkillDef(new EntityStates.SerializableEntityStateType(typeof(SkillStates.Ravager.ClingDefend)),
+"Weapon",
+primaryNameToken,
+prefix + "_RAVAGER_BODY_PRIMARY_SLASH_DESCRIPTION",
+Modules.Assets.mainAssetBundle.LoadAsset<Sprite>("texSlashIcon"), Modules.Assets.mainAssetBundle.LoadAsset<Sprite>("texSlashIcon2"), true);
+            clingDefendSkillDef.interruptPriority = EntityStates.InterruptPriority.Skill;
+
+            clingFlourishSkillDef = Modules.Skills.CreatePrimarySkillDef(new EntityStates.SerializableEntityStateType(typeof(SkillStates.Ravager.ClingFlourish)),
+"Weapon",
+primaryNameToken,
+prefix + "_RAVAGER_BODY_PRIMARY_SLASH_DESCRIPTION",
+Modules.Assets.mainAssetBundle.LoadAsset<Sprite>("texSlashIcon"), Modules.Assets.mainAssetBundle.LoadAsset<Sprite>("texSlashIcon2"), true);
+            clingFlourishSkillDef.interruptPriority = EntityStates.InterruptPriority.PrioritySkill;
             #endregion
 
             #region Secondary
@@ -689,7 +761,7 @@ namespace RedGuyMod.Content.Survivors
                 beginSkillCooldownOnSkillEnd = true,
                 canceledFromSprinting = false,
                 forceSprintDuringState = false,
-                fullRestockOnAssign = true,
+                fullRestockOnAssign = false,
                 interruptPriority = EntityStates.InterruptPriority.Skill,
                 resetCooldownTimerOnUse = true,
                 isCombatSkill = true,
@@ -724,7 +796,7 @@ namespace RedGuyMod.Content.Survivors
                 beginSkillCooldownOnSkillEnd = false,
                 canceledFromSprinting = false,
                 forceSprintDuringState = false,
-                fullRestockOnAssign = true,
+                fullRestockOnAssign = false,
                 interruptPriority = EntityStates.InterruptPriority.PrioritySkill,
                 resetCooldownTimerOnUse = false,
                 isCombatSkill = true,
@@ -825,6 +897,25 @@ namespace RedGuyMod.Content.Survivors
                 mainRenderer,
                 model);
 
+            defaultSkin.meshReplacements = new SkinDef.MeshReplacement[]
+{
+                new SkinDef.MeshReplacement
+                {
+                    mesh = Modules.Assets.mainAssetBundle.LoadAsset<Mesh>("meshBody"),
+                    renderer = mainRenderer
+                },
+                new SkinDef.MeshReplacement
+                {
+                    mesh = Modules.Assets.mainAssetBundle.LoadAsset<Mesh>("meshSword"),
+                    renderer = childLocator.FindChild("SwordModel").GetComponent<SkinnedMeshRenderer>()
+                },
+                new SkinDef.MeshReplacement
+                {
+                    mesh = Modules.Assets.mainAssetBundle.LoadAsset<Mesh>("meshImpWrap"),
+                    renderer = childLocator.FindChild("ImpWrapModel").GetComponent<SkinnedMeshRenderer>()
+                }
+};
+
             skins.Add(defaultSkin);
             #endregion
 
@@ -863,6 +954,79 @@ namespace RedGuyMod.Content.Survivors
             skins.Add(masterySkin);
             #endregion
 
+            #region MasterySkinAlternate
+            SkinDef masterySkinAlternate = Modules.Skins.CreateSkinDef(MainPlugin.developerPrefix + "_RAVAGER_BODY_MONSOON_ALTERNATE_SKIN_NAME",
+    Modules.Assets.mainAssetBundle.LoadAsset<Sprite>("texVoidSkin"),
+                SkinRendererInfos(defaultRenderers, new Material[]
+                {
+                    Modules.Assets.CreateMaterial("matBody", 10f, Color.white),
+                    Modules.Assets.CreateMaterial("matSword", 10f, Color.white),
+                    Addressables.LoadAssetAsync<Material>("RoR2/Base/Imp/matImpBoss.mat").WaitForCompletion()
+                }),
+    mainRenderer,
+    model,
+    masteryUnlockableDef);
+
+            masterySkinAlternate.meshReplacements = new SkinDef.MeshReplacement[]
+            {
+                new SkinDef.MeshReplacement
+                {
+                    mesh = Modules.Assets.mainAssetBundle.LoadAsset<Mesh>("meshBodyVoid2"),
+                    renderer = mainRenderer
+                },
+                new SkinDef.MeshReplacement
+                {
+                    mesh = Modules.Assets.mainAssetBundle.LoadAsset<Mesh>("meshSwordVoid"),
+                    renderer = childLocator.FindChild("SwordModel").GetComponent<SkinnedMeshRenderer>()
+                },
+                new SkinDef.MeshReplacement
+                {
+                    mesh = Modules.Assets.mainAssetBundle.LoadAsset<Mesh>("meshVoidWrap"),
+                    renderer = childLocator.FindChild("ImpWrapModel").GetComponent<SkinnedMeshRenderer>()
+                }
+            };
+
+            skins.Add(masterySkinAlternate);
+            #endregion
+
+            RavagerSkinDef defaultSkinDef = ScriptableObject.CreateInstance<RavagerSkinDef>();
+            defaultSkinDef.name = "rsdDefault";
+            defaultSkinDef.nameToken = defaultSkin.nameToken;
+            defaultSkinDef.basicSwingEffectPrefab = Modules.Assets.swingEffect;
+            defaultSkinDef.bigSwingEffectPrefab = Modules.Assets.bigSwingEffect;
+            defaultSkinDef.leapEffectPrefab = Modules.Assets.leapEffect;
+            defaultSkinDef.slashEffectPrefab = Modules.Assets.slashImpactEffect;
+            defaultSkinDef.bloodOrbEffectPrefab = Modules.Assets.consumeOrb;
+            defaultSkinDef.bloodBombEffectPrefab = Modules.Assets.bloodBombEffect;
+            defaultSkinDef.bloodRushActivationEffectPrefab = Addressables.LoadAssetAsync<GameObject>("RoR2/Base/ImpBoss/ImpBossBlink.prefab").WaitForCompletion();
+            defaultSkinDef.bloodOrbOverlayMaterial = Addressables.LoadAssetAsync<Material>("RoR2/Base/Imp/matImpDissolve.mat").WaitForCompletion();
+            defaultSkinDef.bloodRushOverlayMaterial = Modules.Assets.bloodOverlayMat;
+            defaultSkinDef.consumeSoundString = "sfx_ravager_consume";
+            defaultSkinDef.healSoundString = "sfx_ravager_steam";
+            defaultSkinDef.electricityMat = Addressables.LoadAssetAsync<Material>("RoR2/DLC1/Railgunner/matRailgunImpact.mat").WaitForCompletion();
+            defaultSkinDef.swordElectricityMat = Addressables.LoadAssetAsync<Material>("RoR2/DLC1/ChainLightningVoid/matLightningVoid.mat").WaitForCompletion();
+            defaultSkinDef.glowColor = Color.red;
+            RavagerSkinCatalog.AddSkin(defaultSkinDef);
+
+            RavagerSkinDef masterySkinDef = ScriptableObject.CreateInstance<RavagerSkinDef>();
+            masterySkinDef.name = "rsdMastery";
+            masterySkinDef.nameToken = masterySkin.nameToken;
+            masterySkinDef.basicSwingEffectPrefab = Modules.Assets.swingEffectVoid;
+            masterySkinDef.bigSwingEffectPrefab = Modules.Assets.bigSwingEffectVoid;
+            masterySkinDef.leapEffectPrefab = Modules.Assets.leapEffectVoid;
+            masterySkinDef.slashEffectPrefab = Modules.Assets.slashImpactEffect;
+            masterySkinDef.bloodOrbEffectPrefab = Modules.Assets.consumeOrbVoid;
+            masterySkinDef.bloodBombEffectPrefab = Addressables.LoadAssetAsync<GameObject>("RoR2/DLC1/VoidSurvivor/VoidSurvivorCorruptDeathMuzzleflash.prefab").WaitForCompletion();
+            masterySkinDef.bloodRushActivationEffectPrefab = Addressables.LoadAssetAsync<GameObject>("RoR2/DLC1/VoidSurvivor/VoidSurvivorCorruptDeathMuzzleflash.prefab").WaitForCompletion();
+            masterySkinDef.bloodOrbOverlayMaterial = Addressables.LoadAssetAsync<Material>("RoR2/DLC1/VoidSurvivor/matVoidSurvivorBlasterSphereOverlay1.mat").WaitForCompletion();
+            masterySkinDef.bloodRushOverlayMaterial = Addressables.LoadAssetAsync<Material>("RoR2/DLC1/VoidSurvivor/matVoidSurvivorCorruptOverlay.mat").WaitForCompletion();
+            masterySkinDef.consumeSoundString = "sfx_ravager_consume";
+            masterySkinDef.healSoundString = "sfx_ravager_steam";
+            masterySkinDef.electricityMat = Addressables.LoadAssetAsync<Material>("RoR2/DLC1/ChainLightningVoid/matLightningVoid.mat").WaitForCompletion();
+            masterySkinDef.swordElectricityMat = Addressables.LoadAssetAsync<Material>("RoR2/DLC1/ChainLightningVoid/matLightningVoid.mat").WaitForCompletion();
+            masterySkinDef.glowColor = new Color(157f / 255f, 42f / 255f, 179 / 255f);
+            RavagerSkinCatalog.AddSkin(masterySkinDef);
+
             if (Modules.Config.cursed.Value)
             {
                 #region VoidSkin
@@ -872,7 +1036,7 @@ namespace RedGuyMod.Content.Survivors
                     {
                     Addressables.LoadAssetAsync<Material>("RoR2/DLC1/VoidSurvivor/matVoidSurvivorFlesh.mat").WaitForCompletion(),
                     Addressables.LoadAssetAsync<Material>("RoR2/DLC1/VoidSurvivor/matVoidSurvivorHead.mat").WaitForCompletion(),
-                    Addressables.LoadAssetAsync<Material>("RoR2/DLC1/voidstage/matVoidFoam.mat").WaitForCompletion()
+                    Addressables.LoadAssetAsync<Material>("RoR2/DLC1/SlowOnHitVoid/BaubleVoid.mat").WaitForCompletion()
                     }),
         mainRenderer,
         model,
@@ -892,7 +1056,7 @@ namespace RedGuyMod.Content.Survivors
                 },
                 new SkinDef.MeshReplacement
                 {
-                    mesh = Modules.Assets.mainAssetBundle.LoadAsset<Mesh>("meshVoidMetal"),
+                    mesh = Modules.Assets.mainAssetBundle.LoadAsset<Mesh>("meshVoidWrap2"),
                     renderer = childLocator.FindChild("ImpWrapModel").GetComponent<SkinnedMeshRenderer>()
                 }
                 };
@@ -905,9 +1069,9 @@ namespace RedGuyMod.Content.Survivors
         Modules.Assets.mainAssetBundle.LoadAsset<Sprite>("texMonsoonSkin"),
                     SkinRendererInfos(defaultRenderers, new Material[]
                     {
-                    Modules.Assets.CreateMaterial("matBodyAlt", 1f, Color.white),
+                    Modules.Assets.CreateMaterial("matBodyAlt"),
                     Modules.Assets.CreateMaterial("matSwordAlt"),
-                    Modules.Assets.CreateMaterial("matBodyAlt", 1f, Color.white)
+                    Modules.Assets.CreateMaterial("matBodyAlt")
                     }),
         mainRenderer,
         model);
@@ -974,46 +1138,6 @@ namespace RedGuyMod.Content.Survivors
             }
 
             skinController.skins = skins.ToArray();
-
-
-
-            RavagerSkinDef defaultSkinDef = ScriptableObject.CreateInstance<RavagerSkinDef>();
-            defaultSkinDef.name = "rsdDefault";
-            defaultSkinDef.nameToken = defaultSkin.nameToken;
-            defaultSkinDef.basicSwingEffectPrefab = Modules.Assets.swingEffect;
-            defaultSkinDef.bigSwingEffectPrefab = Modules.Assets.bigSwingEffect;
-            defaultSkinDef.leapEffectPrefab = Modules.Assets.leapEffect;
-            defaultSkinDef.slashEffectPrefab = Modules.Assets.slashImpactEffect;
-            defaultSkinDef.bloodOrbEffectPrefab = Modules.Assets.consumeOrb;
-            defaultSkinDef.bloodBombEffectPrefab = Modules.Assets.bloodBombEffect;
-            defaultSkinDef.bloodRushActivationEffectPrefab = Addressables.LoadAssetAsync<GameObject>("RoR2/Base/ImpBoss/ImpBossBlink.prefab").WaitForCompletion();
-            defaultSkinDef.bloodOrbOverlayMaterial = Addressables.LoadAssetAsync<Material>("RoR2/Base/Imp/matImpDissolve.mat").WaitForCompletion();
-            defaultSkinDef.bloodRushOverlayMaterial = Modules.Assets.bloodOverlayMat;
-            defaultSkinDef.consumeSoundString = "sfx_ravager_consume";
-            defaultSkinDef.healSoundString = "sfx_ravager_steam";
-            defaultSkinDef.electricityMat = Addressables.LoadAssetAsync<Material>("RoR2/DLC1/Railgunner/matRailgunImpact.mat").WaitForCompletion();
-            defaultSkinDef.swordElectricityMat = Addressables.LoadAssetAsync<Material>("RoR2/DLC1/ChainLightningVoid/matLightningVoid.mat").WaitForCompletion();
-            defaultSkinDef.glowColor = Color.red;
-            RavagerSkinCatalog.AddSkin(defaultSkinDef);
-
-            RavagerSkinDef masterySkinDef = ScriptableObject.CreateInstance<RavagerSkinDef>();
-            masterySkinDef.name = "rsdMastery";
-            masterySkinDef.nameToken = masterySkin.nameToken;
-            masterySkinDef.basicSwingEffectPrefab = Modules.Assets.swingEffectVoid;
-            masterySkinDef.bigSwingEffectPrefab = Modules.Assets.bigSwingEffectVoid;
-            masterySkinDef.leapEffectPrefab = Modules.Assets.leapEffectVoid;
-            masterySkinDef.slashEffectPrefab = Modules.Assets.slashImpactEffect;
-            masterySkinDef.bloodOrbEffectPrefab = Modules.Assets.consumeOrbVoid;
-            masterySkinDef.bloodBombEffectPrefab = Addressables.LoadAssetAsync<GameObject>("RoR2/DLC1/VoidSurvivor/VoidSurvivorCorruptDeathMuzzleflash.prefab").WaitForCompletion();
-            masterySkinDef.bloodRushActivationEffectPrefab = Addressables.LoadAssetAsync<GameObject>("RoR2/DLC1/VoidSurvivor/VoidSurvivorCorruptDeathMuzzleflash.prefab").WaitForCompletion();
-            masterySkinDef.bloodOrbOverlayMaterial = Addressables.LoadAssetAsync<Material>("RoR2/DLC1/VoidSurvivor/matVoidSurvivorBlasterSphereOverlay1.mat").WaitForCompletion();
-            masterySkinDef.bloodRushOverlayMaterial = Addressables.LoadAssetAsync<Material>("RoR2/DLC1/VoidSurvivor/matVoidSurvivorCorruptOverlay.mat").WaitForCompletion();
-            masterySkinDef.consumeSoundString = "sfx_ravager_consume";
-            masterySkinDef.healSoundString = "sfx_ravager_steam";
-            masterySkinDef.electricityMat = Addressables.LoadAssetAsync<Material>("RoR2/DLC1/ChainLightningVoid/matLightningVoid.mat").WaitForCompletion();
-            masterySkinDef.swordElectricityMat = Addressables.LoadAssetAsync<Material>("RoR2/DLC1/ChainLightningVoid/matLightningVoid.mat").WaitForCompletion();
-            masterySkinDef.glowColor = new Color(157f / 255f, 42f / 255f, 179 / 255f);
-            RavagerSkinCatalog.AddSkin(masterySkinDef);
         }
 
         private static void InitializeItemDisplays(GameObject prefab)

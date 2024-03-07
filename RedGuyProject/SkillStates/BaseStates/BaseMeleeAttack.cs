@@ -35,9 +35,9 @@ namespace RedGuyMod.SkillStates.BaseStates
         protected GameObject hitEffectPrefab;
         protected NetworkSoundEventIndex impactSound;
 
-        private float earlyExitTime;
+        protected float earlyExitTime;
         public float duration;
-        private bool hasFired;
+        protected bool hasFired;
         private float hitPauseTimer;
         protected OverlapAttack attack;
         private bool inHitPause;

@@ -3,6 +3,7 @@ using RoR2;
 using EntityStates;
 using System.Collections.Generic;
 using System.Linq;
+using RedGuyMod.Content;
 
 namespace RedGuyMod.SkillStates.Ravager
 {
@@ -12,6 +13,7 @@ namespace RedGuyMod.SkillStates.Ravager
 		private float airTime;
 
 		private bool isAltPassive;
+		private bool isLegacyAltPassive;
 
         public override void OnEnter()
         {
@@ -21,7 +23,10 @@ namespace RedGuyMod.SkillStates.Ravager
             {
 				if (this.penis.passive.isBlink) this.isAltPassive = true;
 				else this.isAltPassive = false;
-            }
+
+				if (this.penis.passive.isLegacyBlink) this.isLegacyAltPassive = true;
+				else this.isLegacyAltPassive = false;
+			}
         }
 
         public override void FixedUpdate()
@@ -29,6 +34,54 @@ namespace RedGuyMod.SkillStates.Ravager
             base.FixedUpdate();
 
 			if (this.isAltPassive)
+            {
+				if (this.isGrounded)
+				{
+					this.penis.blinkReady = true;
+					this.airTime = 0f;
+					this.penis.wallJumpCounter = 0;
+				}
+				else this.airTime += Time.fixedDeltaTime;
+
+				if (this.inputBank.jump.justPressed && !this.isGrounded && base.isAuthority)
+				{
+					if (this.airTime >= 0.15f)
+					{
+						if (this.penis.blinkReady)
+						{
+							// hopoo feather interaction
+							if (this.penis.hopoFeatherTimer > 0f)
+							{
+								EntityStateMachine.FindByCustomName(this.gameObject, "Body").SetInterruptState(new ChargeBlink
+								{
+									hopoo = true
+								}, InterruptPriority.Any);
+
+								return;
+							}
+
+							if (!this.penis.draining) this.penis.blinkReady = false;
+
+							EntityStateMachine.FindByCustomName(this.gameObject, "Body").SetInterruptState(new ChargeBlink(), InterruptPriority.Any);
+
+							return;
+						}
+
+						if (this.AttemptEnemyStep())
+						{
+							this.jumpAvailable = true;
+							base.PlayAnimation("Body", "JumpEnemy");
+							Util.PlaySound("sfx_ravager_enemystep", this.gameObject);
+							GenericCharacterMain.ApplyJumpVelocity(base.characterMotor, base.characterBody, 1.5f, 1.5f, false);
+							return;
+						}
+					}
+				}
+
+				return;
+            }
+
+			if (this.isLegacyAltPassive)
             {
 				if (this.penis.draining) this.penis.blinkReady = true;
 
@@ -66,7 +119,7 @@ namespace RedGuyMod.SkillStates.Ravager
 				}
 				else this.airTime += Time.fixedDeltaTime;
 
-				if (this.inputBank.jump.justPressed && !this.isGrounded)
+				if (this.inputBank.jump.justPressed && !this.isGrounded && base.isAuthority)
 				{
 					if (this.airTime >= 0.15f)
 					{
@@ -108,14 +161,15 @@ namespace RedGuyMod.SkillStates.Ravager
 
         private bool AttemptEnemyStep()
         {
-			BullseyeSearch bullseyeSearch = new BullseyeSearch
+			BullseyeSearch2 bullseyeSearch = new BullseyeSearch2
 			{
 				teamMaskFilter = TeamMask.GetEnemyTeams(base.GetTeam()),
 				filterByLoS = false,
 				searchOrigin = this.transform.position + (Vector3.up * 0.5f),
 				searchDirection = UnityEngine.Random.onUnitSphere,
-				sortMode = BullseyeSearch.SortMode.Distance,
-				maxDistanceFilter = 7f,
+				sortMode = BullseyeSearch2.SortMode.Distance,
+				onlyBullseyes = false,
+				maxDistanceFilter = 5f,
 				maxAngleFilter = 360f
 			};
 
