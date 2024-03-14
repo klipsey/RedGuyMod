@@ -10,7 +10,7 @@ namespace RedGuyMod.SkillStates.Ravager
     {
         private GameObject swingEffectInstance;
         private float charge;
-        protected RedGuyController penis;
+
         public override void OnEnter()
         {
             this.RefreshEmpoweredState();
