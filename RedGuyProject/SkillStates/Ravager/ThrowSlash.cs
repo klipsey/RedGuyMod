@@ -10,7 +10,7 @@ namespace RedGuyMod.SkillStates.Ravager
     {
         private GameObject swingEffectInstance;
         private float charge;
-
+        protected RedGuyController penis;
         public override void OnEnter()
         {
             this.RefreshEmpoweredState();
@@ -52,7 +52,6 @@ namespace RedGuyMod.SkillStates.Ravager
 
             base.OnEnter();
         }
-
         protected override void OnHitEnemyAuthority(int amount)
         {
             base.OnHitEnemyAuthority(amount);
@@ -103,8 +102,9 @@ namespace RedGuyMod.SkillStates.Ravager
 
         protected override void ClearHitStop()
         {
-            base.ClearHitStop();
-
+            if (this.penis.passive.isBlink) base.characterMotor.velocity = this.storedVelocity * 0.7f;
+            base.ConsumeHitStopCachedState(this.hitStopCachedState, base.characterMotor, this.animator);
+            this.inHitPause = false;
             if (this.swingEffectInstance)
             {
                 ScaleParticleSystemDuration fuck = this.swingEffectInstance.GetComponent<ScaleParticleSystemDuration>();

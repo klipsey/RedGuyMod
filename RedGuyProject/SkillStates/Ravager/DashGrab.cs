@@ -771,8 +771,8 @@ namespace RedGuyMod.SkillStates.Ravager
 
 							if (hurtBox.healthComponent.body.isChampion || this.forcePunch)
                             {
-								// PUNCH
-								/*if (NetworkServer.active)
+                                // PUNCH
+                                /*if (NetworkServer.active)
 								{
 									DamageInfo info = new DamageInfo
 									{
@@ -795,8 +795,8 @@ namespace RedGuyMod.SkillStates.Ravager
 
                                     }
 								}*/
-
-								EffectManager.SpawnEffect(Modules.Assets.bloodBombEffect, new EffectData
+                                this.penis.RefreshBlink();
+                                EffectManager.SpawnEffect(Modules.Assets.bloodBombEffect, new EffectData
 								{
 									origin = hurtBox.transform.position,
 									scale = 2f
