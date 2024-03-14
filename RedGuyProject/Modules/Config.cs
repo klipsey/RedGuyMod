@@ -23,6 +23,8 @@ namespace RedGuyMod.Modules
         public static ConfigEntry<bool> permanentCling;
         public static ConfigEntry<bool> allySucc;
         public static ConfigEntry<bool> bossGrab;
+        public static ConfigEntry<bool> permanentBossCling;
+        public static ConfigEntry<bool> clingToAllies;
         public static ConfigEntry<bool> cursed;
         public static ConfigEntry<bool> useless;
 
@@ -63,6 +65,18 @@ true,
 "Allow Boss Grab",
 true,
 "If set to false, empowered Brutalize will no longer grab bosses.");
+
+            permanentBossCling
+= Config.BindAndOptions("01 - General",
+"Permanent Boss Cling",
+false,
+"If set to true, Brutalize will cling onto bosses indefinitely.");
+
+/*            clingToAllies
+= Config.BindAndOptions("01 - General",
+"Cling To Allies",
+false,
+"If set to true, Brutalize will cling to any allies it hits.");*/
 
             cursed
 = Config.BindAndOptions("01 - General",

@@ -28,6 +28,8 @@ namespace RedGuyMod.Modules
         internal static Material bloodOverlayMat;
 
         internal static GameObject beamCrosshair;
+        internal static GameObject clingCrosshair;
+        internal static GameObject clingBeamCrosshair;
 
         internal static GameObject swingEffect;
         internal static GameObject bigSwingEffect;
@@ -80,6 +82,8 @@ namespace RedGuyMod.Modules
 
         internal static Dictionary<string, GameObject> bloodExplosionOverrides = new Dictionary<string, GameObject>();
         internal static Dictionary<string, string> bodyPunchSounds = new Dictionary<string, string>();
+        internal static Dictionary<string, Vector3> bodyGrabOffsets = new Dictionary<string, Vector3>();
+        internal static List<string> grabBlacklist = new List<string>();
 
         internal static void PopulateAssets()
         {
@@ -126,6 +130,60 @@ namespace RedGuyMod.Modules
             chargeBar.transform.GetChild(0).gameObject.AddComponent<Content.Components.CrosshairChargeBar>().crosshairController = beamCrosshair.GetComponent<RoR2.UI.CrosshairController>();
             #endregion
 
+            #region Cling Crosshair
+            clingCrosshair = Addressables.LoadAssetAsync<GameObject>("RoR2/Base/UI/SimpleDotCrosshair.prefab").WaitForCompletion().InstantiateClone("RavagerClingCrosshair", false);
+
+            chargeBar = GameObject.Instantiate(mainAssetBundle.LoadAsset<GameObject>("ChargeBar"));
+            chargeBar.transform.SetParent(clingCrosshair.transform);
+
+            rect = chargeBar.GetComponent<RectTransform>();
+
+            rect.localScale = new Vector3(0.75f, 0.075f, 1f);
+            rect.anchorMin = new Vector2(0f, 0f);
+            rect.anchorMax = new Vector2(0f, 0f);
+            rect.pivot = new Vector2(0.5f, 0f);
+            rect.anchoredPosition = new Vector2(50f, 0f);
+            rect.localPosition = new Vector3(0f, 60f, 0f);
+
+            chargeBar.transform.GetChild(0).gameObject.AddComponent<Content.Components.CrosshairClingBar>().crosshairController = clingCrosshair.GetComponent<RoR2.UI.CrosshairController>();
+            #endregion
+
+            #region Cling Beam Crosshair
+            clingBeamCrosshair = Addressables.LoadAssetAsync<GameObject>("RoR2/Base/Bandit2/Bandit2Crosshair.prefab").WaitForCompletion().InstantiateClone("RavagerClingBeamCrosshair", false);
+
+            clingBeamCrosshair.GetComponent<CrosshairController>().skillStockSpriteDisplays = new CrosshairController.SkillStockSpriteDisplay[0];
+
+            clingBeamCrosshair.transform.Find("Center, Available").gameObject.SetActive(false);
+            clingBeamCrosshair.transform.Find("GameObject").gameObject.SetActive(false);
+
+            chargeBar = GameObject.Instantiate(mainAssetBundle.LoadAsset<GameObject>("ChargeBar"));
+            chargeBar.transform.SetParent(clingBeamCrosshair.transform);
+
+            rect = chargeBar.GetComponent<RectTransform>();
+
+            rect.localScale = new Vector3(0.75f, 0.075f, 1f);
+            rect.anchorMin = new Vector2(0f, 0f);
+            rect.anchorMax = new Vector2(0f, 0f);
+            rect.pivot = new Vector2(0.5f, 0f);
+            rect.anchoredPosition = new Vector2(50f, 0f);
+            rect.localPosition = new Vector3(0f, -60f, 0f);
+
+            chargeBar.transform.GetChild(0).gameObject.AddComponent<Content.Components.CrosshairChargeBar>().crosshairController = clingBeamCrosshair.GetComponent<RoR2.UI.CrosshairController>();
+
+            chargeBar = GameObject.Instantiate(mainAssetBundle.LoadAsset<GameObject>("ChargeBar"));
+            chargeBar.transform.SetParent(clingBeamCrosshair.transform);
+
+            rect = chargeBar.GetComponent<RectTransform>();
+
+            rect.localScale = new Vector3(0.75f, 0.075f, 1f);
+            rect.anchorMin = new Vector2(0f, 0f);
+            rect.anchorMax = new Vector2(0f, 0f);
+            rect.pivot = new Vector2(0.5f, 0f);
+            rect.anchoredPosition = new Vector2(50f, 0f);
+            rect.localPosition = new Vector3(0f, 60f, 0f);
+
+            chargeBar.transform.GetChild(0).gameObject.AddComponent<Content.Components.CrosshairClingBar>().crosshairController = clingBeamCrosshair.GetComponent<RoR2.UI.CrosshairController>();
+            #endregion
 
             swingEffect = Addressables.LoadAssetAsync<GameObject>("RoR2/Base/Merc/MercSwordFinisherSlash.prefab").WaitForCompletion().InstantiateClone("RavagerSwordSwing");
             swingEffect.transform.GetChild(0).gameObject.SetActive(false);
@@ -430,6 +488,32 @@ namespace RedGuyMod.Modules
                 {"GipBody(Clone)", "sfx_ravager_punch_goo_small" },
                 {"JellyfishBody(Clone)", "sfx_ravager_punch_jelly" },
                 {"VagrantBody(Clone)", "sfx_ravager_punch_jelly" },
+            };
+
+            bodyGrabOffsets = new Dictionary<string, Vector3>()
+            {
+                {"BeetleBody(Clone)", new Vector3(0f, 0f, 0f)},
+                {"LemurianBody(Clone)", new Vector3(0f, -0.2f, -0.4f)},
+                {"LemurianBruiserBody(Clone)", new Vector3(-0.5f, -1.5f, -1.8f)},
+                {"BisonBody(Clone)", new Vector3(-0.4f, 0f, -0.9f)},
+                {"ClayBruiserBody(Clone)", new Vector3(-1.5f, -0.3f, -0.9f)},
+                {"HermitCrabBody(Clone)", new Vector3(-0.5f, 0f, -0.25f)},
+                {"MiniMushroomBody(Clone)", new Vector3(-0.5f, 0f, 0f)},
+                {"GolemBody(Clone)", new Vector3(-0.8f, -0.3f, -1f)},
+                {"ImpBody(Clone)", new Vector3(-0.8f, 0f, 0.1f)},
+                {"ParentBody(Clone)", new Vector3(0f, 0f, -15f)},
+                {"TitanBody(Clone)", new Vector3(0f, 0f, 0f)},
+                {"TitanGoldBody(Clone)", new Vector3(0f, 0f, 0f)},
+                {"ImpBossBody(Clone)", new Vector3(0f, 0f, 0f)},
+                {"AcidLarvaBody(Clone)", new Vector3(-0.45f, -0.2f, -0.3f)},
+                {"ClayGrenadierBody(Clone)", new Vector3(0.6f, -0.3f, -1.2f)},
+            };
+
+            grabBlacklist = new List<string>
+            {
+                "BrotherBody(Clone)",
+                "BrotherHurtBody(Clone)",
+                "BodyBrassMonolith(Clone)"
             };
 
             drainTextEffect = CreateTextPopupEffect("RavagerDrainTextEffect", "BLOOD RUSH!");

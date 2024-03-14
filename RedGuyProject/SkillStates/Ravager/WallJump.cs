@@ -33,6 +33,8 @@ namespace RedGuyMod.SkillStates.Ravager
         {
             base.FixedUpdate();
 
+			if (this.penis.clingTimer > 0f) return;
+
 			if (this.isAltPassive)
             {
 				if (this.isGrounded)

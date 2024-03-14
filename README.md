@@ -89,6 +89,7 @@ Redacted - Artistic feedback
 
 ## Known Issues
 - Killing Kjaro and Runald elder lems with Brutalize prevents them from dropping their respective bands
+- Goat Hoof and Royal Capacitor item displays delete limbs
 
 ## Future Plans
 - Proper skins
@@ -99,6 +100,14 @@ Redacted - Artistic feedback
 ___
 
 ## Changelog
+
+`1.3.15`
+- Brutalize's boss cling is now blacklisted on some bosses
+- Clinging onto a boss with Brutalize now lets you use your selected utility skill instead of a generic block
+- Clinging onto a boss with Brutalize now has a duration of 8 seconds- added config to make this infinite again
+- Fixed unintended animation cancel on Twisted Mutation
+- Fixed weird inconsistencies when grabbing bosses with empowered Brutalize
+- Fixed Brutalize sometimes teleporting you when grabbing enemies
 
 `1.3.14`
 - Twisted Mutation reworked- now a charging blink similar to default passive, still requires no terrain, still refreshes on hit

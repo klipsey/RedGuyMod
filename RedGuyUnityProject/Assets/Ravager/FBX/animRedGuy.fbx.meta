@@ -349,6 +349,11 @@ ModelImporter:
     7400210: Armature|ClingDefend
     7400212: Armature|ClingDefendOff
     7400214: Armature|ClingFlourish
+    7400216: Armature|ClingHeal
+    7400218: Armature|ClingHealBlast
+    7400220: Armature|ClingHealLow
+    7400222: Armature|ClingChargeBeam
+    7400224: Armature|ClingChargeBeamMax
     9500000: //RootNode
     10800000: Sun
     10800002: Sun.001

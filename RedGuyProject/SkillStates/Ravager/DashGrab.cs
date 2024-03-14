@@ -654,6 +654,8 @@ namespace RedGuyMod.SkillStates.Ravager
 
 		public void AttemptGrab(float grabRadius)
 		{
+			if (this.hasGrabbed) return;
+
 			Ray aimRay = base.GetAimRay();
 
 			BullseyeSearch2 bullseyeSearch = new BullseyeSearch2
@@ -670,6 +672,7 @@ namespace RedGuyMod.SkillStates.Ravager
 			bullseyeSearch.RefreshCandidates();
 			bullseyeSearch.FilterOutGameObject(base.gameObject);
 
+			List<HealthComponent> grabbedList = new List<HealthComponent>();
 			List<HurtBox> list = bullseyeSearch.GetResults().ToList<HurtBox>();
 			foreach (HurtBox hurtBox in list)
 			{
@@ -689,191 +692,209 @@ namespace RedGuyMod.SkillStates.Ravager
 							if (hurtBox.healthComponent.body.isChampion) canGrab = false;
 						}
 
-						if (canGrab)
-						{
-							Vector3 between = hurtBox.healthComponent.transform.position - base.transform.position;
-							Vector3 v = between / 4f;
-							v.y = Math.Max(v.y, between.y);
-							base.characterMotor.AddDisplacement(v);
-							
-							GrabController grabController = hurtBox.healthComponent.body.gameObject.AddComponent<GrabController>();
-							grabController.pivotTransform = base.FindModelChild("HandL");
-							grabController.attackerBody = this.characterBody;
-							grabController.empowered = this.empowered;
-
-							if (this.fireEffect) EntityState.Destroy(this.fireEffect);
-							this.grabController.Add(grabController);
-							this.ForceFlinch(hurtBox.healthComponent.body);
-							base.PlayAnimation("FullBody, Override", "DashGrabHit", "Grab.playbackRate", this.grabDuration);
-
-							// swap team of vagrant balls
-							if (hurtBox.healthComponent.gameObject.name.Contains("VagrantTrackingBomb"))
-                            {
-								TeamComponent team = hurtBox.healthComponent.body.teamComponent;
-								TeamFilter team2 = hurtBox.healthComponent.gameObject.GetComponent<TeamFilter>();
-								TeamIndex playerTeam = this.GetTeam();
-								team.teamIndex = playerTeam;
-								team2.teamIndex = playerTeam;
-
-								hurtBox.healthComponent.gameObject.GetComponent<ProjectileController>().owner = this.gameObject;
-								hurtBox.healthComponent.gameObject.GetComponent<ProjectileDamage>().damage *= 5f;
-								hurtBox.healthComponent.gameObject.GetComponent<ProjectileImpactExplosion>().blastRadius *= 3f;
-                            }
-
-							if (!this.hasGrabbed)
-                            {
-								Util.PlaySound("sfx_ravager_grab", base.gameObject);
-								base.SmallHop(base.characterMotor, this.smallHopVelocity);
-								this.penis.RefreshBlink();
-							}
-							this.hasGrabbed = true;
-						}
-						else
+						if (!grabbedList.Contains(hurtBox.healthComponent))
                         {
-							if (!this.forcePunch && hurtBox.healthComponent.body.isChampion)
-                            {
-								base.PlayCrossfade("FullBody, Override", "Cling", 0.1f);
-								Util.PlaySound("sfx_ravager_grab", base.gameObject);
+							if (canGrab)
+							{
+								grabbedList.Add(hurtBox.healthComponent);
+								Vector3 between = hurtBox.healthComponent.transform.position - base.transform.position;
+								Vector3 v = between / 4f;
+								v.y = Math.Max(v.y, between.y);
+								base.characterMotor.AddDisplacement(v);
 
-								HurtBox targetHurtbox = hurtBox;
-								float dist = Mathf.Infinity;
-								foreach (HurtBox i in hurtBox.healthComponent.gameObject.GetComponentsInChildren<HurtBox>())
-                                {
-									float d = Vector3.Distance(this.transform.position, i.transform.position);
-									if (d < dist)
-                                    {
-										dist = d;
-										targetHurtbox = i;
-                                    }
-                                }
+								GrabController grabController = hurtBox.healthComponent.gameObject.AddComponent<GrabController>();
+								grabController.pivotTransform = base.FindModelChild("HandL");
+								grabController.attackerBody = this.characterBody;
+								grabController.empowered = this.empowered;
 
-								if (base.isAuthority)
-                                {
-									Vector3 offset = (this.transform.position - targetHurtbox.transform.position).normalized * this.penis.offsetDistance;
+								if (this.fireEffect) EntityState.Destroy(this.fireEffect);
+								this.grabController.Add(grabController);
+								this.ForceFlinch(hurtBox.healthComponent.body);
+								base.PlayAnimation("FullBody, Override", "DashGrabHit", "Grab.playbackRate", this.grabDuration);
 
-									GameObject anchor = new GameObject();
-
-									anchor.transform.parent = targetHurtbox.transform;
-									anchor.transform.position = targetHurtbox.transform.position + offset;
-
-									EntityStateMachine.FindByCustomName(this.gameObject, "Body").SetNextState(new Cling
-									{
-										targetHurtbox = targetHurtbox,
-										offset = offset,
-										anchor = anchor
-									});
-
-									this.outer.SetNextStateToMain();
-                                }
-
-								return;
-							}
-
-							if (hurtBox.healthComponent.body.isChampion || this.forcePunch)
-                            {
-								// PUNCH
-								/*if (NetworkServer.active)
+								// swap team of vagrant balls
+								if (hurtBox.healthComponent.gameObject.name.Contains("VagrantTrackingBomb"))
 								{
-									DamageInfo info = new DamageInfo
-									{
-										attacker = this.gameObject,
-										crit = this.RollCrit(),
-										damage = DashGrab.groundSlamDamageCoefficient * this.damageStat,
-										damageColorIndex = DamageColorIndex.Default,
-										damageType = DamageType.Stun1s,
-										force = aimRay.direction * 24000f,
-										inflictor = this.gameObject,
-										position = hurtBox.transform.position,
-										procChainMask = default(ProcChainMask),
-										procCoefficient = 1f,
-									};
+									TeamComponent team = hurtBox.healthComponent.body.teamComponent;
+									TeamFilter team2 = hurtBox.healthComponent.gameObject.GetComponent<TeamFilter>();
+									TeamIndex playerTeam = this.GetTeam();
+									team.teamIndex = playerTeam;
+									team2.teamIndex = playerTeam;
 
-									hurtBox.healthComponent.TakeDamage(info);
-
-									if (this.empowered)
-                                    {
-
-                                    }
-								}*/
-
-								EffectManager.SpawnEffect(Modules.Assets.bloodBombEffect, new EffectData
-								{
-									origin = hurtBox.transform.position,
-									scale = 2f
-								}, false);
-
-								if (this.empowered) Util.PlaySound("sfx_ravager_punch_empowered", this.gameObject);
-								else Util.PlaySound("sfx_ravager_punch", this.gameObject);
-
-								if (Modules.Assets.bodyPunchSounds.ContainsKey(hurtBox.healthComponent.gameObject.name))
-								{
-									Util.PlaySound(Modules.Assets.bodyPunchSounds[hurtBox.healthComponent.gameObject.name], hurtBox.gameObject);
+									hurtBox.healthComponent.gameObject.GetComponent<ProjectileController>().owner = this.gameObject;
+									hurtBox.healthComponent.gameObject.GetComponent<ProjectileDamage>().damage *= 5f;
+									hurtBox.healthComponent.gameObject.GetComponent<ProjectileImpactExplosion>().blastRadius *= 3f;
 								}
-								else Util.PlaySound("sfx_ravager_punch_generic", hurtBox.gameObject);
 
-								hurtBox.healthComponent.gameObject.AddComponent<ConsumeTracker>().attackerBody = this.characterBody;
-
-								if (base.isAuthority)
+								if (!this.hasGrabbed)
 								{
-									float dmg = DashGrab.punchDamageCoefficient * this.damageStat;
-									//if (this.empowered) dmg *= 2f;
+									Util.PlaySound("sfx_ravager_grab", base.gameObject);
+									base.SmallHop(base.characterMotor, this.smallHopVelocity);
+									this.penis.RefreshBlink();
+								}
+								this.hasGrabbed = true;
+							}
+							else
+							{
+								if (!this.forcePunch && hurtBox.healthComponent.body.isChampion && !Modules.Assets.grabBlacklist.Contains(hurtBox.healthComponent.gameObject.name))
+								{
+									base.PlayCrossfade("FullBody, Override", "Cling", 0.1f);
+									Util.PlaySound("sfx_ravager_grab", base.gameObject);
 
-									float force = 4000f;
-									if (hurtBox.healthComponent.body.isChampion) force = 24000f;
-
-									// damage
-									BlastAttack.Result result = new BlastAttack
+									HurtBox targetHurtbox = hurtBox;
+									float dist = Mathf.Infinity;
+									foreach (HurtBox i in hurtBox.healthComponent.gameObject.GetComponentsInChildren<HurtBox>())
 									{
-										attacker = base.gameObject,
-										procChainMask = default(ProcChainMask),
-										impactEffect = EffectIndex.Invalid,
-										losType = BlastAttack.LoSType.None,
-										damageColorIndex = DamageColorIndex.Default,
-										damageType = DamageType.Stun1s | DamageType.NonLethal,
-										procCoefficient = 1f,
-										bonusForce = this.GetAimRay().direction.normalized * force,
-										baseForce = 0f,
-										baseDamage = dmg,
-										falloffModel = BlastAttack.FalloffModel.None,
-										radius = 0.4f,
-										position = hurtBox.transform.position,
-										attackerFiltering = AttackerFiltering.NeverHitSelf,
-										teamIndex = base.GetTeam(),
-										inflictor = base.gameObject,
-										crit = base.RollCrit()
-									}.Fire();
-
-									// shockwave
-									FireProjectileInfo fireProjectileInfo = default(FireProjectileInfo);
-									fireProjectileInfo.position = hurtBox.transform.position + (aimRay.direction * -4f);
-									fireProjectileInfo.rotation = Quaternion.LookRotation(aimRay.direction);
-									fireProjectileInfo.crit = this.RollCrit();
-									fireProjectileInfo.damage = 10f * this.damageStat;
-									fireProjectileInfo.owner = this.gameObject;
-									fireProjectileInfo.projectilePrefab = Modules.Projectiles.punchShockwave;
-									ProjectileManager.instance.FireProjectile(fireProjectileInfo);
-
-									// barrage
-									if (this.empowered)
-                                    {
-										this.penis.punchTarget = hurtBox.transform;
-
-										fireProjectileInfo = default(FireProjectileInfo);
-										fireProjectileInfo.position = hurtBox.transform.position;
-										fireProjectileInfo.rotation = Quaternion.LookRotation(aimRay.direction);
-										fireProjectileInfo.crit = this.RollCrit();
-										fireProjectileInfo.damage = 1.2f * this.damageStat;
-										fireProjectileInfo.owner = this.gameObject;
-										fireProjectileInfo.projectilePrefab = Modules.Projectiles.punchBarrage;
-										ProjectileManager.instance.FireProjectile(fireProjectileInfo);
+										float d = Vector3.Distance(this.transform.position, i.transform.position);
+										if (d < dist)
+										{
+											dist = d;
+											targetHurtbox = i;
+										}
 									}
 
-									this.outer.SetNextState(new PunchRecoil());
+									grabbedList.Add(hurtBox.healthComponent);
+									this.hasGrabbed = true;
+
+									if (base.isAuthority)
+									{
+										Vector3 offset = (this.transform.position - targetHurtbox.transform.position).normalized * this.penis.offsetDistance;
+
+										GameObject anchor = new GameObject();
+
+										anchor.transform.parent = targetHurtbox.transform;
+										anchor.transform.position = targetHurtbox.transform.position + offset;
+
+										// some more precision :-)
+										this.characterBody.mainHurtBox.gameObject.SetActive(false);
+										RaycastHit raycastHit;
+										if (Physics.Raycast(this.transform.position, -(this.transform.position - targetHurtbox.transform.position).normalized, out raycastHit, 20f, LayerIndex.entityPrecise.mask))
+										{
+											offset = targetHurtbox.transform.position - raycastHit.point;
+											anchor.transform.position = raycastHit.point;
+										}
+										this.characterBody.mainHurtBox.gameObject.SetActive(true);
+										// why didnt this work
+
+										EntityStateMachine.FindByCustomName(this.gameObject, "Body").SetNextState(new Cling
+										{
+											targetHurtbox = targetHurtbox,
+											offset = offset,
+											anchor = anchor
+										});
+
+										this.outer.SetNextStateToMain();
+									}
+
+									return;
 								}
 
-								return;
+								if (hurtBox.healthComponent.body.isChampion || this.forcePunch)
+								{
+									// PUNCH
+									/*if (NetworkServer.active)
+									{
+										DamageInfo info = new DamageInfo
+										{
+											attacker = this.gameObject,
+											crit = this.RollCrit(),
+											damage = DashGrab.groundSlamDamageCoefficient * this.damageStat,
+											damageColorIndex = DamageColorIndex.Default,
+											damageType = DamageType.Stun1s,
+											force = aimRay.direction * 24000f,
+											inflictor = this.gameObject,
+											position = hurtBox.transform.position,
+											procChainMask = default(ProcChainMask),
+											procCoefficient = 1f,
+										};
+
+										hurtBox.healthComponent.TakeDamage(info);
+
+										if (this.empowered)
+										{
+
+										}
+									}*/
+
+									EffectManager.SpawnEffect(Modules.Assets.bloodBombEffect, new EffectData
+									{
+										origin = hurtBox.transform.position,
+										scale = 2f
+									}, false);
+
+									if (this.empowered) Util.PlaySound("sfx_ravager_punch_empowered", this.gameObject);
+									else Util.PlaySound("sfx_ravager_punch", this.gameObject);
+
+									if (Modules.Assets.bodyPunchSounds.ContainsKey(hurtBox.healthComponent.gameObject.name))
+									{
+										Util.PlaySound(Modules.Assets.bodyPunchSounds[hurtBox.healthComponent.gameObject.name], hurtBox.gameObject);
+									}
+									else Util.PlaySound("sfx_ravager_punch_generic", hurtBox.gameObject);
+
+									hurtBox.healthComponent.gameObject.AddComponent<ConsumeTracker>().attackerBody = this.characterBody;
+
+									if (base.isAuthority)
+									{
+										float dmg = DashGrab.punchDamageCoefficient * this.damageStat;
+										//if (this.empowered) dmg *= 2f;
+
+										float force = 4000f;
+										if (hurtBox.healthComponent.body.isChampion) force = 24000f;
+
+										// damage
+										BlastAttack.Result result = new BlastAttack
+										{
+											attacker = base.gameObject,
+											procChainMask = default(ProcChainMask),
+											impactEffect = EffectIndex.Invalid,
+											losType = BlastAttack.LoSType.None,
+											damageColorIndex = DamageColorIndex.Default,
+											damageType = DamageType.Stun1s | DamageType.NonLethal,
+											procCoefficient = 1f,
+											bonusForce = this.GetAimRay().direction.normalized * force,
+											baseForce = 0f,
+											baseDamage = dmg,
+											falloffModel = BlastAttack.FalloffModel.None,
+											radius = 0.4f,
+											position = hurtBox.transform.position,
+											attackerFiltering = AttackerFiltering.NeverHitSelf,
+											teamIndex = base.GetTeam(),
+											inflictor = base.gameObject,
+											crit = base.RollCrit()
+										}.Fire();
+
+										// shockwave
+										FireProjectileInfo fireProjectileInfo = default(FireProjectileInfo);
+										fireProjectileInfo.position = hurtBox.transform.position + (aimRay.direction * -4f);
+										fireProjectileInfo.rotation = Quaternion.LookRotation(aimRay.direction);
+										fireProjectileInfo.crit = this.RollCrit();
+										fireProjectileInfo.damage = 10f * this.damageStat;
+										fireProjectileInfo.owner = this.gameObject;
+										fireProjectileInfo.projectilePrefab = Modules.Projectiles.punchShockwave;
+										ProjectileManager.instance.FireProjectile(fireProjectileInfo);
+
+										// barrage
+										if (this.empowered)
+										{
+											this.penis.punchTarget = hurtBox.transform;
+
+											fireProjectileInfo = default(FireProjectileInfo);
+											fireProjectileInfo.position = hurtBox.transform.position;
+											fireProjectileInfo.rotation = Quaternion.LookRotation(aimRay.direction);
+											fireProjectileInfo.crit = this.RollCrit();
+											fireProjectileInfo.damage = 1.2f * this.damageStat;
+											fireProjectileInfo.owner = this.gameObject;
+											fireProjectileInfo.projectilePrefab = Modules.Projectiles.punchBarrage;
+											ProjectileManager.instance.FireProjectile(fireProjectileInfo);
+										}
+
+										this.outer.SetNextState(new PunchRecoil());
+									}
+
+									return;
+								}
 							}
-                        }
+						}
 					}
 				}
 			}

@@ -7,6 +7,7 @@ internal enum RavagerCameraParams
     AIM,
     DRAG,
     SLAM,
+    CLING,
     EMOTE
 }
 
@@ -18,6 +19,7 @@ namespace RedGuyMod.Modules
         internal static CharacterCameraParamsData aimCameraParams;
         internal static CharacterCameraParamsData slamCameraParams;
         internal static CharacterCameraParamsData dragCameraParams;
+        internal static CharacterCameraParamsData clingCameraParams;
         internal static CharacterCameraParamsData emoteCameraParams;
 
         internal static void InitializeParams()
@@ -26,6 +28,7 @@ namespace RedGuyMod.Modules
             aimCameraParams = NewCameraParams("ccpRobRavagerAim", 70f, 1.37f, new Vector3(0.15f, -0.1f, -15f));
             slamCameraParams = NewCameraParams("ccpRobRavagerSlam", 70f, 1.37f, new Vector3(0f, -2.5f, -8.3f));
             dragCameraParams = NewCameraParams("ccpRobRavagerDrag", 70f, 1.37f, new Vector3(-0.3f, -0.5f, -6.5f));
+            clingCameraParams = NewCameraParams("ccpRobRavagerCling", 70f, 1.1f, new Vector3(0f, 0f, -7f));
             emoteCameraParams = NewCameraParams("ccpRobRavagerEmote", 70f, 0.4f, new Vector3(0f, 0f, -6f));
         }
 
@@ -91,6 +94,9 @@ namespace RedGuyMod.Modules
                     break;
                 case RavagerCameraParams.SLAM:
                     paramsData = slamCameraParams;
+                    break;
+                case RavagerCameraParams.CLING:
+                    paramsData = clingCameraParams;
                     break;
                 case RavagerCameraParams.EMOTE:
                     paramsData = emoteCameraParams;
