@@ -24,7 +24,9 @@ namespace RedGuyMod.Content.Components
 		private Transform modelTransform;
 		private Quaternion originalRotation;
 
+		private GameObject anchor;
 		private GrabTracker grabTracker;
+		private Vector3 offset;
 
 		private void Awake()
 		{
@@ -32,6 +34,8 @@ namespace RedGuyMod.Content.Components
 			this.motor = base.GetComponent<CharacterMotor>();
 			this.direction = base.GetComponent<CharacterDirection>();
 			this.modelLocator = base.GetComponent<ModelLocator>();
+			this.anchor = new GameObject();
+
 			if (this.modelLocator)
 			{
 				// greater wisp
@@ -86,7 +90,7 @@ namespace RedGuyMod.Content.Components
 				// xi
 				if (this.gameObject.name == "MegaConstructBody(Clone)")
 				{
-					transform = this.GetComponent<ModelLocator>().modelTransform.Find("MegaConstructArmature/ROOT/base/body.1/StandableSurface/StandableSurface");
+					transform = this.GetComponent<ModelLocator>().modelTransform.Find("MegaConstructArmature/ROOT/base/body.1/StandableSurfacePosition/StandableSurface");
 					if (transform)
 					{
 						this.extraLayer2 = transform.gameObject.layer;
@@ -112,10 +116,18 @@ namespace RedGuyMod.Content.Components
 					this.modelLocator.enabled = false;
 				}
 			}
+
+			if (Modules.Assets.bodyGrabOffsets.ContainsKey(this.gameObject.name))
+            {
+				this.offset = Modules.Assets.bodyGrabOffsets[this.gameObject.name];
+            }
 		}
 
 		private void Start()
         {
+			this.anchor.transform.parent = this.pivotTransform;
+			this.anchor.transform.localPosition = this.offset;
+
 			if (this.attackerBody)
             {
 				this.grabTracker = this.gameObject.AddComponent<GrabTracker>();
@@ -123,6 +135,26 @@ namespace RedGuyMod.Content.Components
             }
 
 			if (NetworkServer.active && this.empowered) this.body.AddBuff(Content.Survivors.RedGuy.grabbedBuff);
+		}
+
+		private void Update()
+        {
+			if (this.motor)
+			{
+				this.motor.disableAirControlUntilCollision = true;
+				this.motor.velocity = Vector3.zero;
+				this.motor.rootMotion = Vector3.zero;
+				this.motor.Motor.SetPosition(this.anchor.transform.position, true);
+			}
+			if (this.anchor)
+			{
+				base.transform.position = this.anchor.transform.position;
+			}
+			if (this.modelTransform)
+			{
+				this.modelTransform.position = this.anchor.transform.position;
+				this.modelTransform.rotation = this.anchor.transform.rotation;
+			}
 		}
 
 		private void FixedUpdate()
@@ -137,16 +169,16 @@ namespace RedGuyMod.Content.Components
 				this.motor.disableAirControlUntilCollision = true;
 				this.motor.velocity = Vector3.zero;
 				this.motor.rootMotion = Vector3.zero;
-				this.motor.Motor.SetPosition(this.pivotTransform.position, true);
+				this.motor.Motor.SetPosition(this.anchor.transform.position, true);
 			}
-			if (this.pivotTransform)
+			if (this.anchor)
 			{
-				base.transform.position = this.pivotTransform.position;
+				base.transform.position = this.anchor.transform.position;
 			}
 			if (this.modelTransform)
 			{
-				this.modelTransform.position = this.pivotTransform.position;
-				this.modelTransform.rotation = this.pivotTransform.rotation;
+				this.modelTransform.position = this.anchor.transform.position;
+				this.modelTransform.rotation = this.anchor.transform.rotation;
 			}
 			RaycastHit raycastHit;
 			if (Physics.Raycast(new Ray(base.transform.position + Vector3.up * 2f, Vector3.down), out raycastHit, 6f, LayerIndex.world.mask, QueryTriggerInteraction.Collide))
@@ -225,7 +257,7 @@ namespace RedGuyMod.Content.Components
 					// xi
 					if (this.gameObject.name == "MegaConstructBody(Clone)")
 					{
-						transform = this.GetComponent<ModelLocator>().modelTransform.Find("MegaConstructArmature/ROOT/base/body.1/StandableSurface/StandableSurface");
+						transform = this.GetComponent<ModelLocator>().modelTransform.Find("MegaConstructArmature/ROOT/base/body.1/StandableSurfacePosition/StandableSurface");
 						if (transform)
 						{
 							transform.gameObject.layer = this.extraLayer2;
@@ -302,6 +334,7 @@ namespace RedGuyMod.Content.Components
 
 		private void OnDestroy()
         {
+			Destroy(this.anchor);
 			this.KillBuff();
 		}
 

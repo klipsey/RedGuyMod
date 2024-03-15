@@ -36,7 +36,7 @@ namespace RedGuyMod
     {
         public const string MODUID = "com.rob.Ravager";
         public const string MODNAME = "Ravager";
-        public const string MODVERSION = "1.3.14";
+        public const string MODVERSION = "1.3.15";
 
         public const string developerPrefix = "ROB";
 

@@ -1,4 +1,5 @@
-﻿using RoR2;
+﻿using EntityStates;
+using RoR2;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 
@@ -48,6 +49,11 @@ namespace RedGuyMod.SkillStates.Ravager
                 jumpDir = this.jumpDir,
                 jumpForce = this.jumpForce * 1.5f
             });
+        }
+
+        public override InterruptPriority GetMinimumInterruptPriority()
+        {
+            return InterruptPriority.Pain;
         }
     }
 }

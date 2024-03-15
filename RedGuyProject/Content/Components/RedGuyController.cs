@@ -25,6 +25,7 @@ namespace RedGuyMod.Content.Components
         public bool isWallClinging;
         public float hopoFeatherTimer;
 
+        public float clingTimer;
         public bool draining;
         private float decay;
         public float storedHealth;
@@ -58,6 +59,7 @@ namespace RedGuyMod.Content.Components
         public static event Action<bool> onStageCompleted;
 
         private bool wasBloodWellFilled;
+        private bool permaBossCling;
 
         //public RavagerSkinDef testSkinDef;
 
@@ -80,6 +82,7 @@ namespace RedGuyMod.Content.Components
             this.skinController = this.GetComponentInChildren<ModelSkinController>();
             this.passive = this.GetComponent<RedGuyPassive>();
             this.wallJumpCounter = 0;
+            this.permaBossCling = Modules.Config.permanentBossCling.Value;
 
             this.steamEffect = this.childLocator.FindChild("Steam").gameObject.GetComponent<ParticleSystem>();
             this.chargeEffect = this.childLocator.FindChild("ArmCharge").gameObject.GetComponent<ParticleSystem>();
@@ -102,6 +105,7 @@ namespace RedGuyMod.Content.Components
         {
             this.decay = Mathf.Clamp(this.decay + (this.decayGrowth * Time.fixedDeltaTime), 0f, this.maxDecayRate);
             this.hopoFeatherTimer -= Time.fixedDeltaTime;
+            if (!this.permaBossCling) this.clingTimer -= Time.fixedDeltaTime;
 
             if (this.draining)
             {

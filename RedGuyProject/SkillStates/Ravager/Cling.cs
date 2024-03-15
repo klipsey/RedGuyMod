@@ -1,6 +1,8 @@
 ﻿using UnityEngine;
 using RoR2;
 using EntityStates;
+using static RoR2.CameraTargetParams;
+using RoR2.UI;
 
 namespace RedGuyMod.SkillStates.Ravager
 {
@@ -12,6 +14,9 @@ namespace RedGuyMod.SkillStates.Ravager
 
         private Transform modelTransform;
         private Content.Components.RedGuyController penis;
+        private CameraParamsOverrideHandle camParamsOverrideHandle;
+        private CrosshairUtils.OverrideRequest crosshairOverrideRequest;
+        private bool cancelling;
 
         public override void OnEnter()
         {
@@ -21,10 +26,23 @@ namespace RedGuyMod.SkillStates.Ravager
             this.modelTransform = this.GetModelTransform();
             this.penis = this.GetComponent<Content.Components.RedGuyController>();
 
+            this.penis.clingTimer = 8f;
+
             this.skillLocator.primary.SetSkillOverride(this, Content.Survivors.RedGuy.clingSlashSkillDef, GenericSkill.SkillOverridePriority.Contextual);
             this.skillLocator.secondary.SetSkillOverride(this, Content.Survivors.RedGuy.clingStabSkillDef, GenericSkill.SkillOverridePriority.Contextual);
-            this.skillLocator.utility.SetSkillOverride(this, Content.Survivors.RedGuy.clingDefendSkillDef, GenericSkill.SkillOverridePriority.Contextual);
             this.skillLocator.special.SetSkillOverride(this, Content.Survivors.RedGuy.clingFlourishSkillDef, GenericSkill.SkillOverridePriority.Contextual);
+
+            if (this.skillLocator.utility.skillDef.skillNameToken == Content.Survivors.RedGuy.healNameToken)
+            {
+                this.skillLocator.utility.SetSkillOverride(this, Content.Survivors.RedGuy.clingHealSkillDef, GenericSkill.SkillOverridePriority.Contextual);
+            }
+            else
+            {
+                this.skillLocator.utility.SetSkillOverride(this, Content.Survivors.RedGuy.clingBeamSkillDef, GenericSkill.SkillOverridePriority.Contextual);
+            }
+
+            this.camParamsOverrideHandle = Modules.CameraParams.OverrideCameraParams(base.cameraTargetParams, RavagerCameraParams.CLING, 1f);
+            this.crosshairOverrideRequest = CrosshairUtils.RequestOverrideForBody(this.characterBody, Modules.Assets.clingCrosshair, CrosshairUtils.OverridePriority.Skill);
 
             base.gameObject.layer = LayerIndex.ignoreRaycast.intVal;
             base.characterMotor.Motor.RebuildCollidableLayers();
@@ -38,10 +56,21 @@ namespace RedGuyMod.SkillStates.Ravager
             this.characterDirection.enabled = true;
             this.modelLocator.enabled = true;
 
+            this.cameraTargetParams.RemoveParamsOverride(this.camParamsOverrideHandle);
+            if (this.crosshairOverrideRequest != null) this.crosshairOverrideRequest.Dispose();
+
             this.skillLocator.primary.UnsetSkillOverride(this, Content.Survivors.RedGuy.clingSlashSkillDef, GenericSkill.SkillOverridePriority.Contextual);
             this.skillLocator.secondary.UnsetSkillOverride(this, Content.Survivors.RedGuy.clingStabSkillDef, GenericSkill.SkillOverridePriority.Contextual);
-            this.skillLocator.utility.UnsetSkillOverride(this, Content.Survivors.RedGuy.clingDefendSkillDef, GenericSkill.SkillOverridePriority.Contextual);
             this.skillLocator.special.UnsetSkillOverride(this, Content.Survivors.RedGuy.clingFlourishSkillDef, GenericSkill.SkillOverridePriority.Contextual);
+
+            if (this.skillLocator.utility.skillDef.skillNameToken == Content.Survivors.RedGuy.healNameToken)
+            {
+                this.skillLocator.utility.UnsetSkillOverride(this, Content.Survivors.RedGuy.clingHealSkillDef, GenericSkill.SkillOverridePriority.Contextual);
+            }
+            else
+            {
+                this.skillLocator.utility.UnsetSkillOverride(this, Content.Survivors.RedGuy.clingBeamSkillDef, GenericSkill.SkillOverridePriority.Contextual);
+            }
         }
 
         public override void HandleMovements()
@@ -55,6 +84,7 @@ namespace RedGuyMod.SkillStates.Ravager
         public override void FixedUpdate()
         {
             base.FixedUpdate();
+            this.characterBody.isSprinting = false;
 
             if (base.isAuthority)
             {
@@ -70,12 +100,20 @@ namespace RedGuyMod.SkillStates.Ravager
                 }
                 else
                 {
-                    base.PlayAnimation("FullBody, Override", "BufferEmpty");
-                    this.characterMotor.velocity = Vector3.up * 15f;
-                    this.outer.SetNextStateToMain();
+                    this.cancelling = true;
                 }
 
+                if (this.inputBank.jump.justPressed) this.cancelling = true;
+                if (this.penis.clingTimer <= 0f) this.cancelling = true;
+
                 this.characterMotor.velocity = Vector3.zero;
+            }
+
+            if (this.cancelling)
+            {
+                base.PlayAnimation("FullBody, Override", "BufferEmpty");
+                this.characterMotor.velocity = Vector3.up * 15f;
+                this.outer.SetNextStateToMain();
             }
         }
     }

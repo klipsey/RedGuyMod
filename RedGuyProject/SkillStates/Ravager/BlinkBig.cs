@@ -1,4 +1,5 @@
-﻿using RoR2;
+﻿using EntityStates;
+using RoR2;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 
@@ -49,6 +50,11 @@ namespace RedGuyMod.SkillStates.Ravager
                 temporaryOverlay.originalMaterial = Addressables.LoadAssetAsync<Material>("RoR2/Base/Imp/matImpDissolve.mat").WaitForCompletion();
                 temporaryOverlay.AddToCharacerModel(this.modelTransform.GetComponent<CharacterModel>());
             }
+        }
+
+        public override InterruptPriority GetMinimumInterruptPriority()
+        {
+            return InterruptPriority.Pain;
         }
     }
 }

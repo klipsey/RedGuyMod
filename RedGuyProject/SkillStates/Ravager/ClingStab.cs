@@ -130,6 +130,11 @@ namespace RedGuyMod.SkillStates.Ravager
 
         protected override void SetNextState()
         {
+            if (this.penis.clingTimer <= 0f)
+            {
+                this.outer.SetNextStateToMain();
+                return;
+            }
             this.FireShuriken();
 
             int index = this.swingIndex;
@@ -144,6 +149,12 @@ namespace RedGuyMod.SkillStates.Ravager
 
         protected virtual void SetNextState2()
         {
+            if (this.penis.clingTimer <= 0f)
+            {
+                this.outer.SetNextStateToMain();
+                return;
+            }
+            
             int index = this.swingIndex;
             if (index == 0) index = 1;
             else index = 0;

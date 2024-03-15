@@ -62,10 +62,13 @@ namespace RedGuyMod.Content.Survivors
         internal static SkillDef clingSlashSkillDef;
         internal static SkillDef clingStabSkillDef;
         internal static SkillDef clingDefendSkillDef;
+        internal static SkillDef clingHealSkillDef;
+        internal static SkillDef clingBeamSkillDef;
         internal static SkillDef clingFlourishSkillDef;
 
         internal static string bodyNameToken;
         internal static string primaryNameToken;
+        internal static string healNameToken;
 
         internal void CreateCharacter()
         {
@@ -718,14 +721,44 @@ Modules.Assets.mainAssetBundle.LoadAsset<Sprite>("texSlashIcon"), Modules.Assets
             #endregion
 
             #region Utility
+            healNameToken = prefix + "_RAVAGER_BODY_UTILITY_HEAL_NAME";
             RavagerSkillDef healSkillDef = Modules.Skills.CreateSkillDef(new SkillDefInfo
             {
-                skillName = prefix + "_RAVAGER_BODY_UTILITY_HEAL_NAME",
-                skillNameToken = prefix + "_RAVAGER_BODY_UTILITY_HEAL_NAME",
+                skillName = healNameToken,
+                skillNameToken = healNameToken,
                 skillDescriptionToken = prefix + "_RAVAGER_BODY_UTILITY_HEAL_DESCRIPTION",
                 baseIcon = Modules.Assets.mainAssetBundle.LoadAsset<Sprite>("texHealIcon"),
                 empoweredIcon = Modules.Assets.mainAssetBundle.LoadAsset<Sprite>("texHealIcon2"),
                 activationState = new EntityStates.SerializableEntityStateType(typeof(SkillStates.Ravager.Heal)),
+                activationStateMachineName = "Slide",
+                baseMaxStock = 1,
+                baseRechargeInterval = 3f,
+                beginSkillCooldownOnSkillEnd = false,
+                canceledFromSprinting = false,
+                forceSprintDuringState = false,
+                fullRestockOnAssign = true,
+                interruptPriority = EntityStates.InterruptPriority.Skill,
+                resetCooldownTimerOnUse = true,
+                isCombatSkill = false,
+                mustKeyPress = true,
+                cancelSprintingOnActivation = false,
+                rechargeStock = 1,
+                requiredStock = 1,
+                stockToConsume = 1,
+                keywordTokens = new string[]
+                {
+                    "KEYWORD_REDGUY_HEAL"
+                }
+            });
+
+            clingHealSkillDef = Modules.Skills.CreateSkillDef(new SkillDefInfo
+            {
+                skillName = healNameToken,
+                skillNameToken = healNameToken,
+                skillDescriptionToken = prefix + "_RAVAGER_BODY_UTILITY_HEAL_DESCRIPTION",
+                baseIcon = Modules.Assets.mainAssetBundle.LoadAsset<Sprite>("texHealIcon"),
+                empoweredIcon = Modules.Assets.mainAssetBundle.LoadAsset<Sprite>("texHealIcon2"),
+                activationState = new EntityStates.SerializableEntityStateType(typeof(SkillStates.Ravager.ClingHeal)),
                 activationStateMachineName = "Slide",
                 baseMaxStock = 1,
                 baseRechargeInterval = 3f,
@@ -762,6 +795,35 @@ Modules.Assets.mainAssetBundle.LoadAsset<Sprite>("texSlashIcon"), Modules.Assets
                 canceledFromSprinting = false,
                 forceSprintDuringState = false,
                 fullRestockOnAssign = false,
+                interruptPriority = EntityStates.InterruptPriority.Skill,
+                resetCooldownTimerOnUse = true,
+                isCombatSkill = true,
+                mustKeyPress = false,
+                cancelSprintingOnActivation = true,
+                rechargeStock = 1,
+                requiredStock = 1,
+                stockToConsume = 1,
+                keywordTokens = new string[]
+                {
+                    "KEYWORD_REDGUY_BEAM"
+                }
+            });
+
+            clingBeamSkillDef = Modules.Skills.CreateSkillDef(new SkillDefInfo
+            {
+                skillName = prefix + "_RAVAGER_BODY_UTILITY_BEAM_NAME",
+                skillNameToken = prefix + "_RAVAGER_BODY_UTILITY_BEAM_NAME",
+                skillDescriptionToken = prefix + "_RAVAGER_BODY_UTILITY_BEAM_DESCRIPTION",
+                baseIcon = Modules.Assets.mainAssetBundle.LoadAsset<Sprite>("texBeamIcon"),
+                empoweredIcon = Modules.Assets.mainAssetBundle.LoadAsset<Sprite>("texBeamIcon2"),
+                activationState = new EntityStates.SerializableEntityStateType(typeof(SkillStates.Ravager.ClingChargeBeam)),
+                activationStateMachineName = "Weapon",
+                baseMaxStock = 1,
+                baseRechargeInterval = 12f,
+                beginSkillCooldownOnSkillEnd = true,
+                canceledFromSprinting = false,
+                forceSprintDuringState = false,
+                fullRestockOnAssign = true,
                 interruptPriority = EntityStates.InterruptPriority.Skill,
                 resetCooldownTimerOnUse = true,
                 isCombatSkill = true,
