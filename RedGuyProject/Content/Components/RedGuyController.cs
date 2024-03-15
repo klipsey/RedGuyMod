@@ -14,6 +14,7 @@ namespace RedGuyMod.Content.Components
         public int projectilesDeleted = 0;
 
         public bool blinkReady;
+        public int blinkCount;
 
         public float drainRate = 24f;
         public float altDrainRate = 16f;
@@ -139,9 +140,11 @@ namespace RedGuyMod.Content.Components
                 if (NetworkServer.active) if (this.storedHealth >= 0f) this.healthComponent.Heal(iDontEvenKnowAnymore * Time.fixedDeltaTime, default(ProcChainMask));
             }
 
-            if (this.characterBody.characterMotor.isGrounded) this.blinkReady = true;
-
-            if (this.blinkReady)
+            if (this.characterBody.characterMotor.jumpCount < this.characterBody.maxJumpCount)
+            { 
+                this.blinkReady = true;
+            }
+            if (this.blinkCount > 0)
             {
                 if (!this.handElectricityEffect.isPlaying) this.handElectricityEffect.Play();
             }
@@ -160,7 +163,7 @@ namespace RedGuyMod.Content.Components
 
         public void RefreshBlink()
         {
-            this.blinkReady = true;
+            characterBody.characterMotor.jumpCount--;
         }
 
         public void IncrementWallJump()

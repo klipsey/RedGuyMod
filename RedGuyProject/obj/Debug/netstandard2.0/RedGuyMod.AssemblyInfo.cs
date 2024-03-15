@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("RedGuyMod")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+617563cb12c2cc0a324a241d9c7f4555f506564f")]
 [assembly: System.Reflection.AssemblyProductAttribute("RedGuyMod")]
 [assembly: System.Reflection.AssemblyTitleAttribute("RedGuyMod")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

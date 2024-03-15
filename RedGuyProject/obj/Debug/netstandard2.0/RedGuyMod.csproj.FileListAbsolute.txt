@@ -14,3 +14,10 @@ C:\Users\rseid\OneDrive\Documents\GitHub\RedGuyMod\RedGuyProject\obj\Debug\netst
 C:\Users\rseid\OneDrive\Documents\GitHub\RedGuyMod\RedGuyProject\obj\Debug\netstandard2.0\RedGuyMod.pdb
 C:\Users\rseid\OneDrive\Documents\GitHub\RedGuyMod\RedGuyProject\bin\Debug\netstandard2.0\Decalicious.dll
 C:\Users\rseid\OneDrive\Documents\GitHub\RedGuyMod\RedGuyProject\obj\Debug\netstandard2.0\RedGuyMod.csproj.AssemblyReference.cache
+C:\Users\mario\source\repos\RedGuyFIx\RedGuyProject\obj\Debug\netstandard2.0\RedGuyMod.csproj.AssemblyReference.cache
+C:\Users\mario\source\repos\RedGuyFIx\RedGuyProject\obj\Debug\netstandard2.0\RedGuyMod.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\mario\source\repos\RedGuyFIx\RedGuyProject\obj\Debug\netstandard2.0\RedGuyMod.AssemblyInfoInputs.cache
+C:\Users\mario\source\repos\RedGuyFIx\RedGuyProject\obj\Debug\netstandard2.0\RedGuyMod.AssemblyInfo.cs
+C:\Users\mario\source\repos\RedGuyFIx\RedGuyProject\obj\Debug\netstandard2.0\RedGuyMod.csproj.CoreCompileInputs.cache
+C:\Users\mario\source\repos\RedGuyFIx\RedGuyProject\obj\Debug\netstandard2.0\RedGuyMod.sourcelink.json
+C:\Users\mario\source\repos\RedGuyFIx\RedGuyProject\obj\Debug\netstandard2.0\RedGuyMod.dll
